@@ -10,18 +10,12 @@
   NODE_VERSION = "18"
   NODE_ENV = "production"
 
-# Digital Asset Links 파일 보호
-[[redirects]]
-  from = "/.well-known/*"
-  to = "/.well-known/:splat"
-  status = 200
-  force = true
-
-# SPA 라우팅을 위한 리다이렉트 설정 (마지막에 위치)
+# SPA 라우팅을 위한 리다이렉트 설정 (.well-known 제외)
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+  conditions = {Path = "!/.well-known/*"}
 
 # 보안 헤더 설정
 [[headers]]
@@ -37,6 +31,13 @@
 # Digital Asset Links JSON 파일 헤더 설정
 [[headers]]
   for = "/.well-known/assetlinks.json"
+  [headers.values]
+    Content-Type = "application/json"
+    Cache-Control = "public, max-age=3600"
+
+# Root assetlinks.json 파일 헤더 설정
+[[headers]]
+  for = "/assetlinks.json"
   [headers.values]
     Content-Type = "application/json"
     Cache-Control = "public, max-age=3600"
