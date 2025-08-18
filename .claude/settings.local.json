@@ -8,12 +8,22 @@
       "Bash(git add:*)",
       "Bash(git push:*)",
       "Bash(git commit:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(\"C:\\Users\\pisod\\AppData\\Local\\Android\\Sdk\\jbr\\bin\\keytool.exe\" -genkey -v -keystore app/release-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias release)",
+      "Bash(where keytool)",
+      "Bash(\"C:\\Program Files\\Android\\Android Studio\\jbr\\bin\\keytool.exe\" -list -v -keystore \"C:\\Users\\pisod\\split-flap-keystore.jks\" -alias split-flap-key)",
+      "Bash(\"C:\\Program Files\\Android\\Android Studio\\jbr\\bin\\keytool.exe\" -list -v -keystore \"C:\\Users\\pisod\\split-flap-keystore.jks\" -alias split-flap-key -storepass android)",
+      "Bash(\"C:\\Program Files\\Android\\Android Studio\\jbr\\bin\\keytool.exe\" -list -v -keystore \"C:\\Users\\pisod\\split-flap-keystore.jks\" -alias split-flap-key -storepass \"mango1234$$\")",
+      "Bash(.gradlew assembleDebug)",
+      "Bash(gradlew.bat assembleDebug:*)",
+      "WebFetch(domain:piso-split-flap.netlify.app)",
+      "Bash(adb:*)"
     ],
     "deny": [],
     "ask": [],
     "additionalDirectories": [
-      "C:\\c\\dev\\applications"
+      "C:\\c\\dev\\applications",
+      "C:\\Users\\pisod\\AndroidStudioProjects\\SplitFlapClock"
     ]
   }
 }
