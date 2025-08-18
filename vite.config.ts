@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { VitePWA } from 'vite-plugin-pwa'
+import { viteStaticCopy } from 'vite-plugin-static-copy'
 import { resolve } from 'path'
 
 /**
@@ -16,11 +17,12 @@ import { resolve } from 'path'
  * @since 1.0.0
  */
 export default defineConfig({
+  publicDir: 'public', // public 폴더의 모든 파일을 dist로 복사
   plugins: [
     vue(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'icons/*.png'],
+      includeAssets: ['favicon.svg', 'icons/*.png', '.well-known/*'],
       manifest: false, // 별도 manifest.json 사용
       workbox: {
         cleanupOutdatedCaches: true,
@@ -28,6 +30,14 @@ export default defineConfig({
         clientsClaim: true,
         navigateFallback: 'index.html'
       }
+    }),
+    viteStaticCopy({
+      targets: [
+        {
+          src: 'public/.well-known',
+          dest: ''
+        }
+      ]
     })
   ],
   resolve: {
