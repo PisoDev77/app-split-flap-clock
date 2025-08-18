@@ -3,6 +3,6 @@
   "target": {
     "namespace": "android_app",
     "package_name": "com.piso.splitflapclock",
-    "sha256_cert_fingerprints": ["2A:A8:1E:DF:88:C0:74:A1:18:4F:4C:38:89:E9:12:90:AF:BD:77:00:B5:06:71:2C:62:15:75:10:B0:EA:EE:77"]
+    "sha256_cert_fingerprints": ["34:5F:DE:DB:96:C5:E8:9A:7F:47:98:9A:D7:66:93:A7:CF:E1:62:55:52:A9:CD:85:FC:93:39:96:9E:F3:B1:09"]
   }
 }]

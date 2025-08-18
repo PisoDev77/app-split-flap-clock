@@ -17,7 +17,8 @@
       "Bash(.gradlew assembleDebug)",
       "Bash(gradlew.bat assembleDebug:*)",
       "WebFetch(domain:piso-split-flap.netlify.app)",
-      "Bash(adb:*)"
+      "Bash(adb:*)",
+      "Bash(\"C:\\Program Files\\Android\\Android Studio\\jbr\\bin\\keytool.exe\" -list -keystore \"C:\\Users\\pisod\\split-flap-keystore.jks\")"
     ],
     "deny": [],
     "ask": [],
