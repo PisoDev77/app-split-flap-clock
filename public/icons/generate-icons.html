@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PWA 아이콘 생성기</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .icon-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 20px; }
+        .icon-item { text-align: center; border: 1px solid #ddd; padding: 20px; border-radius: 8px; }
+        .icon-item canvas { border: 1px solid #ccc; margin: 10px 0; }
+        .download-btn { background: #007bff; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; }
+        .download-btn:hover { background: #0056b3; }
+        .instructions { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Split Flap Clock PWA 아이콘 생성기</h1>
+    
+    <div class="instructions">
+        <h3>사용 방법:</h3>
+        <ol>
+            <li>아래 생성된 아이콘들을 각각 다운로드하세요</li>
+            <li>다운로드한 파일들을 <code>public/icons/</code> 폴더에 저장하세요</li>
+            <li>파일명은 자동으로 올바르게 설정됩니다</li>
+        </ol>
+    </div>
+
+    <div class="icon-grid" id="iconGrid"></div>
+
+    <script>
+        const iconSizes = [
+            { size: 72, name: 'icon-72x72.png', desc: 'Android Chrome' },
+            { size: 96, name: 'icon-96x96.png', desc: 'Android Chrome' },
+            { size: 128, name: 'icon-128x128.png', desc: 'Android Chrome' },
+            { size: 144, name: 'icon-144x144.png', desc: 'Android Chrome' },
+            { size: 152, name: 'icon-152x152.png', desc: 'iOS Safari' },
+            { size: 192, name: 'icon-192x192.png', desc: 'Android Chrome' },
+            { size: 384, name: 'icon-384x384.png', desc: 'Android Chrome' },
+            { size: 512, name: 'icon-512x512.png', desc: 'Android Chrome' }
+        ];
+
+        const svgContent = `<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#2c3e50;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#34495e;stop-opacity:1" />
+                </linearGradient>
+                <linearGradient id="flapGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#34495e;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#2c3e50;stop-opacity:1" />
+                </linearGradient>
+            </defs>
+            <rect width="512" height="512" rx="64" fill="url(#bgGrad)"/>
+            <g transform="translate(64,128)">
+                <g transform="translate(0,0)">
+                    <rect width="80" height="120" rx="8" fill="url(#flapGrad)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+                    <rect width="80" height="60" rx="8 8 0 0" fill="#3a4d63"/>
+                    <rect y="60" width="80" height="60" rx="0 0 8 8" fill="#2c3e50"/>
+                    <text x="40" y="45" text-anchor="middle" fill="#ecf0f1" font-family="monospace" font-size="48" font-weight="bold">1</text>
+                    <text x="40" y="105" text-anchor="middle" fill="#ecf0f1" font-family="monospace" font-size="48" font-weight="bold">1</text>
+                    <line x1="0" y1="60" x2="80" y2="60" stroke="rgba(26,37,47,0.8)" stroke-width="2"/>
+                </g>
+                <g transform="translate(88,0)">
+                    <rect width="80" height="120" rx="8" fill="url(#flapGrad)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+                    <rect width="80" height="60" rx="8 8 0 0" fill="#3a4d63"/>
+                    <rect y="60" width="80" height="60" rx="0 0 8 8" fill="#2c3e50"/>
+                    <text x="40" y="45" text-anchor="middle" fill="#ecf0f1" font-family="monospace" font-size="48" font-weight="bold">5</text>
+                    <text x="40" y="105" text-anchor="middle" fill="#ecf0f1" font-family="monospace" font-size="48" font-weight="bold">5</text>
+                    <line x1="0" y1="60" x2="80" y2="60" stroke="rgba(26,37,47,0.8)" stroke-width="2"/>
+                </g>
+                <g transform="translate(176,30)">
+                    <circle cx="8" cy="20" r="4" fill="#ecf0f1" opacity="0.8"/>
+                    <circle cx="8" cy="60" r="4" fill="#ecf0f1" opacity="0.8"/>
+                </g>
+                <g transform="translate(200,0)">
+                    <rect width="80" height="120" rx="8" fill="url(#flapGrad)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+                    <rect width="80" height="60" rx="8 8 0 0" fill="#3a4d63"/>
+                    <rect y="60" width="80" height="60" rx="0 0 8 8" fill="#2c3e50"/>
+                    <text x="40" y="45" text-anchor="middle" fill="#ecf0f1" font-family="monospace" font-size="48" font-weight="bold">3</text>
+                    <text x="40" y="105" text-anchor="middle" fill="#ecf0f1" font-family="monospace" font-size="48" font-weight="bold">3</text>
+                    <line x1="0" y1="60" x2="80" y2="60" stroke="rgba(26,37,47,0.8)" stroke-width="2"/>
+                </g>
+                <g transform="translate(288,0)">
+                    <rect width="80" height="120" rx="8" fill="url(#flapGrad)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+                    <rect width="80" height="60" rx="8 8 0 0" fill="#3a4d63"/>
+                    <rect y="60" width="80" height="60" rx="0 0 8 8" fill="#2c3e50"/>
+                    <text x="40" y="45" text-anchor="middle" fill="#ecf0f1" font-family="monospace" font-size="48" font-weight="bold">0</text>
+                    <text x="40" y="105" text-anchor="middle" fill="#ecf0f1" font-family="monospace" font-size="48" font-weight="bold">0</text>
+                    <line x1="0" y1="60" x2="80" y2="60" stroke="rgba(26,37,47,0.8)" stroke-width="2"/>
+                </g>
+            </g>
+            <text x="256" y="320" text-anchor="middle" fill="#ecf0f1" font-family="sans-serif" font-size="32" font-weight="600" opacity="0.9">Split Flap</text>
+            <text x="256" y="356" text-anchor="middle" fill="#ecf0f1" font-family="sans-serif" font-size="24" font-weight="400" opacity="0.7">Clock</text>
+            <circle cx="128" cy="420" r="3" fill="#ecf0f1" opacity="0.3"/>
+            <circle cx="384" cy="420" r="3" fill="#ecf0f1" opacity="0.3"/>
+            <circle cx="256" cy="440" r="2" fill="#ecf0f1" opacity="0.4"/>
+        </svg>`;
+
+        function generateIcon(size, filename, description) {
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+
+            const img = new Image();
+            const blob = new Blob([svgContent], { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(blob);
+
+            img.onload = function() {
+                ctx.drawImage(img, 0, 0, size, size);
+                URL.revokeObjectURL(url);
+
+                const iconItem = document.createElement('div');
+                iconItem.className = 'icon-item';
+                iconItem.innerHTML = `
+                    <h4>${size}x${size}</h4>
+                    <p>${description}</p>
+                    <canvas width="${size}" height="${size}"></canvas>
+                    <br>
+                    <button class="download-btn" onclick="downloadIcon('${filename}', '${canvas.toDataURL()}')">
+                        ${filename} 다운로드
+                    </button>
+                `;
+
+                const displayCanvas = iconItem.querySelector('canvas');
+                const displayCtx = displayCanvas.getContext('2d');
+                displayCtx.drawImage(canvas, 0, 0);
+
+                document.getElementById('iconGrid').appendChild(iconItem);
+            };
+
+            img.src = url;
+        }
+
+        function downloadIcon(filename, dataURL) {
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = dataURL;
+            link.click();
+        }
+
+        // Generate all icons
+        iconSizes.forEach(icon => {
+            generateIcon(icon.size, icon.name, icon.desc);
+        });
+    </script>
+</body>
+</html>
