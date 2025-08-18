@@ -426,6 +426,23 @@ onUnmounted(() => {
   }
 }
 
+/* iPhone SE 및 유사 디바이스 (375px 이하) */
+@media (max-width: 375px) {
+  .flap-unit {
+    width: 1.8rem;
+    height: 2.6rem;
+  }
+  
+  .flap-text {
+    font-size: 1.2rem;
+    height: 2.6rem;
+  }
+  
+  .flap-container {
+    gap: 0.4px;
+  }
+}
+
 /* 매우 작은 화면 최적화 - 크기 증가 */
 @media (max-width: 320px) {
   .flap-unit {

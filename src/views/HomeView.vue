@@ -453,12 +453,26 @@ onUnmounted(() => {
   }
 }
 
+/* iPhone SE 및 유사 디바이스 (375px 이하) */
+@media (max-width: 375px) {
+  .time-units {
+    gap: 0.2rem;
+    max-width: 100vw;
+    padding: 0 12px;
+  }
+  
+  .time-separator {
+    font-size: 1.3rem;
+    margin: 0 0.08rem;
+  }
+}
+
 /* 매우 작은 화면 (320px 이하) */
 @media (max-width: 320px) {
   .time-units {
     gap: 0.15rem;
     max-width: 100vw;
-    padding: 0 4px;
+    padding: 0 8px;
   }
   
   .time-separator {
@@ -473,7 +487,7 @@ onUnmounted(() => {
   .time-units {
     gap: 0.1rem;
     max-width: 100vw;
-    padding: 0 2px;
+    padding: 0 6px;
     transform: scale(0.9);
     transform-origin: center;
   }
@@ -490,7 +504,7 @@ onUnmounted(() => {
   .time-units {
     gap: 0.05rem;
     max-width: 100vw;
-    padding: 0 2px;
+    padding: 0 8px;
     transform: scale(0.8);
     transform-origin: center;
   }
