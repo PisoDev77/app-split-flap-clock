@@ -251,6 +251,19 @@ onUnmounted(() => {
   text-align: center;
 }
 
+/* 모바일에서 도시 라벨 크기 증가 */
+@media (max-width: 768px) {
+  .city-label {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .city-label {
+    font-size: 0.95rem;
+  }
+}
+
 .time-display {
   animation: fadeInUp 0.8s ease-out;
   /* 브라우저 호환성 */
@@ -382,8 +395,8 @@ onUnmounted(() => {
   }
   
   .time-separator {
-    font-size: 2.5rem;
-    margin: 0 0.125rem;
+    font-size: 3rem;
+    margin: 0 0.25rem;
   }
   
   .time-label {
@@ -421,8 +434,8 @@ onUnmounted(() => {
   }
   
   .time-separator {
-    font-size: 1.1rem;
-    margin: 0;
+    font-size: 1.8rem;
+    margin: 0 0.125rem;
     flex-shrink: 0;
     line-height: 1;
   }
@@ -446,8 +459,8 @@ onUnmounted(() => {
   }
   
   .time-separator {
-    font-size: 0.9rem;
-    margin: 0;
+    font-size: 1.4rem;
+    margin: 0 0.1rem;
   }
   
 }
@@ -461,8 +474,8 @@ onUnmounted(() => {
   }
   
   .time-separator {
-    font-size: 0.75rem;
-    margin: 0;
+    font-size: 1.2rem;
+    margin: 0 0.05rem;
   }
   
 }
@@ -476,8 +489,8 @@ onUnmounted(() => {
   }
   
   .time-separator {
-    font-size: 0.65rem;
-    margin: 0;
+    font-size: 1rem;
+    margin: 0 0.025rem;
   }
   
 }</style>

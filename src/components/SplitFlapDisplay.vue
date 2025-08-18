@@ -397,28 +397,45 @@ onUnmounted(() => {
   color: #f0f6fc;
 }
 
-/* 모바일 반응형 */
+/* 모바일 반응형 - 더 큰 크기로 조정 */
 @media (max-width: 768px) {
   .flap-unit {
-    width: 2.8rem;
-    height: 4rem;
+    width: 3.5rem;
+    height: 5rem;
   }
   
   .flap-text {
-    font-size: 1.8rem;
-    height: 4rem; /* Full height for smaller flaps */
+    font-size: 2.2rem;
+    height: 5rem; /* Full height for smaller flaps */
   }
 }
 
 @media (max-width: 480px) {
   .flap-unit {
-    width: 1.4rem;
-    height: 2.2rem;
+    width: 2.5rem;
+    height: 3.5rem;
   }
   
   .flap-text {
-    font-size: 0.95rem;
-    height: 2.2rem;
+    font-size: 1.6rem;
+    height: 3.5rem;
+  }
+  
+  .flap-container {
+    gap: 1px;
+  }
+}
+
+/* 매우 작은 화면 최적화 - 크기 증가 */
+@media (max-width: 320px) {
+  .flap-unit {
+    width: 1.8rem;
+    height: 2.5rem;
+  }
+  
+  .flap-text {
+    font-size: 1.2rem;
+    height: 2.5rem;
   }
   
   .flap-container {
@@ -426,54 +443,37 @@ onUnmounted(() => {
   }
 }
 
-/* 매우 작은 화면 최적화 */
-@media (max-width: 320px) {
-  .flap-unit {
-    width: 1.2rem;
-    height: 1.8rem;
-  }
-  
-  .flap-text {
-    font-size: 0.75rem;
-    height: 1.8rem;
-  }
-  
-  .flap-container {
-    gap: 0.25px;
-  }
-}
-
 /* 극소형 화면 최적화 (280px 이하) */
 @media (max-width: 280px) {
   .flap-unit {
-    width: 1rem;
-    height: 1.5rem;
+    width: 1.5rem;
+    height: 2.2rem;
   }
   
   .flap-text {
-    font-size: 0.65rem;
-    height: 1.5rem;
+    font-size: 1rem;
+    height: 2.2rem;
   }
   
   .flap-container {
-    gap: 0.1px;
+    gap: 0.3px;
   }
 }
 
 /* 초극소형 화면 최적화 (240px 이하) */
 @media (max-width: 240px) {
   .flap-unit {
-    width: 0.85rem;
-    height: 1.3rem;
+    width: 1.2rem;
+    height: 1.8rem;
   }
   
   .flap-text {
-    font-size: 0.55rem;
-    height: 1.3rem;
+    font-size: 0.85rem;
+    height: 1.8rem;
   }
   
   .flap-container {
-    gap: 0.05px;
+    gap: 0.2px;
   }
 }
 
