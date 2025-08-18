@@ -4,12 +4,10 @@
   
   # 배포할 디렉토리
   publish = "dist"
-  
-  # Node.js 버전 설정
-  environment = { NODE_VERSION = "18" }
 
 [build.environment]
-  # 프로덕션 환경 변수
+  # Node.js 버전 및 프로덕션 환경 변수
+  NODE_VERSION = "18"
   NODE_ENV = "production"
 
 # SPA 라우팅을 위한 리다이렉트 설정
