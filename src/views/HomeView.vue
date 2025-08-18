@@ -427,15 +427,17 @@ onUnmounted(() => {
   }
   
   .time-units {
-    gap: 0.0625rem;
+    gap: 0.25rem;
     justify-content: center;
-    overflow-x: auto;
-    min-width: 0;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    padding: 0 8px;
   }
   
   .time-separator {
-    font-size: 1.8rem;
-    margin: 0 0.125rem;
+    font-size: 1.4rem;
+    margin: 0 0.1rem;
     flex-shrink: 0;
     line-height: 1;
   }
@@ -454,23 +456,9 @@ onUnmounted(() => {
 /* 매우 작은 화면 (320px 이하) */
 @media (max-width: 320px) {
   .time-units {
-    gap: 0.03125rem;
-    max-width: 95vw;
-  }
-  
-  .time-separator {
-    font-size: 1.4rem;
-    margin: 0 0.1rem;
-  }
-  
-}
-
-/* 극소형 화면 (280px 이하) */
-@media (max-width: 280px) {
-  .time-units {
-    gap: 0;
-    max-width: 100%;
-    transform: scale(0.85);
+    gap: 0.15rem;
+    max-width: 100vw;
+    padding: 0 4px;
   }
   
   .time-separator {
@@ -480,17 +468,36 @@ onUnmounted(() => {
   
 }
 
-/* 초극소형 화면 (240px 이하) */
-@media (max-width: 240px) {
+/* 극소형 화면 (280px 이하) */
+@media (max-width: 280px) {
   .time-units {
-    gap: 0;
-    max-width: 100%;
-    transform: scale(0.75);
+    gap: 0.1rem;
+    max-width: 100vw;
+    padding: 0 2px;
+    transform: scale(0.9);
+    transform-origin: center;
   }
   
   .time-separator {
     font-size: 1rem;
     margin: 0 0.025rem;
+  }
+  
+}
+
+/* 초극소형 화면 (240px 이하) */
+@media (max-width: 240px) {
+  .time-units {
+    gap: 0.05rem;
+    max-width: 100vw;
+    padding: 0 2px;
+    transform: scale(0.8);
+    transform-origin: center;
+  }
+  
+  .time-separator {
+    font-size: 0.9rem;
+    margin: 0 0.02rem;
   }
   
 }</style>

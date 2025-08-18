@@ -412,34 +412,34 @@ onUnmounted(() => {
 
 @media (max-width: 480px) {
   .flap-unit {
-    width: 2.5rem;
-    height: 3.5rem;
+    width: 2rem;
+    height: 3rem;
   }
   
   .flap-text {
-    font-size: 1.6rem;
-    height: 3.5rem;
+    font-size: 1.4rem;
+    height: 3rem;
   }
   
   .flap-container {
-    gap: 1px;
+    gap: 0.5px;
   }
 }
 
 /* 매우 작은 화면 최적화 - 크기 증가 */
 @media (max-width: 320px) {
   .flap-unit {
-    width: 1.8rem;
-    height: 2.5rem;
+    width: 1.6rem;
+    height: 2.2rem;
   }
   
   .flap-text {
-    font-size: 1.2rem;
-    height: 2.5rem;
+    font-size: 1rem;
+    height: 2.2rem;
   }
   
   .flap-container {
-    gap: 0.5px;
+    gap: 0.3px;
   }
 }
 
