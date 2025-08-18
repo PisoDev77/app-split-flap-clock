@@ -1,0 +1,8 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.piso.splitflapclock",
+    "sha256_cert_fingerprints": ["A8:89:BA:92:64:5F:8D:A9:E4:6D:C3:4F:07:F5:B9:F1:C9:85:6E:A8:32:5B:D4:E7:8F:9A:3C:D1:E8:F3:2B:A7"]
+  }
+}]
