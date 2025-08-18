@@ -10,7 +10,14 @@
   NODE_VERSION = "18"
   NODE_ENV = "production"
 
-# SPA 라우팅을 위한 리다이렉트 설정
+# Digital Asset Links 파일 보호
+[[redirects]]
+  from = "/.well-known/*"
+  to = "/.well-known/:splat"
+  status = 200
+  force = true
+
+# SPA 라우팅을 위한 리다이렉트 설정 (마지막에 위치)
 [[redirects]]
   from = "/*"
   to = "/index.html"

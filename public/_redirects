@@ -1,0 +1,5 @@
+# Digital Asset Links를 위한 명시적 리다이렉트 규칙
+/.well-known/* /.well-known/:splat 200
+
+# SPA 라우팅을 위한 기본 리다이렉트 (마지막에 위치해야 함)
+/*    /index.html   200
