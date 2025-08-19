@@ -133,7 +133,6 @@
                   </div>
                   <a-switch
                     v-model:checked="backgroundEffectsEnabled"
-                    @change="handleBackgroundEffectsChange"
                   />
                 </div>
               </div>
@@ -152,7 +151,6 @@
                   <a-switch
                     v-model:checked="showParticlesEnabled"
                     :disabled="!backgroundEffectsEnabled"
-                    @change="handleParticlesChange"
                   />
                 </div>
               </div>
@@ -167,7 +165,6 @@
                   class="setting-input"
                   :options="intensityOptions"
                   :disabled="!backgroundEffectsEnabled"
-                  @change="handleIntensityChange"
                 />
                 <a-typography-text type="secondary" class="setting-description">
                   애니메이션의 강도를 조절합니다. 높을수록 더 화려합니다.
@@ -186,7 +183,7 @@
                     </a-typography-text>
                   </div>
                   <a-button 
-                    @click="enablePerformanceMode"
+                    @click="handlePerformanceModeClick"
                     size="small"
                     type="dashed"
                   >
@@ -234,6 +231,7 @@ import SplitFlapDisplay from '@/components/SplitFlapDisplay.vue'
 import AnimatedBackground from '@/components/AnimatedBackground.vue'
 import { useLocation } from '@/composables/useLocation'
 import { useTheme } from '@/composables/useTheme'
+import { useSettings } from '@/composables/useSettings'
 import dayjs from '@/utils/dayjs'
 
 /**
@@ -252,16 +250,33 @@ import dayjs from '@/utils/dayjs'
 
 const { getSupportedCities, getCurrentLocation, getTimezoneByCity } = useLocation()
 const { setThemeMode } = useTheme()
+const { 
+  settings, 
+  loadSettings, 
+  toggleBackgroundEffects, 
+  toggleParticles, 
+  setAnimationIntensity: setAnimationLevel,
+  enablePerformanceMode: activatePerformanceMode 
+} = useSettings()
 
 const selectedCity = ref('')
 const selectedTheme = ref<'light' | 'dark' | 'system'>('system')
 const isLocationLoading = ref(false)
 const isSaving = ref(false)
 
-// 애니메이션 설정
-const backgroundEffectsEnabled = ref(true)
-const showParticlesEnabled = ref(true)
-const animationIntensity = ref<'low' | 'medium' | 'high'>('medium')
+// 애니메이션 설정 - useSettings를 통해 관리
+const backgroundEffectsEnabled = computed({
+  get: () => settings.value.backgroundEffectsEnabled,
+  set: (value) => settings.value.backgroundEffectsEnabled = value
+})
+const showParticlesEnabled = computed({
+  get: () => settings.value.showParticles,
+  set: (value) => settings.value.showParticles = value
+})
+const animationIntensity = computed({
+  get: () => settings.value.animationIntensity,
+  set: (value) => setAnimationLevel(value)
+})
 
 const previewText = computed(() => {
   return `${selectedCity.value || 'SEOUL'}`
@@ -337,49 +352,6 @@ const handleAutoLocation = async (): Promise<void> => {
   }
 }
 
-/**
- * ## 배경 효과 변경 처리
- * 
- * **배경 효과 설정을 변경**합니다.
- * 
- * @param {boolean} enabled - **활성화 여부**
- */
-const handleBackgroundEffectsChange = (enabled: any): void => {
-  const isEnabled = Boolean(enabled)
-  backgroundEffectsEnabled.value = isEnabled
-  localStorage.setItem('backgroundEffectsEnabled', String(isEnabled))
-  
-  if (!isEnabled) {
-    showParticlesEnabled.value = false
-    localStorage.setItem('showParticles', 'false')
-  }
-}
-
-/**
- * ## 파티클 효과 변경 처리
- * 
- * **파티클 효과 설정을 변경**합니다.
- * 
- * @param {boolean} enabled - **활성화 여부**
- */
-const handleParticlesChange = (enabled: any): void => {
-  const isEnabled = Boolean(enabled)
-  showParticlesEnabled.value = isEnabled
-  localStorage.setItem('showParticles', String(isEnabled))
-}
-
-/**
- * ## 애니메이션 강도 변경 처리
- * 
- * **애니메이션 강도 설정을 변경**합니다.
- * 
- * @param {string} intensity - **강도 값**
- */
-const handleIntensityChange = (intensity: any): void => {
-  const validIntensity = intensity as 'low' | 'medium' | 'high'
-  animationIntensity.value = validIntensity
-  localStorage.setItem('animationIntensity', validIntensity)
-}
 
 /**
  * ## 테마 변경 처리
@@ -395,19 +367,17 @@ const handleThemeChange = (theme: any): void => {
 }
 
 /**
- * ## 성능 모드 활성화
+ * ## 성능 모드 활성화 처리
  * 
- * **모든 애니메이션 효과를 비활성화**합니다.
+ * **성능 모드를 활성화**하고 사용자에게 알림을 표시합니다.
+ * 
+ * @example
+ * ```typescript
+ * handlePerformanceModeClick()
+ * ```
  */
-const enablePerformanceMode = (): void => {
-  backgroundEffectsEnabled.value = false
-  showParticlesEnabled.value = false
-  animationIntensity.value = 'low'
-  
-  localStorage.setItem('backgroundEffectsEnabled', 'false')
-  localStorage.setItem('showParticles', 'false')
-  localStorage.setItem('animationIntensity', 'low')
-  
+const handlePerformanceModeClick = (): void => {
+  activatePerformanceMode()
   message.success('성능 모드가 활성화되었습니다.')
 }
 
@@ -469,19 +439,10 @@ const loadUserSettings = (): void => {
   if (savedTheme) {
     selectedTheme.value = savedTheme
   }
-  
-  // 애니메이션 설정 로드
-  const savedBackgroundEffects = localStorage.getItem('backgroundEffectsEnabled')
-  backgroundEffectsEnabled.value = savedBackgroundEffects !== 'false'
-  
-  const savedParticles = localStorage.getItem('showParticles')
-  showParticlesEnabled.value = savedParticles !== 'false'
-  
-  const savedIntensity = localStorage.getItem('animationIntensity') as 'low' | 'medium' | 'high'
-  animationIntensity.value = savedIntensity || 'medium'
 }
 
 onMounted(() => {
+  loadSettings() // useSettings의 loadSettings 사용
   loadUserSettings()
 })
 </script>

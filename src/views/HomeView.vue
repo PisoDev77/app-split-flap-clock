@@ -62,6 +62,7 @@ import SplitFlapDisplay from '@/components/SplitFlapDisplay.vue'
 import AnimatedBackground from '@/components/AnimatedBackground.vue'
 import { useLocation } from '@/composables/useLocation'
 import { useTime } from '@/composables/useTime'
+import { useSettings } from '@/composables/useSettings'
 import dayjs from '@/utils/dayjs'
 
 /**
@@ -83,20 +84,12 @@ const { currentLocation, getCurrentLocation } = useLocation()
 const { currentTime: time, startTimer, stopTimer } = useTime()
 
 // 배경 효과 설정
-const backgroundEffectsEnabled = computed(() => {
-  const setting = localStorage.getItem('backgroundEffectsEnabled')
-  return setting !== 'false' // 기본값은 true
-})
+// 설정 관리 컴포저블 사용
+const { settings, loadSettings, effectsEnabled } = useSettings()
 
-const showParticles = computed(() => {
-  const setting = localStorage.getItem('showParticles')
-  return setting !== 'false' // 기본값은 true
-})
-
-const animationIntensity = computed(() => {
-  const setting = localStorage.getItem('animationIntensity')
-  return (setting as 'low' | 'medium' | 'high') || 'medium'
-})
+const backgroundEffectsEnabled = computed(() => settings.value.backgroundEffectsEnabled)
+const showParticles = computed(() => settings.value.showParticles)
+const animationIntensity = computed(() => settings.value.animationIntensity)
 
 const cityName = computed(() => {
   const city = localStorage.getItem('selectedCity')
@@ -150,6 +143,7 @@ const currentDate = computed(() => {
 })
 
 onMounted(async () => {
+  loadSettings() // 설정 로드
   await getCurrentLocation()
   startTimer()
 })
