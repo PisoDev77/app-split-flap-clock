@@ -80,7 +80,7 @@ import dayjs from '@/utils/dayjs'
  */
 
 
-const { currentLocation, getCurrentLocation } = useLocation()
+const { currentLocation, getCurrentLocation, getCityKoreanName } = useLocation()
 const { currentTime: time, startTimer, stopTimer } = useTime()
 
 // 배경 효과 설정
@@ -93,7 +93,8 @@ const animationIntensity = computed(() => settings.value.animationIntensity)
 
 const cityName = computed(() => {
   const city = localStorage.getItem('selectedCity')
-  return city || currentLocation.value?.city || 'LOADING...'
+  const displayCity = city || currentLocation.value?.city || 'LOADING...'
+  return displayCity === 'LOADING...' ? displayCity : getCityKoreanName(displayCity)
 })
 
 

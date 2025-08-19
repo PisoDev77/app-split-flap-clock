@@ -37,7 +37,33 @@ const CITY_TIMEZONE_MAP: Record<string, string> = {
   'Los Angeles': '-08:00',
   'Beijing': '+08:00',
   'Singapore': '+08:00',
-  'Dubai': '+04:00'
+  'Dubai': '+04:00',
+  'Busan': '+09:00',
+  'Incheon': '+09:00',
+  'Daegu': '+09:00',
+  'Daejeon': '+09:00',
+  'Gwangju': '+09:00',
+  'Ulsan': '+09:00'
+}
+
+// 도시명 한국어 매핑
+const CITY_KOREAN_MAP: Record<string, string> = {
+  'Seoul': '서울',
+  'Busan': '부산',
+  'Incheon': '인천',
+  'Daegu': '대구',
+  'Daejeon': '대전',
+  'Gwangju': '광주',
+  'Ulsan': '울산',
+  'Tokyo': '도쿄',
+  'New York': '뉴욕',
+  'London': '런던',
+  'Paris': '파리',
+  'Sydney': '시드니',
+  'Los Angeles': '로스앤젤레스',
+  'Beijing': '베이징',
+  'Singapore': '싱가포르',
+  'Dubai': '두바이'
 }
 
 /**
@@ -191,6 +217,43 @@ const getSupportedCities = () => {
   }))
 }
 
+/**
+ * ## 도시명 한국어 변환
+ * 
+ * **영어 도시명을 한국어로 변환**합니다.
+ * 
+ * @param {string} cityName - **영어 도시명**
+ * @returns {string} **한국어 도시명** 또는 원본 이름
+ * 
+ * @example
+ * ```typescript
+ * const koreanName = getCityKoreanName('Seoul') // '서울'
+ * const koreanName = getCityKoreanName('Busan') // '부산'
+ * ```
+ */
+const getCityKoreanName = (cityName: string): string => {
+  return CITY_KOREAN_MAP[cityName] || cityName
+}
+
+/**
+ * ## 도시 표시명 가져오기
+ * 
+ * **도시의 표시용 이름을 가져옵니다** (한국어 + 영어).
+ * 
+ * @param {string} cityName - **영어 도시명**
+ * @returns {string} **표시용 도시명**
+ * 
+ * @example
+ * ```typescript
+ * const displayName = getCityDisplayName('Seoul') // '서울 (Seoul)'
+ * const displayName = getCityDisplayName('Busan') // '부산 (Busan)'
+ * ```
+ */
+const getCityDisplayName = (cityName: string): string => {
+  const koreanName = CITY_KOREAN_MAP[cityName]
+  return koreanName ? `${koreanName} (${cityName})` : cityName
+}
+
 export function useLocation() {
   return {
     currentLocation,
@@ -199,6 +262,8 @@ export function useLocation() {
     getCurrentLocation,
     getCityFromCoordinates,
     getTimezoneByCity,
-    getSupportedCities
+    getSupportedCities,
+    getCityKoreanName,
+    getCityDisplayName
   }
 }

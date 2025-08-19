@@ -44,7 +44,7 @@
                   현재 시간대
                 </a-typography-title>
                 <a-typography-text class="timezone-display">
-                  {{ currentTimezone }} ({{ currentCity }})
+                  {{ currentTimezone }} ({{ currentCityDisplay }})
                 </a-typography-text>
                 <a-typography-text type="secondary" class="setting-description">
                   선택된 도시의 시간대입니다.
@@ -248,7 +248,7 @@ import dayjs from '@/utils/dayjs'
  * @since 1.0.0
  */
 
-const { getSupportedCities, getCurrentLocation, getTimezoneByCity } = useLocation()
+const { getSupportedCities, getCurrentLocation, getTimezoneByCity, getCityDisplayName, getCityKoreanName } = useLocation()
 const { setThemeMode } = useTheme()
 const { 
   settings, 
@@ -290,7 +290,7 @@ const previewTime = computed(() => {
 const cityOptions = computed(() => {
   return getSupportedCities().map(city => ({
     value: city.name,
-    label: `${city.name} (${city.timezone})`
+    label: `${getCityDisplayName(city.name)} ${city.timezone}`
   }))
 })
 
@@ -308,6 +308,7 @@ const intensityOptions = [
 
 const currentCity = computed(() => selectedCity.value || 'Seoul')
 const currentTimezone = computed(() => getTimezoneByCity(currentCity.value))
+const currentCityDisplay = computed(() => getCityKoreanName(currentCity.value))
 
 /**
  * ## 도시 검색 필터
@@ -502,7 +503,7 @@ onMounted(() => {
   padding: 24px;
   background: var(--color-canvas-subtle);
   overflow-y: auto;
-  margin-bottom: 110px; /* 광고 배너 공간 확보 */
+  min-height: calc(100vh - 64px);
 }
 
 .settings-container {
@@ -633,7 +634,7 @@ onMounted(() => {
   
   .content {
     padding: 16px;
-    margin-bottom: 90px;
+    min-height: calc(100vh - 64px);
   }
   
   .settings-container {
