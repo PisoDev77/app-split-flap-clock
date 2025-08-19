@@ -19,13 +19,16 @@
       "WebFetch(domain:piso-split-flap.netlify.app)",
       "Bash(adb:*)",
       "Bash(\"C:\\Program Files\\Android\\Android Studio\\jbr\\bin\\keytool.exe\" -list -keystore \"C:\\Users\\pisod\\split-flap-keystore.jks\")",
-      "Bash(cp:*)"
+      "Bash(cp:*)",
+      "Bash(export JAVA_HOME=\"C:\\Program Files\\Android\\Android Studio\\jbr\")",
+      "Bash(./gradlew.bat:*)"
     ],
     "deny": [],
     "ask": [],
     "additionalDirectories": [
       "C:\\c\\dev\\applications",
-      "C:\\Users\\pisod\\AndroidStudioProjects\\SplitFlapClock"
+      "C:\\Users\\pisod\\AndroidStudioProjects\\SplitFlapClock",
+      "C:\\c\\Users\\pisod\\AndroidStudioProjects"
     ]
   }
 }

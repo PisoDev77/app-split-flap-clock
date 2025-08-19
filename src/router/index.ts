@@ -9,6 +9,7 @@ import type { RouteRecordRaw } from 'vue-router'
  * ### 라우트 목록
  * - `/` - 메인 시계 화면
  * - `/settings` - 설정 화면
+ * - `/privacy` - 개인정보처리방침
  * 
  * @since 1.0.0
  */
@@ -28,6 +29,14 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/views/SettingsView.vue'),
     meta: {
       title: '설정'
+    }
+  },
+  {
+    path: '/privacy',
+    name: 'Privacy',
+    component: () => import('@/views/PrivacyView.vue'),
+    meta: {
+      title: '개인정보처리방침'
     }
   }
 ]
