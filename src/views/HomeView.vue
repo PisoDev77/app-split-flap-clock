@@ -12,7 +12,11 @@
         <div class="header-content">
           <h1 class="app-title">Split Flap Clock</h1>
           <div class="header-controls">
-            <a-dropdown :trigger="['click']" placement="bottomRight">
+            <a-dropdown 
+              :trigger="['click']" 
+              placement="bottomRight"
+              :get-popup-container="() => document.body"
+            >
               <a-button 
                 type="text" 
                 :icon="h(MenuOutlined)"
@@ -22,7 +26,11 @@
                 메뉴
               </a-button>
               <template #overlay>
-                <a-menu role="menu" aria-label="네비게이션 메뉴">
+                <a-menu 
+                  role="menu" 
+                  aria-label="네비게이션 메뉴"
+                  class="nav-dropdown-menu"
+                >
                   <a-menu-item key="about" @click="$router.push('/about')" role="menuitem">
                     <template #icon><InfoCircleOutlined aria-hidden="true" /></template>
                     소개
@@ -248,6 +256,20 @@ onUnmounted(() => {
   background: var(--color-canvas-subtle);
 }
 
+/* 드롭다운 메뉴가 시계 화면을 가리지 않도록 z-index 조정 */
+.nav-dropdown-menu {
+  z-index: 1000 !important;
+  box-shadow: var(--shadow-large);
+  border: 1px solid var(--color-border-default);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Ant Design 드롭다운 전역 z-index 조정 */
+:global(.ant-dropdown) {
+  z-index: 1000 !important;
+}
+
 .content {
   flex: 1;
   display: flex;
@@ -256,7 +278,7 @@ onUnmounted(() => {
   padding: 24px;
   background: transparent;
   position: relative;
-  z-index: 10; /* 배경보다 앞에 표시 */
+  z-index: 1; /* 배경보다 앞에 표시하되 드롭다운보다는 뒤에 */
 }
 
 .clock-container {
