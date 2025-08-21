@@ -21,7 +21,8 @@
       "Bash(\"C:\\Program Files\\Android\\Android Studio\\jbr\\bin\\keytool.exe\" -list -keystore \"C:\\Users\\pisod\\split-flap-keystore.jks\")",
       "Bash(cp:*)",
       "Bash(export JAVA_HOME=\"C:\\Program Files\\Android\\Android Studio\\jbr\")",
-      "Bash(./gradlew.bat:*)"
+      "Bash(./gradlew.bat:*)",
+      "WebSearch"
     ],
     "deny": [],
     "ask": [],

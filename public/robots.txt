@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# 사이트맵 위치
+Sitemap: https://piso-split-flap.netlify.app/sitemap.xml
+
+# 크롤링 권장 사항
+Crawl-delay: 1
+
+# 제외할 경로 (필요시)
+# Disallow: /private/

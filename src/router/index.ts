@@ -8,6 +8,10 @@ import type { RouteRecordRaw } from 'vue-router'
  * 
  * ### 라우트 목록
  * - `/` - 메인 시계 화면
+ * - `/about` - 앱 소개
+ * - `/guide` - 사용법 가이드
+ * - `/timezone` - 세계 시간대 정보
+ * - `/faq` - 자주 묻는 질문
  * - `/settings` - 설정 화면
  * - `/privacy` - 개인정보처리방침
  * 
@@ -21,6 +25,38 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/views/HomeView.vue'),
     meta: {
       title: 'Split Flap Clock'
+    }
+  },
+  {
+    path: '/about',
+    name: 'About',
+    component: () => import('@/views/AboutView.vue'),
+    meta: {
+      title: '소개'
+    }
+  },
+  {
+    path: '/guide',
+    name: 'Guide',
+    component: () => import('@/views/GuideView.vue'),
+    meta: {
+      title: '사용법 가이드'
+    }
+  },
+  {
+    path: '/timezone',
+    name: 'Timezone',
+    component: () => import('@/views/TimezoneView.vue'),
+    meta: {
+      title: '세계 시간대'
+    }
+  },
+  {
+    path: '/faq',
+    name: 'FAQ',
+    component: () => import('@/views/FaqView.vue'),
+    meta: {
+      title: '자주 묻는 질문'
     }
   },
   {

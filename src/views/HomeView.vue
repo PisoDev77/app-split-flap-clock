@@ -12,54 +12,96 @@
         <div class="header-content">
           <h1 class="app-title">Split Flap Clock</h1>
           <div class="header-controls">
-            <a-button 
-              type="text" 
-              :icon="h(SettingOutlined)"
-              @click="$router.push('/settings')"
-              class="settings-btn"
-            >
-              설정
-            </a-button>
+            <a-dropdown :trigger="['click']" placement="bottomRight">
+              <a-button 
+                type="text" 
+                :icon="h(MenuOutlined)"
+                class="menu-btn"
+                aria-label="네비게이션 메뉴 열기"
+              >
+                메뉴
+              </a-button>
+              <template #overlay>
+                <a-menu role="menu" aria-label="네비게이션 메뉴">
+                  <a-menu-item key="about" @click="$router.push('/about')" role="menuitem">
+                    <template #icon><InfoCircleOutlined aria-hidden="true" /></template>
+                    소개
+                  </a-menu-item>
+                  <a-menu-item key="guide" @click="$router.push('/guide')" role="menuitem">
+                    <template #icon><BookOutlined aria-hidden="true" /></template>
+                    사용법 가이드
+                  </a-menu-item>
+                  <a-menu-item key="timezone" @click="$router.push('/timezone')" role="menuitem">
+                    <template #icon><GlobalOutlined aria-hidden="true" /></template>
+                    세계 시간대
+                  </a-menu-item>
+                  <a-menu-item key="faq" @click="$router.push('/faq')" role="menuitem">
+                    <template #icon><QuestionCircleOutlined aria-hidden="true" /></template>
+                    자주 묻는 질문
+                  </a-menu-item>
+                  <a-menu-divider />
+                  <a-menu-item key="settings" @click="$router.push('/settings')" role="menuitem">
+                    <template #icon><SettingOutlined aria-hidden="true" /></template>
+                    설정
+                  </a-menu-item>
+                  <a-menu-item key="privacy" @click="$router.push('/privacy')" role="menuitem">
+                    <template #icon><SafetyCertificateOutlined aria-hidden="true" /></template>
+                    개인정보처리방침
+                  </a-menu-item>
+                </a-menu>
+              </template>
+            </a-dropdown>
           </div>
         </div>
       </a-layout-header>
       
       <a-layout-content class="content">
-        <div class="clock-container">
+        <div class="clock-container" role="main" aria-label="시계 표시 영역">
           <div class="city-display">
             <div class="city-container">
-              <SplitFlapDisplay :text="cityName" />
+              <SplitFlapDisplay :text="cityName" aria-label="현재 도시" />
               <span class="city-label">현재 위치</span>
             </div>
           </div>
           
-          <div class="time-display">
+          <div class="time-display" role="timer" aria-live="polite" aria-label="현재 시간">
             <div class="time-units">
-              <SplitFlapDisplay :text="hours" />
-              <div class="time-separator">:</div>
-              <SplitFlapDisplay :text="minutes" />
-              <div class="time-separator">:</div>
-              <SplitFlapDisplay :text="seconds" />
+              <SplitFlapDisplay :text="hours" aria-label="시간" />
+              <div class="time-separator" aria-hidden="true">:</div>
+              <SplitFlapDisplay :text="minutes" aria-label="분" />
+              <div class="time-separator" aria-hidden="true">:</div>
+              <SplitFlapDisplay :text="seconds" aria-label="초" />
             </div>
           </div>
           
           <div class="date-info">
-            <a-typography-text class="date-text">
+            <a-typography-text class="date-text" role="text" aria-label="현재 날짜">
               {{ currentDate }}
             </a-typography-text>
           </div>
         </div>
       </a-layout-content>
+      
+      <AppFooter />
     </a-layout>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, h } from 'vue'
-import { Layout as ALayout, Button as AButton } from 'ant-design-vue'
-import { SettingOutlined } from '@ant-design/icons-vue'
+import { Layout as ALayout, Button as AButton, Dropdown as ADropdown, Menu as AMenu } from 'ant-design-vue'
+import { 
+  SettingOutlined, 
+  MenuOutlined, 
+  InfoCircleOutlined, 
+  BookOutlined, 
+  GlobalOutlined, 
+  QuestionCircleOutlined,
+  SafetyCertificateOutlined
+} from '@ant-design/icons-vue'
 import SplitFlapDisplay from '@/components/SplitFlapDisplay.vue'
 import AnimatedBackground from '@/components/AnimatedBackground.vue'
+import AppFooter from '@/components/AppFooter.vue'
 import { useLocation } from '@/composables/useLocation'
 import { useTime } from '@/composables/useTime'
 import { useSettings } from '@/composables/useSettings'
@@ -197,12 +239,12 @@ onUnmounted(() => {
   gap: 12px;
 }
 
-.settings-btn {
+.menu-btn {
   color: var(--color-accent-fg);
   border: none;
 }
 
-.settings-btn:hover {
+.menu-btn:hover {
   background: var(--color-canvas-subtle);
 }
 
@@ -213,7 +255,8 @@ onUnmounted(() => {
   justify-content: center;
   padding: 24px;
   background: transparent;
-  margin-bottom: 110px; /* 광고 배너 공간 확보 */
+  position: relative;
+  z-index: 10; /* 배경보다 앞에 표시 */
 }
 
 .clock-container {
@@ -223,6 +266,12 @@ onUnmounted(() => {
   gap: 2rem;
   width: 100%;
   max-width: 800px;
+  padding: 2rem;
+  background: rgba(var(--color-canvas-default-rgb), 0.85);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  border: 1px solid rgba(var(--color-border-default-rgb), 0.3);
+  box-shadow: var(--shadow-large);
 }
 
 .city-display {
@@ -378,11 +427,11 @@ onUnmounted(() => {
   
   .content {
     padding: 16px;
-    margin-bottom: 90px;
   }
   
   .clock-container {
     gap: 1.5rem;
+    padding: 1.5rem;
   }
   
   .time-units {
@@ -414,11 +463,11 @@ onUnmounted(() => {
   
   .content {
     padding: 12px;
-    margin-bottom: 80px;
   }
   
   .clock-container {
     gap: 1rem;
+    padding: 1rem;
   }
   
   .time-units {

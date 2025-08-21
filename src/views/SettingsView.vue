@@ -8,6 +8,7 @@
             :icon="h(ArrowLeftOutlined)"
             @click="$router.back()"
             class="back-btn"
+            aria-label="이전 페이지로 돌아가기"
           >
             뒤로
           </a-button>
@@ -17,7 +18,7 @@
       </a-layout-header>
       
       <a-layout-content class="content">
-        <div class="settings-container">
+        <div class="settings-container" role="main">
           <a-card class="settings-card" title="시간 및 위치 설정">
             <a-space direction="vertical" size="large" class="settings-form">
               <!-- 도시 선택 -->
@@ -208,6 +209,8 @@
           </div>
         </div>
       </a-layout-content>
+      
+      <AppFooter />
     </a-layout>
   </div>
 </template>
@@ -229,6 +232,7 @@ import {
 } from '@ant-design/icons-vue'
 import SplitFlapDisplay from '@/components/SplitFlapDisplay.vue'
 import AnimatedBackground from '@/components/AnimatedBackground.vue'
+import AppFooter from '@/components/AppFooter.vue'
 import { useLocation } from '@/composables/useLocation'
 import { useTheme } from '@/composables/useTheme'
 import { useSettings } from '@/composables/useSettings'
