@@ -38,11 +38,14 @@
           </a-card>
 
           <a-collapse v-model:activeKey="activeKeys" ghost size="large">
-            <template v-for="(faq, index) in filteredFaqs" :key="index">
-              <a-collapse-panel :key="index.toString()" :header="faq.question" class="faq-panel">
-                <div class="faq-answer" v-html="faq.answer"></div>
-              </a-collapse-panel>
-            </template>
+            <a-collapse-panel 
+              v-for="(faq, index) in filteredFaqs" 
+              :key="index" 
+              :header="faq.question" 
+              class="faq-panel"
+            >
+              <div class="faq-answer" v-html="faq.answer"></div>
+            </a-collapse-panel>
           </a-collapse>
 
           <a-card class="contact-card" v-if="filteredFaqs.length === 0 && searchQuery">
