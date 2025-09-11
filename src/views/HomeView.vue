@@ -12,53 +12,14 @@
         <div class="header-content">
           <h1 class="app-title">Split Flap Clock</h1>
           <div class="header-controls">
-            <a-dropdown 
-              :trigger="['click']" 
-              placement="bottomRight"
-              :get-popup-container="() => document.body"
+            <a-button 
+              type="text" 
+              :icon="h(SettingOutlined)"
+              class="settings-btn"
+              aria-label="설정 페이지 열기"
+              @click="$router.push('/settings')"
             >
-              <a-button 
-                type="text" 
-                :icon="h(MenuOutlined)"
-                class="menu-btn"
-                aria-label="네비게이션 메뉴 열기"
-              >
-                메뉴
-              </a-button>
-              <template #overlay>
-                <a-menu 
-                  role="menu" 
-                  aria-label="네비게이션 메뉴"
-                  class="nav-dropdown-menu"
-                >
-                  <a-menu-item key="about" @click="$router.push('/about')" role="menuitem">
-                    <template #icon><InfoCircleOutlined aria-hidden="true" /></template>
-                    소개
-                  </a-menu-item>
-                  <a-menu-item key="guide" @click="$router.push('/guide')" role="menuitem">
-                    <template #icon><BookOutlined aria-hidden="true" /></template>
-                    사용법 가이드
-                  </a-menu-item>
-                  <a-menu-item key="timezone" @click="$router.push('/timezone')" role="menuitem">
-                    <template #icon><GlobalOutlined aria-hidden="true" /></template>
-                    세계 시간대
-                  </a-menu-item>
-                  <a-menu-item key="faq" @click="$router.push('/faq')" role="menuitem">
-                    <template #icon><QuestionCircleOutlined aria-hidden="true" /></template>
-                    자주 묻는 질문
-                  </a-menu-item>
-                  <a-menu-divider />
-                  <a-menu-item key="settings" @click="$router.push('/settings')" role="menuitem">
-                    <template #icon><SettingOutlined aria-hidden="true" /></template>
-                    설정
-                  </a-menu-item>
-                  <a-menu-item key="privacy" @click="$router.push('/privacy')" role="menuitem">
-                    <template #icon><SafetyCertificateOutlined aria-hidden="true" /></template>
-                    개인정보처리방침
-                  </a-menu-item>
-                </a-menu>
-              </template>
-            </a-dropdown>
+            </a-button>
           </div>
         </div>
       </a-layout-header>
@@ -90,23 +51,15 @@
         </div>
       </a-layout-content>
       
-      <AppFooter />
+      <AppFooter class="desktop-only-footer" />
     </a-layout>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, h } from 'vue'
-import { Layout as ALayout, Button as AButton, Dropdown as ADropdown, Menu as AMenu } from 'ant-design-vue'
-import { 
-  SettingOutlined, 
-  MenuOutlined, 
-  InfoCircleOutlined, 
-  BookOutlined, 
-  GlobalOutlined, 
-  QuestionCircleOutlined,
-  SafetyCertificateOutlined
-} from '@ant-design/icons-vue'
+import { Layout as ALayout, Button as AButton } from 'ant-design-vue'
+import { SettingOutlined } from '@ant-design/icons-vue'
 import SplitFlapDisplay from '@/components/SplitFlapDisplay.vue'
 import AnimatedBackground from '@/components/AnimatedBackground.vue'
 import AppFooter from '@/components/AppFooter.vue'
@@ -211,6 +164,13 @@ onUnmounted(() => {
   flex-direction: column;
 }
 
+/* Hide footer on mobile devices to prevent covering clock */
+@media (max-width: 768px) {
+  .desktop-only-footer {
+    display: none;
+  }
+}
+
 .layout {
   height: 100%;
   background: transparent;
@@ -247,27 +207,32 @@ onUnmounted(() => {
   gap: 12px;
 }
 
-.menu-btn {
+.settings-btn {
   color: var(--color-accent-fg);
   border: none;
-}
-
-.menu-btn:hover {
-  background: var(--color-canvas-subtle);
-}
-
-/* 드롭다운 메뉴가 시계 화면을 가리지 않도록 z-index 조정 */
-.nav-dropdown-menu {
-  z-index: 1000 !important;
-  box-shadow: var(--shadow-large);
-  border: 1px solid var(--color-border-default);
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
   border-radius: 8px;
-  overflow: hidden;
+  transition: all 0.2s ease;
 }
 
-/* Ant Design 드롭다운 전역 z-index 조정 */
-:global(.ant-dropdown) {
-  z-index: 1000 !important;
+.settings-btn:hover {
+  background: var(--color-canvas-subtle);
+  color: var(--color-accent-fg);
+  transform: rotate(90deg);
+}
+
+/* Ensure settings button is visible and accessible on all screen sizes */
+@media (max-width: 480px) {
+  .settings-btn {
+    font-size: 16px;
+    width: 36px;
+    height: 36px;
+  }
 }
 
 .content {
@@ -279,6 +244,14 @@ onUnmounted(() => {
   background: transparent;
   position: relative;
   z-index: 1; /* 배경보다 앞에 표시하되 드롭다운보다는 뒤에 */
+}
+
+/* Make content area take full viewport height on mobile */
+@media (max-width: 768px) {
+  .content {
+    min-height: calc(100vh - 64px); /* Full viewport height minus header */
+    padding: 16px;
+  }
 }
 
 .clock-container {
