@@ -27,8 +27,8 @@
       <div class="footer-section">
         <h4>연락처</h4>
         <ul class="footer-links">
-          <li><a href="mailto:contact@splitflapclock.com">이메일 문의</a></li>
-          <li><a href="mailto:support@splitflapclock.com">기술 지원</a></li>
+          <li><a href="https://github.com/PisoDev77/app-split-flap-clock/issues" target="_blank" rel="noopener">문의하기</a></li>
+          <li><a href="https://github.com/PisoDev77/app-split-flap-clock/issues/new" target="_blank" rel="noopener">버그 신고</a></li>
         </ul>
       </div>
     </div>
@@ -41,7 +41,7 @@
         <div class="footer-links-bottom">
           <a href="/sitemap.xml" target="_blank">사이트맵</a>
           <span class="separator">•</span>
-          <a href="https://github.com/piso-split-flap" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://github.com/PisoDev77/app-split-flap-clock" target="_blank" rel="noopener">GitHub</a>
         </div>
       </div>
     </div>

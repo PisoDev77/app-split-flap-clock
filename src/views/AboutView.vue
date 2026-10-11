@@ -112,8 +112,8 @@
           <a-card class="info-card" title="📞 개발자 정보">
             <div class="developer-info">
               <p><strong>개발자:</strong> Piso Developer</p>
-              <p><strong>이메일:</strong> contact@splitflapclock.com</p>
-              <p><strong>버전:</strong> 1.0.0</p>
+              <p><strong>문의:</strong> <a href="https://github.com/PisoDev77/app-split-flap-clock/issues" target="_blank" rel="noopener">GitHub Issues</a></p>
+              <p><strong>버전:</strong> 1.5</p>
               <p><strong>최종 업데이트:</strong> {{ lastUpdated }}</p>
             </div>
           </a-card>

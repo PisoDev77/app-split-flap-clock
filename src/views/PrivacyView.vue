@@ -107,7 +107,7 @@
         <div class="contact-info">
           <p><strong>앱 이름:</strong> Split Flap Clock</p>
           <p><strong>개발자:</strong> Piso Developer</p>
-          <p><strong>이메일:</strong> privacy@splitflapclock.com</p>
+          <p><strong>문의:</strong> <a href="https://github.com/PisoDev77/app-split-flap-clock/issues" target="_blank" rel="noopener">GitHub Issues</a> (GitHub 계정 필요, 글은 공개되니 개인정보는 적지 마세요)</p>
           <p><strong>처리방침 시행일:</strong> {{ lastUpdated }}</p>
         </div>
       </section>

@@ -255,8 +255,7 @@
               개발자에게 직접 문의해주세요.
             </p>
             <div class="contact-info">
-              <p><strong>이메일:</strong> support@splitflapclock.com</p>
-              <p><strong>응답 시간:</strong> 평일 24시간 이내</p>
+              <p><strong>문의:</strong> <a href="https://github.com/PisoDev77/app-split-flap-clock/issues" target="_blank" rel="noopener">GitHub Issues</a> (GitHub 계정 필요, 글은 공개됩니다)</p>
             </div>
           </a-card>
         </div>

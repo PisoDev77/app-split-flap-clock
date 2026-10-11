@@ -53,10 +53,9 @@
           <a-card v-if="filteredFaqs.length === 0 && searchQuery" class="contact-card">
             <h3>🔍 찾으시는 답변이 없나요?</h3>
             <p>검색하신 "{{ searchQuery }}"에 대한 답변을 찾을 수 없습니다.</p>
-            <p>아래 연락처로 직접 문의해주시면 빠르게 도움을 드리겠습니다.</p>
+            <p>아래에서 직접 문의해주세요.</p>
             <div class="contact-info">
-              <p><strong>이메일:</strong> support@splitflapclock.com</p>
-              <p><strong>응답 시간:</strong> 평일 24시간 이내</p>
+              <p><strong>문의:</strong> <a href="https://github.com/PisoDev77/app-split-flap-clock/issues" target="_blank" rel="noopener">GitHub Issues</a> (GitHub 계정 필요, 글은 공개됩니다)</p>
             </div>
           </a-card>
 
@@ -67,8 +66,14 @@
               아래 연락처로 문의해주세요.
             </p>
             <div class="contact-actions">
-              <a-button type="primary" size="large" :icon="h(MailOutlined)">
-                이메일 문의
+              <a-button
+                type="primary"
+                size="large"
+                :icon="h(MailOutlined)"
+                href="https://github.com/PisoDev77/app-split-flap-clock/issues"
+                target="_blank"
+              >
+                문의하기
               </a-button>
               <a-button size="large" :icon="h(BookOutlined)" @click="$router.push('/guide')">
                 사용법 가이드
@@ -260,13 +265,12 @@ const faqs: FAQ[] = [
     answer: `
       <p>사용자 피드백은 언제나 환영입니다:</p>
       <ul>
-        <li><strong>이메일:</strong> support@splitflapclock.com으로 연락주세요</li>
-        <li><strong>응답시간:</strong> 평일 기준 24시간 이내에 답변드립니다</li>
+        <li><strong>문의:</strong> <a href="https://github.com/PisoDev77/app-split-flap-clock/issues" target="_blank" rel="noopener">GitHub Issues</a>에 글을 남겨주세요 (GitHub 계정 필요, 글은 공개됩니다)</li>
         <li><strong>포함 정보:</strong> 사용 기기, 브라우저, 발생 상황을 자세히 알려주세요</li>
         <li><strong>스크린샷:</strong> 문제 상황의 스크린샷이 있으면 더욱 도움이 됩니다</li>
       </ul>
     `,
-    keywords: ["기능요청", "버그", "신고", "피드백", "문의", "이메일"]
+    keywords: ["기능요청", "버그", "신고", "피드백", "문의", "이메일", "깃허브"]
   },
   {
     question: "여러 시간대를 동시에 볼 수 있나요?",
