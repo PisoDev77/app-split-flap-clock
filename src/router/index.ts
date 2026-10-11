@@ -74,6 +74,15 @@ const routes: RouteRecordRaw[] = [
     meta: {
       title: '개인정보처리방침'
     }
+  },
+  {
+    // 등록되지 않은 모든 주소
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: () => import('@/views/NotFoundView.vue'),
+    meta: {
+      title: '페이지를 찾을 수 없음'
+    }
   }
 ]
 
@@ -85,7 +94,7 @@ const router = createRouter({
 })
 
 router.beforeEach((to) => {
-  document.title = `${to.meta.title} | Split Flap Clock`
+  document.title = to.meta.title ? `${to.meta.title} | Split Flap Clock` : 'Split Flap Clock'
 })
 
 export default router

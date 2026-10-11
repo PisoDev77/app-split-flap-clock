@@ -8,7 +8,7 @@
             :icon="ArrowLeftOutlined"
             class="back-btn"
             aria-label="이전 페이지로 돌아가기"
-            @click="$router.back()"
+            @click="goBack"
           >
             뒤로
           </UiButton>
@@ -277,6 +277,9 @@ import UiCard from '@/components/ui/UiCard.vue'
 import { ArrowLeftOutlined } from '@ant-design/icons-vue'
 import AppFooter from '@/components/AppFooter.vue'
 import dayjs from '@/utils/dayjs'
+import { useGoBack } from '@/composables/useGoBack'
+
+const goBack = useGoBack()
 
 const currentTime = ref(dayjs())
 let timer: ReturnType<typeof setInterval> | undefined

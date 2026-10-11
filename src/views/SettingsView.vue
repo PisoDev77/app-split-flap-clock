@@ -8,7 +8,7 @@
             :icon="ArrowLeftOutlined"
             class="back-btn"
             aria-label="이전 페이지로 돌아가기"
-            @click="$router.back()"
+            @click="goBack"
           >
             뒤로
           </UiButton>
@@ -229,6 +229,9 @@ import { useLocation } from '@/composables/useLocation'
 import { useTheme } from '@/composables/useTheme'
 import { useSettings, BACKGROUND_EFFECT_OPTIONS } from '@/composables/useSettings'
 import dayjs from '@/utils/dayjs'
+import { useGoBack } from '@/composables/useGoBack'
+
+const goBack = useGoBack()
 
 /**
  * ## 설정 화면 뷰

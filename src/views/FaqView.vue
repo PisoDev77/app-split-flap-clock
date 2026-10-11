@@ -8,7 +8,7 @@
             :icon="ArrowLeftOutlined"
             class="back-btn"
             aria-label="이전 페이지로 돌아가기"
-            @click="$router.back()"
+            @click="goBack"
           >
             뒤로
           </UiButton>
@@ -97,6 +97,9 @@ import UiCollapsePanel from '@/components/ui/UiCollapsePanel.vue'
 import UiInput from '@/components/ui/UiInput.vue'
 import { ArrowLeftOutlined, SearchOutlined, MailOutlined, BookOutlined } from '@ant-design/icons-vue'
 import AppFooter from '@/components/AppFooter.vue'
+import { useGoBack } from '@/composables/useGoBack'
+
+const goBack = useGoBack()
 
 const searchQuery = ref('')
 const activeKeys = ref(['0'])
