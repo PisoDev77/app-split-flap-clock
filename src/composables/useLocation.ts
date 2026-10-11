@@ -2,7 +2,7 @@ import { ref } from 'vue'
 import dayjs from '@/utils/dayjs'
 
 /**
- * ## 위치·시간대 관리 컴포저블
+ * ## 도시·시간대 관리 컴포저블
  *
  * **이 기기의 시간대**를 감지하고 도시별 시간대를 관리합니다.
  *

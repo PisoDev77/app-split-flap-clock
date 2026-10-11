@@ -19,7 +19,7 @@
       
       <div class="content">
         <div class="settings-container" role="main">
-          <UiCard class="settings-card" title="시간 및 위치 설정">
+          <UiCard class="settings-card" title="시간 및 도시 설정">
             <div class="ui-stack settings-form">
               <!-- 도시 선택 -->
               <div class="setting-item">
@@ -50,7 +50,7 @@
                 </span>
               </div>
 
-              <!-- 위치 기반 자동 설정 -->
+              <!-- 기기 시간대 자동 설정 -->
               <div class="setting-item">
                 <h4 class="ui-title setting-label">
                   기기 시간대 자동 설정
@@ -238,7 +238,7 @@ import dayjs from '@/utils/dayjs'
  * ### 기능
  * - 도시 및 시간대 선택
  * - 테마 모드 설정
- * - 위치 기반 자동 설정
+ * - 기기 시간대 자동 설정 (위치 권한 없음)
  * - 설정 저장 및 적용
  * 
  * @since 1.0.0
