@@ -23,8 +23,8 @@
           <a-button 
             type="primary" 
             size="large"
-            @click="handleInstall"
             :loading="isInstalling"
+            @click="handleInstall"
           >
             설치하기
           </a-button>

@@ -52,8 +52,6 @@ export default defineConfig({
         manualChunks: {
           // Vue 관련 라이브러리
           'vue-vendor': ['vue', 'vue-router'],
-          // Ant Design Vue 분리
-          'ant-design': ['ant-design-vue'],
           // 유틸리티 라이브러리
           'utils': ['dayjs']
         }

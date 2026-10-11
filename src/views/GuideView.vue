@@ -6,14 +6,14 @@
           <a-button 
             type="text" 
             :icon="h(ArrowLeftOutlined)"
-            @click="$router.back()"
             class="back-btn"
             aria-label="이전 페이지로 돌아가기"
+            @click="$router.back()"
           >
             뒤로
           </a-button>
           <h1 class="page-title">사용법 가이드</h1>
-          <div class="header-spacer"></div>
+          <div class="header-spacer" />
         </div>
       </a-layout-header>
       
@@ -27,7 +27,7 @@
             </p>
           </a-card>
 
-          <a-collapse v-model:activeKey="activeKeys" ghost>
+          <a-collapse v-model:active-key="activeKeys" ghost>
             <a-collapse-panel key="1" header="🏠 메인 화면 사용법">
               <div class="guide-section">
                 <h3>시간 표시 영역</h3>
@@ -269,7 +269,15 @@
 
 <script setup lang="ts">
 import { ref, h } from 'vue'
-import { Layout as ALayout, Button as AButton, Card as ACard, Collapse as ACollapse } from 'ant-design-vue'
+import {
+  Layout as ALayout,
+  Button as AButton,
+  Card as ACard,
+  Collapse as ACollapse,
+  CollapsePanel as ACollapsePanel,
+  LayoutContent as ALayoutContent,
+  LayoutHeader as ALayoutHeader
+} from 'ant-design-vue'
 import { ArrowLeftOutlined } from '@ant-design/icons-vue'
 import AppFooter from '@/components/AppFooter.vue'
 

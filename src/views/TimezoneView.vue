@@ -6,14 +6,14 @@
           <a-button 
             type="text" 
             :icon="h(ArrowLeftOutlined)"
-            @click="$router.back()"
             class="back-btn"
             aria-label="이전 페이지로 돌아가기"
+            @click="$router.back()"
           >
             뒤로
           </a-button>
           <h1 class="page-title">세계 시간대</h1>
-          <div class="header-spacer"></div>
+          <div class="header-spacer" />
         </div>
       </a-layout-header>
       
@@ -272,13 +272,19 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, h } from 'vue'
-import { Layout as ALayout, Button as AButton, Card as ACard } from 'ant-design-vue'
+import {
+  Layout as ALayout,
+  Button as AButton,
+  Card as ACard,
+  LayoutContent as ALayoutContent,
+  LayoutHeader as ALayoutHeader
+} from 'ant-design-vue'
 import { ArrowLeftOutlined } from '@ant-design/icons-vue'
 import AppFooter from '@/components/AppFooter.vue'
 import dayjs from '@/utils/dayjs'
 
 const currentTime = ref(dayjs())
-let timer: number
+let timer: ReturnType<typeof setInterval> | undefined
 
 const timezoneOffsets: Record<string, number> = {
   'Seoul': 9,

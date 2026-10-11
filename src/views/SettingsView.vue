@@ -6,14 +6,14 @@
           <a-button 
             type="text" 
             :icon="h(ArrowLeftOutlined)"
-            @click="$router.back()"
             class="back-btn"
             aria-label="이전 페이지로 돌아가기"
+            @click="$router.back()"
           >
             뒤로
           </a-button>
           <h1 class="page-title">설정</h1>
-          <div class="header-spacer"></div>
+          <div class="header-spacer" />
         </div>
       </a-layout-header>
       
@@ -60,8 +60,8 @@
                 <a-button 
                   type="primary" 
                   :loading="isLocationLoading"
-                  @click="handleAutoLocation"
                   :icon="h(EnvironmentOutlined)"
+                  @click="handleAutoLocation"
                 >
                   현재 위치로 설정
                 </a-button>
@@ -184,9 +184,9 @@
                     </a-typography-text>
                   </div>
                   <a-button 
-                    @click="handlePerformanceModeClick"
                     size="small"
                     type="dashed"
+                    @click="handlePerformanceModeClick"
                   >
                     성능 모드 활성화
                   </a-button>
@@ -200,9 +200,9 @@
             <a-button 
               type="primary" 
               size="large"
-              @click="saveSettings"
               :loading="isSaving"
               block
+              @click="saveSettings"
             >
               설정 저장
             </a-button>
@@ -217,14 +217,18 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, h } from 'vue'
-import { 
-  Layout as ALayout, 
-  Button as AButton, 
+import {
+  Layout as ALayout,
+  Button as AButton,
   Card as ACard,
   Space as ASpace,
   Select as ASelect,
   Switch as ASwitch,
-  message
+  message,
+  LayoutContent as ALayoutContent,
+  LayoutHeader as ALayoutHeader,
+  TypographyText as ATypographyText,
+  TypographyTitle as ATypographyTitle
 } from 'ant-design-vue'
 import { 
   ArrowLeftOutlined, 
@@ -257,8 +261,6 @@ const { setThemeMode } = useTheme()
 const { 
   settings, 
   loadSettings, 
-  toggleBackgroundEffects, 
-  toggleParticles, 
   setAnimationIntensity: setAnimationLevel,
   enablePerformanceMode: activatePerformanceMode 
 } = useSettings()

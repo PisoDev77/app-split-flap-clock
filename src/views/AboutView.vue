@@ -6,14 +6,14 @@
           <a-button 
             type="text" 
             :icon="h(ArrowLeftOutlined)"
-            @click="$router.back()"
             class="back-btn"
             aria-label="이전 페이지로 돌아가기"
+            @click="$router.back()"
           >
             뒤로
           </a-button>
           <h1 class="page-title">소개</h1>
-          <div class="header-spacer"></div>
+          <div class="header-spacer" />
         </div>
       </a-layout-header>
       
@@ -22,7 +22,7 @@
           <a-card class="hero-card">
             <div class="hero-content">
               <div class="app-icon">
-                <img src="/icons/icon-192x192.png" alt="Split Flap Clock" />
+                <img src="/icons/icon-192x192.png" alt="Split Flap Clock">
               </div>
               <h2 class="app-name">Split Flap Clock</h2>
               <p class="app-description">
@@ -93,7 +93,7 @@
           </a-card>
 
           <a-card class="info-card" title="🌟 특별한 가치">
-            <a-space direction="vertical" size="medium">
+            <a-space direction="vertical" size="middle">
               <div class="value-item">
                 <h4>⏰ 시간에 대한 새로운 인식</h4>
                 <p>단순한 숫자가 아닌, 물리적 움직임이 있는 시간 표시로 시간의 흐름을 더욱 생생하게 느낄 수 있습니다.</p>
@@ -127,7 +127,15 @@
 
 <script setup lang="ts">
 import { computed, h } from 'vue'
-import { Layout as ALayout, Button as AButton, Card as ACard, Space as ASpace, Tag as ATag } from 'ant-design-vue'
+import {
+  Layout as ALayout,
+  Button as AButton,
+  Card as ACard,
+  Space as ASpace,
+  Tag as ATag,
+  LayoutContent as ALayoutContent,
+  LayoutHeader as ALayoutHeader
+} from 'ant-design-vue'
 import { ArrowLeftOutlined } from '@ant-design/icons-vue'
 import AppFooter from '@/components/AppFooter.vue'
 

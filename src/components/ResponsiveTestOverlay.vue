@@ -11,9 +11,9 @@
         <button 
           v-for="preset in presetSizes" 
           :key="preset.name"
-          @click="setViewportSize(preset.width, preset.height)"
           :class="{ active: isCurrentSize(preset.width, preset.height) }"
           class="preset-btn"
+          @click="setViewportSize(preset.width, preset.height)"
         >
           {{ preset.name }}
           <small>{{ preset.width }}×{{ preset.height }}</small>
@@ -41,7 +41,7 @@
         </div>
       </div>
       
-      <button @click="toggleTestMode" class="close-btn">
+      <button class="close-btn" @click="toggleTestMode">
         테스트 모드 종료
       </button>
     </div>
@@ -50,9 +50,9 @@
   <!-- 테스트 모드 활성화 버튼 -->
   <button 
     v-else 
-    @click="toggleTestMode" 
-    class="test-mode-btn"
+    class="test-mode-btn" 
     title="반응형 테스트 모드"
+    @click="toggleTestMode"
   >
     📱
   </button>

@@ -16,8 +16,8 @@
         </div>
         <button 
           class="offline-retry"
-          @click="checkConnection"
           :disabled="isChecking"
+          @click="checkConnection"
         >
           {{ isChecking ? '확인 중...' : '재시도' }}
         </button>

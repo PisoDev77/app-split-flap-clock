@@ -13,7 +13,7 @@
         :data-ad-slot="adSlot"
         :data-ad-format="adFormat"
         :data-full-width-responsive="fullWidthResponsive"
-      ></ins>
+      />
     </div>
     
     <!-- 개발 환경에서만 표시되는 더미 광고 -->
@@ -145,7 +145,7 @@ const loadAdSense = (): void => {
     // AdSense 스크립트가 로드되었는지 확인
     if (typeof window.adsbygoogle !== 'undefined') {
       // 광고 푸시
-      ;(window.adsbygoogle = window.adsbygoogle || []).push({})
+      (window.adsbygoogle = window.adsbygoogle || []).push({})
       adLoaded.value = true
     } else {
       console.warn('AdSense 스크립트가 로드되지 않았습니다.')

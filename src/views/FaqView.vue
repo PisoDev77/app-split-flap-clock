@@ -6,14 +6,14 @@
           <a-button 
             type="text" 
             :icon="h(ArrowLeftOutlined)"
-            @click="$router.back()"
             class="back-btn"
             aria-label="이전 페이지로 돌아가기"
+            @click="$router.back()"
           >
             뒤로
           </a-button>
           <h1 class="page-title">자주 묻는 질문</h1>
-          <div class="header-spacer"></div>
+          <div class="header-spacer" />
         </div>
       </a-layout-header>
       
@@ -37,18 +37,20 @@
             </div>
           </a-card>
 
-          <a-collapse v-model:activeKey="activeKeys" ghost size="large">
+          <a-collapse v-model:active-key="activeKeys" ghost size="large">
             <a-collapse-panel 
               v-for="(faq, index) in filteredFaqs" 
               :key="index" 
               :header="faq.question" 
               class="faq-panel"
             >
-              <div class="faq-answer" v-html="faq.answer"></div>
+              <!-- answer는 이 파일에 직접 쓴 고정 문구라 안전함 -->
+              <!-- eslint-disable-next-line vue/no-v-html -->
+              <div class="faq-answer" v-html="faq.answer" />
             </a-collapse-panel>
           </a-collapse>
 
-          <a-card class="contact-card" v-if="filteredFaqs.length === 0 && searchQuery">
+          <a-card v-if="filteredFaqs.length === 0 && searchQuery" class="contact-card">
             <h3>🔍 찾으시는 답변이 없나요?</h3>
             <p>검색하신 "{{ searchQuery }}"에 대한 답변을 찾을 수 없습니다.</p>
             <p>아래 연락처로 직접 문의해주시면 빠르게 도움을 드리겠습니다.</p>
@@ -83,7 +85,16 @@
 
 <script setup lang="ts">
 import { ref, computed, h } from 'vue'
-import { Layout as ALayout, Button as AButton, Card as ACard, Collapse as ACollapse, Input as AInput } from 'ant-design-vue'
+import {
+  Layout as ALayout,
+  Button as AButton,
+  Card as ACard,
+  Collapse as ACollapse,
+  Input as AInput,
+  CollapsePanel as ACollapsePanel,
+  LayoutContent as ALayoutContent,
+  LayoutHeader as ALayoutHeader
+} from 'ant-design-vue'
 import { ArrowLeftOutlined, SearchOutlined, MailOutlined, BookOutlined } from '@ant-design/icons-vue'
 import AppFooter from '@/components/AppFooter.vue'
 

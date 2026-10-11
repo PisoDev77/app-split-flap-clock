@@ -28,8 +28,8 @@
             <a-button 
               type="primary" 
               size="large"
-              @click="updateApp"
               :loading="isUpdating"
+              @click="updateApp"
             >
               {{ isUpdating ? '업데이트 중...' : '지금 업데이트' }}
             </a-button>

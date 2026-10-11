@@ -1,7 +1,7 @@
 <template>
   <div class="animated-background" :class="backgroundClass">
     <!-- 그라디언트 배경 레이어 -->
-    <div class="gradient-layer" :style="gradientStyle"></div>
+    <div class="gradient-layer" :style="gradientStyle" />
     
     <!-- 파티클 효과 레이어 -->
     <div v-if="showParticles" class="particles-layer">
@@ -10,11 +10,11 @@
         :key="particle.id"
         class="particle"
         :style="particle.style"
-      ></div>
+      />
     </div>
     
     <!-- 시간 기반 오버레이 -->
-    <div class="time-overlay" :style="timeOverlayStyle"></div>
+    <div class="time-overlay" :style="timeOverlayStyle" />
   </div>
 </template>
 

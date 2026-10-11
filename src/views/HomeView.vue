@@ -18,8 +18,7 @@
               class="settings-btn"
               aria-label="설정 페이지 열기"
               @click="$router.push('/settings')"
-            >
-            </a-button>
+            />
           </div>
         </div>
       </a-layout-header>
@@ -58,7 +57,13 @@
 
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, h } from 'vue'
-import { Layout as ALayout, Button as AButton } from 'ant-design-vue'
+import {
+  Layout as ALayout,
+  Button as AButton,
+  LayoutContent as ALayoutContent,
+  LayoutHeader as ALayoutHeader,
+  TypographyText as ATypographyText
+} from 'ant-design-vue'
 import { SettingOutlined } from '@ant-design/icons-vue'
 import SplitFlapDisplay from '@/components/SplitFlapDisplay.vue'
 import AnimatedBackground from '@/components/AnimatedBackground.vue'
@@ -88,7 +93,7 @@ const { currentTime: time, startTimer, stopTimer } = useTime()
 
 // 배경 효과 설정
 // 설정 관리 컴포저블 사용
-const { settings, loadSettings, effectsEnabled } = useSettings()
+const { settings, loadSettings } = useSettings()
 
 const backgroundEffectsEnabled = computed(() => settings.value.backgroundEffectsEnabled)
 const showParticles = computed(() => settings.value.showParticles)

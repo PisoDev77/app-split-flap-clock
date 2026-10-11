@@ -1,7 +1,6 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
-import { setupAntDesign } from './plugins/ant-design'
 import { setupTheme } from './plugins/theme'
 import { useTheme } from './composables/useTheme'
 import './style.css'
@@ -13,7 +12,7 @@ import './style.css'
  * 
  * ### 설정 내용
  * - Vue Router 설정
- * - Ant Design Vue 컴포넌트 등록
+ * - Ant Design Vue 컴포넌트는 각 화면에서 필요한 것만 import
  * - 테마 시스템 초기화
  * 
  * @since 1.0.0
@@ -21,7 +20,6 @@ import './style.css'
 const app = createApp(App)
 
 app.use(router)
-setupAntDesign(app)
 setupTheme()
 
 // 테마 초기화
