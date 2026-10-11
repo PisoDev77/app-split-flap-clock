@@ -197,7 +197,7 @@ onUnmounted(() => {
 <style scoped>
 .pwa-update-prompt {
   position: fixed;
-  bottom: 120px; /* 광고 배너 위에 표시 */
+  bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 1002;

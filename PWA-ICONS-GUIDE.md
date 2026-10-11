@@ -53,6 +53,5 @@ npm run preview
 
 ## 🎯 다음 단계
 1. 아이콘 파일들 생성 완료
-2. Google AdSense 통합
-3. 프로덕션 배포 준비
-4. Google Play Store 업로드
+2. 프로덕션 배포 준비
+3. Google Play Store 업로드

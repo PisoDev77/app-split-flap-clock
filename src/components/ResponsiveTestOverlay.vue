@@ -135,7 +135,6 @@ const hasOverlap = computed(() => {
   // UI 요소들이 겹치는지 확인
   const header = document.querySelector('.header')
   const content = document.querySelector('.content')
-  const adBanner = document.querySelector('.adsense-banner')
   
   if (!header || !content) return false
   
@@ -143,16 +142,7 @@ const hasOverlap = computed(() => {
   const contentRect = content.getBoundingClientRect()
   
   // 헤더와 컨텐츠가 겹치는지 확인
-  const headerOverlap = headerRect.bottom > contentRect.top
-  
-  // 광고 배너와 컨텐츠가 겹치는지 확인
-  let adOverlap = false
-  if (adBanner) {
-    const adRect = adBanner.getBoundingClientRect()
-    adOverlap = adRect.top < contentRect.bottom
-  }
-  
-  return headerOverlap || adOverlap
+  return headerRect.bottom > contentRect.top
 })
 
 const toggleTestMode = (): void => {

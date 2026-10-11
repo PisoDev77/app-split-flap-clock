@@ -18,7 +18,6 @@
 - 🏙️ **다중 도시 지원**: 전 세계 주요 도시의 시간 표시
 - 🌙 **다크/라이트 모드**: GitHub 스타일의 테마 시스템
 - 📱 **PWA 지원**: 네이티브 앱처럼 설치 및 사용 가능
-- 💰 **광고 수익화**: Google AdSense 통합
 - 📱 **반응형 디자인**: 모든 디바이스에서 최적화된 UI
 
 ## 🛠️ 기술 스택
@@ -29,7 +28,6 @@
 - **PWA**: Vite PWA Plugin + Workbox
 - **Date/Time**: Day.js
 - **Styling**: CSS3 + CSS Custom Properties
-- **Monetization**: Google AdSense
 
 ## 🚀 시작하기
 
@@ -70,7 +68,6 @@ split-flap/
 ├── src/
 │   ├── components/            # Vue 컴포넌트
 │   │   ├── SplitFlapDisplay.vue     # 분할 플랩 디스플레이
-│   │   ├── AdBanner.vue             # 광고 배너
 │   │   └── PWAInstallPrompt.vue     # PWA 설치 프롬프트
 │   ├── composables/           # Vue 컴포저블
 │   │   ├── useLocation.ts           # 위치 관리
@@ -115,30 +112,6 @@ split-flap/
 - **업데이트 알림**: 자동 업데이트 감지
 - **반응형 아이콘**: 다양한 크기의 앱 아이콘
 
-## 💰 수익화
-
-Google AdSense를 통한 광고 수익화가 구현되어 있습니다:
-
-1. `index.html`에서 AdSense 스크립트 로드
-2. `AdBanner.vue`에서 광고 단위 표시
-3. 개발 환경에서는 플레이스홀더 표시
-
-### AdSense 설정
-
-`index.html`과 `AdBanner.vue`에서 다음 값들을 실제 AdSense 정보로 교체하세요:
-
-```html
-<!-- 실제 AdSense 클라이언트 ID로 교체 -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXXX"></script>
-```
-
-```vue
-<!-- 실제 광고 슬롯 ID로 교체 -->
-<ins class="adsbygoogle"
-     data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX"
-     data-ad-slot="XXXXXXXXXX">
-```
-
 ## 🌐 Google Play Store 배포
 
 이 앱은 PWA로 구현되어 Google Play Store에 배포 가능합니다:
@@ -153,7 +126,6 @@ Google AdSense를 통한 광고 수익화가 구현되어 있습니다:
 - [ ] HTTPS 호스팅 설정
 - [ ] PWA 매니페스트 검증
 - [ ] 서비스 워커 테스트
-- [ ] AdSense 승인 및 설정
 - [ ] 앱 아이콘 및 스크린샷 준비
 
 ## 🔧 개발 가이드

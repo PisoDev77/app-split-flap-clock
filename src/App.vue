@@ -4,7 +4,6 @@
       <div class="app-container">
         <OfflineIndicator />
         <router-view />
-        <AdSenseBanner ad-slot="default-banner" />
         <PWAInstallPrompt />
         <PWAUpdatePrompt />
         <ResponsiveTestOverlay v-if="isDevelopment" />
@@ -17,7 +16,6 @@
 import { onMounted, computed } from 'vue'
 import { ConfigProvider as AConfigProvider } from 'ant-design-vue'
 import { useTheme } from '@/composables/useTheme'
-import AdSenseBanner from '@/components/AdSenseBanner.vue'
 import PWAInstallPrompt from '@/components/PWAInstallPrompt.vue'
 import PWAUpdatePrompt from '@/components/PWAUpdatePrompt.vue'
 import OfflineIndicator from '@/components/OfflineIndicator.vue'
@@ -31,7 +29,6 @@ import { setupPWAListeners, setupNetworkListeners } from '@/utils/pwa'
  * 
  * ### 기능
  * - 테마 적용 (라이트/다크 모드)
- * - 광고 배너 표시
  * - PWA 설치 프롬프트
  * - 라우터 뷰 렌더링
  * 
