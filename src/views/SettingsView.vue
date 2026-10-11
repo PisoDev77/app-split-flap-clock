@@ -28,6 +28,7 @@
                 </h4>
                 <UiSelect
                   v-model:value="selectedCity"
+                  aria-label="도시 선택"
                   placeholder="도시를 선택하세요"
                   class="setting-input"
                   :options="cityOptions"
@@ -79,6 +80,7 @@
                 </h4>
                 <UiSelect
                   v-model:value="selectedTheme"
+                  aria-label="테마 모드"
                   class="setting-input"
                   :options="themeOptions"
                   @change="handleThemeChange"
@@ -132,6 +134,7 @@
                   </div>
                   <UiSwitch
                     v-model:checked="backgroundEffectsEnabled"
+                    aria-label="배경 효과 켜기"
                   />
                 </div>
               </div>
@@ -143,6 +146,7 @@
                 </h4>
                 <UiSelect
                   v-model:value="backgroundEffect"
+                  aria-label="배경 효과 종류"
                   class="setting-input"
                   :options="BACKGROUND_EFFECT_OPTIONS"
                   :disabled="!backgroundEffectsEnabled"
@@ -159,6 +163,7 @@
                 </h4>
                 <UiSelect
                   v-model:value="animationIntensity"
+                  aria-label="애니메이션 강도"
                   class="setting-input"
                   :options="intensityOptions"
                   :disabled="!backgroundEffectsEnabled"

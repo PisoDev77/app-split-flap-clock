@@ -26,6 +26,11 @@
 .ui-btn--small { height: 28px; padding: 0 8px; font-size: 13px; }
 .ui-btn--large { height: 44px; padding: 0 18px; font-size: 16px; }
 .ui-btn--block { display: flex; width: 100%; }
+/* 손가락으로 누르는 기기에서는 작은 버튼도 44px 높이 확보 */
+@media (pointer: coarse) {
+  .ui-btn--small,
+  .ui-btn--middle { min-height: 44px; }
+}
 .ui-btn--primary { background: var(--color-accent-fg); border-color: var(--color-accent-fg); color: #fff; }
 .ui-btn--primary:hover { color: #fff; opacity: 0.88; }
 .ui-btn--text { background: transparent; border-color: transparent; }
@@ -110,6 +115,12 @@
 .ui-switch--on { background: var(--color-accent-fg); }
 .ui-switch:disabled { cursor: not-allowed; opacity: 0.5; }
 .ui-switch:focus-visible { outline: 2px solid var(--color-accent-fg); outline-offset: 2px; }
+/* 보이는 크기는 그대로, 누르는 영역만 44px 높이로 넓힘 */
+.ui-switch::before {
+  content: '';
+  position: absolute;
+  inset: -11px -6px;
+}
 .ui-switch__thumb {
   position: absolute;
   top: 2px;

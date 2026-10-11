@@ -135,6 +135,10 @@ const currentYear = computed(() => new Date().getFullYear())
 }
 
 .footer-links-bottom a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 4px;
   color: var(--color-fg-muted);
   text-decoration: none;
   font-size: 0.9rem;

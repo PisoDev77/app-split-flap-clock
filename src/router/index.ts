@@ -94,7 +94,9 @@ const router = createRouter({
 })
 
 router.beforeEach((to) => {
-  document.title = to.meta.title ? `${to.meta.title} | Split Flap Clock` : 'Split Flap Clock'
+  // 홈은 제목이 앱 이름과 같아서 'Split Flap Clock | Split Flap Clock'처럼 겹치지 않게 함
+  const title = to.meta.title as string | undefined
+  document.title = title && title !== 'Split Flap Clock' ? `${title} | Split Flap Clock` : 'Split Flap Clock'
 })
 
 export default router
