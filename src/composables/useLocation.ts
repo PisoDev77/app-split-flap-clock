@@ -1,49 +1,50 @@
 import { ref } from 'vue'
+import dayjs from '@/utils/dayjs'
 
 /**
- * ## 위치 정보 관리 컴포저블
- * 
- * **사용자의 지리적 위치**를 가져오고 도시명과 시간대를 관리합니다.
- * 
+ * ## 위치·시간대 관리 컴포저블
+ *
+ * **이 기기의 시간대**를 감지하고 도시별 시간대를 관리합니다.
+ *
  * ### 기능
- * - 브라우저 지오로케이션 API 사용
- * - 위도/경도를 도시명으로 변환
- * - 시간대 정보 제공
- * - 오류 처리 및 폴백
- * 
+ * - 기기 시간대(IANA) 감지 → 지원 도시와 연결 (GPS 권한 불필요)
+ * - 도시별 IANA 시간대 제공 (서머타임 자동 반영)
+ * - 현재 UTC 오프셋 계산
+ *
  * @since 1.0.0
  */
 
-interface LocationInfo {
+export interface LocationInfo {
+  /** 영어 도시명 (지원 목록에 없으면 IANA 이름의 마지막 부분) */
   city: string
-  country: string
+  /** IANA 시간대 (예: 'Asia/Seoul') */
   timezone: string
-  latitude: number
-  longitude: number
 }
+
+const DEFAULT_TIMEZONE = 'Asia/Seoul'
 
 const currentLocation = ref<LocationInfo | null>(null)
 const isLoading = ref(false)
 const error = ref<string | null>(null)
 
-// 주요 도시별 시간대 매핑
+// 주요 도시별 IANA 시간대 (서머타임은 브라우저 시간대 데이터가 자동 처리)
 const CITY_TIMEZONE_MAP: Record<string, string> = {
-  'Seoul': '+09:00',
-  'Tokyo': '+09:00',
-  'New York': '-05:00',
-  'London': '+00:00',
-  'Paris': '+01:00',
-  'Sydney': '+11:00',
-  'Los Angeles': '-08:00',
-  'Beijing': '+08:00',
-  'Singapore': '+08:00',
-  'Dubai': '+04:00',
-  'Busan': '+09:00',
-  'Incheon': '+09:00',
-  'Daegu': '+09:00',
-  'Daejeon': '+09:00',
-  'Gwangju': '+09:00',
-  'Ulsan': '+09:00'
+  'Seoul': 'Asia/Seoul',
+  'Tokyo': 'Asia/Tokyo',
+  'New York': 'America/New_York',
+  'London': 'Europe/London',
+  'Paris': 'Europe/Paris',
+  'Sydney': 'Australia/Sydney',
+  'Los Angeles': 'America/Los_Angeles',
+  'Beijing': 'Asia/Shanghai',
+  'Singapore': 'Asia/Singapore',
+  'Dubai': 'Asia/Dubai',
+  'Busan': 'Asia/Seoul',
+  'Incheon': 'Asia/Seoul',
+  'Daegu': 'Asia/Seoul',
+  'Daejeon': 'Asia/Seoul',
+  'Gwangju': 'Asia/Seoul',
+  'Ulsan': 'Asia/Seoul'
 }
 
 // 도시명 한국어 매핑
@@ -67,148 +68,64 @@ const CITY_KOREAN_MAP: Record<string, string> = {
 }
 
 /**
- * ## 현재 위치 조회
- * 
- * **브라우저의 지오로케이션 API**를 사용하여 사용자의 현재 위치를 가져옵니다.
- * 
- * @returns {Promise<LocationInfo | null>} **위치 정보 객체** 또는 null
- * 
- * @example
- * ```typescript
- * const location = await getCurrentLocation()
- * console.log(location?.city) // 'Seoul'
- * ```
+ * ## 기기 시간대 기준 현재 위치 조회
+ *
+ * 위치 권한 없이 **기기에 설정된 시간대**로 도시를 정합니다.
+ * 지원 도시 중 같은 시간대가 있으면 그 도시, 없으면 시간대 이름의 도시를 씁니다.
+ *
+ * @returns {Promise<LocationInfo | null>} **위치 정보** (감지 실패 시 null)
  */
 const getCurrentLocation = async (): Promise<LocationInfo | null> => {
-  // 브라우저 호환성 확인
-  if (typeof navigator === 'undefined' || !navigator.geolocation) {
-    error.value = '이 브라우저는 위치 서비스를 지원하지 않습니다.'
-    console.warn('Geolocation API를 지원하지 않는 브라우저입니다.')
-    return null
-  }
-
   isLoading.value = true
   error.value = null
 
   try {
-    const position = await new Promise<GeolocationPosition>((resolve, reject) => {
-      // HTTPS 환경이 아닌 경우 경고
-      if (typeof location !== 'undefined' && location.protocol !== 'https:' && location.hostname !== 'localhost') {
-        console.warn('Geolocation API는 HTTPS 환경에서만 정상 작동합니다.')
-      }
-
-      navigator.geolocation.getCurrentPosition(resolve, reject, {
-        enableHighAccuracy: true,
-        timeout: 15000, // iOS Safari 호환성을 위해 시간 연장
-        maximumAge: 300000 // 5분
-      })
-    })
-
-    const { latitude, longitude } = position.coords
-    
-    // 실제 앱에서는 역지오코딩 API를 사용해야 합니다
-    // 여기서는 예시를 위해 기본값을 사용합니다
-    const locationInfo: LocationInfo = {
-      city: await getCityFromCoordinates(latitude, longitude),
-      country: 'South Korea',
-      timezone: '+09:00',
-      latitude,
-      longitude
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+    if (!timezone) {
+      throw new Error('timezone unavailable')
     }
 
-    currentLocation.value = locationInfo
-    return locationInfo
+    const supportedCity = Object.keys(CITY_TIMEZONE_MAP)
+      .find(name => CITY_TIMEZONE_MAP[name] === timezone)
+    const city = supportedCity || timezone.split('/').pop()!.replace(/_/g, ' ')
 
-  } catch (err) {
-    console.error('위치 조회 실패:', err)
-    error.value = '위치 정보를 가져올 수 없습니다.'
-    
-    // 폴백: 기본 위치 설정
-    const fallbackLocation: LocationInfo = {
-      city: 'Seoul',
-      country: 'South Korea',
-      timezone: '+09:00',
-      latitude: 37.5665,
-      longitude: 126.9780
-    }
-    
-    currentLocation.value = fallbackLocation
-    return fallbackLocation
-    
+    currentLocation.value = { city, timezone }
+    return currentLocation.value
+  } catch {
+    error.value = '이 기기의 시간대를 확인할 수 없습니다.'
+    currentLocation.value = { city: 'Seoul', timezone: DEFAULT_TIMEZONE }
+    return null
   } finally {
     isLoading.value = false
   }
 }
 
 /**
- * ## 좌표를 도시명으로 변환
- * 
- * **위도와 경도 정보**를 사용하여 해당 지역의 도시명을 조회합니다.
- * 
- * @param {number} lat - **위도**
- * @param {number} lng - **경도**
- * @returns {Promise<string>} **도시명**
- * 
- * @example
- * ```typescript
- * const city = await getCityFromCoordinates(37.5665, 126.9780)
- * console.log(city) // 'Seoul'
- * ```
+ * ## 도시별 시간대 조회
+ *
+ * @param {string} cityName - **영어 도시명**
+ * @returns {string} **IANA 시간대** (예: 'America/New_York')
  */
-const getCityFromCoordinates = async (lat: number, lng: number): Promise<string> => {
-  try {
-    // 실제 구현에서는 OpenStreetMap Nominatim이나 Google Geocoding API 사용
-    // 여기서는 간단한 구역별 매핑을 사용합니다
-    
-    // 한국 지역 판별
-    if (lat >= 33 && lat <= 39 && lng >= 124 && lng <= 132) {
-      if (lat >= 37.4 && lat <= 37.7 && lng >= 126.8 && lng <= 127.2) {
-        return 'Seoul'
-      } else if (lat >= 35.0 && lat <= 35.3 && lng >= 128.9 && lng <= 129.3) {
-        return 'Busan'
-      } else {
-        return 'Seoul' // 기본값
-      }
-    }
-    
-    // 일본 지역
-    if (lat >= 35.5 && lat <= 35.8 && lng >= 139.6 && lng <= 139.9) {
-      return 'Tokyo'
-    }
-    
-    // 기타 지역은 기본값
-    return 'Seoul'
-    
-  } catch (error) {
-    console.error('도시명 조회 실패:', error)
-    return 'Seoul'
-  }
+const getTimezoneByCity = (cityName: string): string => {
+  return CITY_TIMEZONE_MAP[cityName] || DEFAULT_TIMEZONE
 }
 
 /**
- * ## 도시별 시간대 조회
- * 
- * **도시명을 기반**으로 해당 지역의 시간대를 반환합니다.
- * 
- * @param {string} cityName - **도시명**
- * @returns {string} **시간대 오프셋** (예: '+09:00')
- * 
- * @example
- * ```typescript
- * const timezone = getTimezoneByCity('Seoul')
- * console.log(timezone) // '+09:00'
- * ```
+ * ## 현재 UTC 오프셋
+ *
+ * 서머타임을 반영한 **지금 시점의 오프셋**을 돌려줍니다.
+ *
+ * @param {string} timezone - **IANA 시간대**
+ * @returns {string} **오프셋** (예: '-04:00')
  */
-const getTimezoneByCity = (cityName: string): string => {
-  return CITY_TIMEZONE_MAP[cityName] || '+09:00'
+const getUtcOffset = (timezone: string): string => {
+  return dayjs().tz(timezone).format('Z')
 }
 
 /**
  * ## 지원되는 도시 목록 조회
- * 
- * **사용자가 선택할 수 있는** 도시 목록을 반환합니다.
- * 
- * @returns {Array<{name: string, timezone: string}>} **도시 목록**
+ *
+ * @returns {Array<{name: string, timezone: string}>} **도시 목록** (IANA 시간대 포함)
  */
 const getSupportedCities = () => {
   return Object.entries(CITY_TIMEZONE_MAP).map(([name, timezone]) => ({
@@ -219,17 +136,9 @@ const getSupportedCities = () => {
 
 /**
  * ## 도시명 한국어 변환
- * 
- * **영어 도시명을 한국어로 변환**합니다.
- * 
+ *
  * @param {string} cityName - **영어 도시명**
  * @returns {string} **한국어 도시명** 또는 원본 이름
- * 
- * @example
- * ```typescript
- * const koreanName = getCityKoreanName('Seoul') // '서울'
- * const koreanName = getCityKoreanName('Busan') // '부산'
- * ```
  */
 const getCityKoreanName = (cityName: string): string => {
   return CITY_KOREAN_MAP[cityName] || cityName
@@ -237,17 +146,9 @@ const getCityKoreanName = (cityName: string): string => {
 
 /**
  * ## 도시 표시명 가져오기
- * 
- * **도시의 표시용 이름을 가져옵니다** (한국어 + 영어).
- * 
+ *
  * @param {string} cityName - **영어 도시명**
- * @returns {string} **표시용 도시명**
- * 
- * @example
- * ```typescript
- * const displayName = getCityDisplayName('Seoul') // '서울 (Seoul)'
- * const displayName = getCityDisplayName('Busan') // '부산 (Busan)'
- * ```
+ * @returns {string} **표시용 도시명** (예: '서울 (Seoul)')
  */
 const getCityDisplayName = (cityName: string): string => {
   const koreanName = CITY_KOREAN_MAP[cityName]
@@ -260,8 +161,8 @@ export function useLocation() {
     isLoading,
     error,
     getCurrentLocation,
-    getCityFromCoordinates,
     getTimezoneByCity,
+    getUtcOffset,
     getSupportedCities,
     getCityKoreanName,
     getCityDisplayName

@@ -40,7 +40,7 @@
                 <h3>도시 정보</h3>
                 <ul>
                   <li><strong>현재 도시 표시:</strong> 선택된 도시명이 한국어로 표시됩니다</li>
-                  <li><strong>자동 감지:</strong> 위치 허용 시 현재 위치의 도시가 자동으로 설정됩니다</li>
+                  <li><strong>자동 감지:</strong> 위치 권한 없이 기기 시간대로 현재 도시를 정합니다</li>
                   <li><strong>수동 변경:</strong> 설정에서 원하는 도시로 변경 가능합니다</li>
                 </ul>
 
@@ -60,19 +60,19 @@
 
             <a-collapse-panel key="2" header="⚙️ 설정 페이지 활용법">
               <div class="guide-section">
-                <h3>1. 시간 및 위치 설정</h3>
+                <h3>1. 시간 및 도시 설정</h3>
                 <h4>도시 선택</h4>
                 <ul>
                   <li><strong>드롭다운 메뉴:</strong> 지원되는 전 세계 주요 도시 목록에서 선택</li>
                   <li><strong>검색 기능:</strong> 도시명을 입력하여 빠르게 찾을 수 있습니다</li>
-                  <li><strong>시간대 표시:</strong> 각 도시의 GMT/UTC 오프셋이 함께 표시됩니다</li>
+                  <li><strong>시간대 표시:</strong> 각 도시의 지금 UTC 오프셋이 함께 표시됩니다 (서머타임 반영)</li>
                 </ul>
 
-                <h4>현재 위치로 설정</h4>
+                <h4>이 기기 시간대 따르기</h4>
                 <ul>
-                  <li><strong>GPS 사용:</strong> "현재 위치로 설정" 버튼 클릭</li>
-                  <li><strong>권한 허용:</strong> 브라우저에서 위치 접근 권한을 허용해야 합니다</li>
-                  <li><strong>자동 설정:</strong> 현재 위치에 가장 가까운 도시로 자동 설정됩니다</li>
+                  <li><strong>버튼:</strong> "이 기기 시간대 따르기"를 누르거나 도시 목록에서 "자동"을 고릅니다</li>
+                  <li><strong>권한 불필요:</strong> GPS나 위치 권한을 쓰지 않고 기기의 시간대 설정을 따릅니다</li>
+                  <li><strong>저장:</strong> "설정 저장"을 눌러야 적용됩니다</li>
                 </ul>
 
                 <h3>2. 화면 설정</h3>
@@ -124,31 +124,32 @@
               </div>
             </a-collapse-panel>
 
-            <a-collapse-panel key="3" header="🌍 위치 및 시간대 이해하기">
+            <a-collapse-panel key="3" header="🌍 도시 및 시간대 이해하기">
               <div class="guide-section">
                 <h3>지원 도시 목록</h3>
                 <p>Split Flap Clock은 다음 지역의 주요 도시들을 지원합니다:</p>
                 <ul>
-                  <li><strong>아시아:</strong> 서울, 도쿄, 베이징, 상하이, 홍콩, 싱가포르, 방콕, 자카르타</li>
-                  <li><strong>유럽:</strong> 런던, 파리, 베를린, 로마, 마드리드, 암스테르담, 취리히</li>
-                  <li><strong>북미:</strong> 뉴욕, 로스앤젤레스, 시카고, 토론토, 밴쿠버</li>
-                  <li><strong>오세아니아:</strong> 시드니, 멜버른, 오클랜드</li>
-                  <li><strong>기타:</strong> 두바이, 카이로, 요하네스버그, 상파울루</li>
+                  <li><strong>한국:</strong> 서울, 부산, 인천, 대구, 대전, 광주, 울산</li>
+                  <li><strong>아시아:</strong> 도쿄, 베이징, 싱가포르, 두바이</li>
+                  <li><strong>유럽:</strong> 런던, 파리</li>
+                  <li><strong>북미:</strong> 뉴욕, 로스앤젤레스</li>
+                  <li><strong>오세아니아:</strong> 시드니</li>
                 </ul>
 
                 <h3>시간대 표기법</h3>
                 <ul>
                   <li><strong>GMT+9:</strong> 한국 표준시 (서울 기준)</li>
                   <li><strong>GMT+0:</strong> 그리니치 표준시 (런던 기준)</li>
-                  <li><strong>GMT-5:</strong> 동부 표준시 (뉴욕 기준)</li>
-                  <li><strong>GMT-8:</strong> 태평양 표준시 (로스앤젤레스 기준)</li>
+                  <li><strong>GMT-5:</strong> 동부 표준시 (뉴욕 기준, 서머타임 중에는 GMT-4)</li>
+                  <li><strong>GMT-8:</strong> 태평양 표준시 (로스앤젤레스 기준, 서머타임 중에는 GMT-7)</li>
                 </ul>
+                <p>서머타임(일광절약시간)은 자동으로 반영되어 항상 그 도시의 실제 시간을 보여줍니다.</p>
 
-                <h3>위치 기능 사용 시 주의사항</h3>
+                <h3>현재 위치 표시에 대해</h3>
                 <ul>
-                  <li><strong>권한 허용:</strong> 브라우저에서 위치 접근 권한을 허용해야 합니다</li>
-                  <li><strong>정확성:</strong> GPS 신호에 따라 정확도가 달라질 수 있습니다</li>
-                  <li><strong>개인정보:</strong> 위치 정보는 서버에 저장되지 않고 즉시 처리됩니다</li>
+                  <li><strong>기기 시간대 기준:</strong> 기기에 설정된 시간대로 도시를 정합니다</li>
+                  <li><strong>대표 도시:</strong> 같은 시간대의 도시(예: 부산)는 대표 도시(서울)로 보일 수 있습니다</li>
+                  <li><strong>개인정보:</strong> GPS나 위치 권한을 쓰지 않으며 위치를 수집하지 않습니다</li>
                 </ul>
               </div>
             </a-collapse-panel>
@@ -215,11 +216,10 @@
                   <li>페이지를 새로고침하여 시간 동기화</li>
                 </ul>
 
-                <h4>위치 기능이 작동하지 않을 때</h4>
+                <h4>현재 위치의 도시가 다를 때</h4>
                 <ul>
-                  <li>브라우저 설정에서 위치 권한 허용 확인</li>
-                  <li>GPS 기능이 활성화되어 있는지 확인</li>
-                  <li>실내에서는 GPS 신호가 약할 수 있음</li>
+                  <li>기기 설정의 날짜·시간에서 시간대가 맞는지 확인</li>
+                  <li>설정에서 원하는 도시를 직접 선택</li>
                 </ul>
 
                 <h4>애니메이션이 끊어질 때</h4>

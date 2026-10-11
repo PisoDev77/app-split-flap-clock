@@ -79,7 +79,9 @@ const routes: RouteRecordRaw[] = [
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
+  routes,
+  // 새 페이지는 맨 위에서, 뒤로 가기는 이전 위치에서 시작
+  scrollBehavior: (_to, _from, savedPosition) => savedPosition || { top: 0 }
 })
 
 router.beforeEach((to) => {

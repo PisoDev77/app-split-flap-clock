@@ -28,7 +28,7 @@
           <div class="city-display" :style="cityFlapStyle">
             <div class="city-container">
               <SplitFlapDisplay :text="cityName" aria-label="현재 도시" />
-              <span class="city-label">현재 위치</span>
+              <span class="city-label">{{ cityLabel }}</span>
             </div>
           </div>
           
@@ -80,7 +80,7 @@ import dayjs from '@/utils/dayjs'
  * 
  * ### 기능
  * - 현재 시간 실시간 표시
- * - 사용자 위치 기반 도시명 표시
+ * - 선택한 도시 또는 기기 시간대 기준 도시명 표시
  * - 설정 페이지 네비게이션
  * - 반응형 레이아웃
  * 
@@ -88,7 +88,7 @@ import dayjs from '@/utils/dayjs'
  */
 
 
-const { currentLocation, getCurrentLocation, getCityKoreanName } = useLocation()
+const { currentLocation, getCurrentLocation, getCityKoreanName, getTimezoneByCity } = useLocation()
 const { currentTime: time, startTimer, stopTimer } = useTime()
 
 // 배경 효과 설정
@@ -99,10 +99,20 @@ const backgroundEffectsEnabled = computed(() => settings.value.backgroundEffects
 const showParticles = computed(() => settings.value.showParticles)
 const animationIntensity = computed(() => settings.value.animationIntensity)
 
+// 설정에서 고른 도시 (없으면 이 기기 시간대를 따름)
+const savedCity = localStorage.getItem('selectedCity')
+
 const cityName = computed(() => {
-  const city = localStorage.getItem('selectedCity')
-  const displayCity = city || currentLocation.value?.city || 'LOADING...'
-  return displayCity === 'LOADING...' ? displayCity : getCityKoreanName(displayCity)
+  const city = savedCity || currentLocation.value?.city
+  return city ? getCityKoreanName(city) : 'LOADING...'
+})
+
+const cityLabel = computed(() => savedCity ? '선택한 도시' : '현재 위치')
+
+// IANA 시간대 → 서머타임 자동 반영
+const timezone = computed(() => {
+  if (savedCity) return getTimezoneByCity(savedCity)
+  return currentLocation.value?.timezone
 })
 
 // 도시 이름이 길면 칸을 줄여 한 줄에 들어가게 함
@@ -113,50 +123,16 @@ const cityFlapStyle = computed(() => {
   }
 })
 
+const zonedTime = computed(() => {
+  if (!time.value) return null
+  return timezone.value ? dayjs(time.value).tz(timezone.value) : dayjs(time.value)
+})
+
 // 시간을 시, 분, 초로 분리
-const hours = computed(() => {
-  if (!time.value) return '00'
-  
-  const timezone = localStorage.getItem('selectedTimezone')
-  if (timezone) {
-    return dayjs(time.value).utcOffset(timezone).format('HH')
-  }
-  
-  return dayjs(time.value).format('HH')
-})
-
-const minutes = computed(() => {
-  if (!time.value) return '00'
-  
-  const timezone = localStorage.getItem('selectedTimezone')
-  if (timezone) {
-    return dayjs(time.value).utcOffset(timezone).format('mm')
-  }
-  
-  return dayjs(time.value).format('mm')
-})
-
-const seconds = computed(() => {
-  if (!time.value) return '00'
-  
-  const timezone = localStorage.getItem('selectedTimezone')
-  if (timezone) {
-    return dayjs(time.value).utcOffset(timezone).format('ss')
-  }
-  
-  return dayjs(time.value).format('ss')
-})
-
-const currentDate = computed(() => {
-  if (!time.value) return ''
-  
-  const timezone = localStorage.getItem('selectedTimezone')
-  const date = timezone 
-    ? dayjs(time.value).utcOffset(timezone)
-    : dayjs(time.value)
-    
-  return date.format('YYYY년 M월 D일 dddd')
-})
+const hours = computed(() => zonedTime.value?.format('HH') ?? '00')
+const minutes = computed(() => zonedTime.value?.format('mm') ?? '00')
+const seconds = computed(() => zonedTime.value?.format('ss') ?? '00')
+const currentDate = computed(() => zonedTime.value?.format('YYYY년 M월 D일 dddd') ?? '')
 
 onMounted(async () => {
   loadSettings() // 설정 로드

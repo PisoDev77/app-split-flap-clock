@@ -56,32 +56,32 @@
                 <div class="city-list">
                   <div class="city-item">
                     <span class="city-name">서울</span>
-                    <span class="timezone-offset">GMT+9</span>
+                    <span class="timezone-offset">{{ getCityOffset('Seoul') }}</span>
                     <span class="current-time">{{ getCityTime('Seoul') }}</span>
                   </div>
                   <div class="city-item">
                     <span class="city-name">도쿄</span>
-                    <span class="timezone-offset">GMT+9</span>
+                    <span class="timezone-offset">{{ getCityOffset('Tokyo') }}</span>
                     <span class="current-time">{{ getCityTime('Tokyo') }}</span>
                   </div>
                   <div class="city-item">
                     <span class="city-name">베이징</span>
-                    <span class="timezone-offset">GMT+8</span>
+                    <span class="timezone-offset">{{ getCityOffset('Beijing') }}</span>
                     <span class="current-time">{{ getCityTime('Beijing') }}</span>
                   </div>
                   <div class="city-item">
                     <span class="city-name">상하이</span>
-                    <span class="timezone-offset">GMT+8</span>
+                    <span class="timezone-offset">{{ getCityOffset('Shanghai') }}</span>
                     <span class="current-time">{{ getCityTime('Shanghai') }}</span>
                   </div>
                   <div class="city-item">
                     <span class="city-name">홍콩</span>
-                    <span class="timezone-offset">GMT+8</span>
+                    <span class="timezone-offset">{{ getCityOffset('Hong Kong') }}</span>
                     <span class="current-time">{{ getCityTime('Hong Kong') }}</span>
                   </div>
                   <div class="city-item">
                     <span class="city-name">싱가포르</span>
-                    <span class="timezone-offset">GMT+8</span>
+                    <span class="timezone-offset">{{ getCityOffset('Singapore') }}</span>
                     <span class="current-time">{{ getCityTime('Singapore') }}</span>
                   </div>
                 </div>
@@ -92,32 +92,32 @@
                 <div class="city-list">
                   <div class="city-item">
                     <span class="city-name">런던</span>
-                    <span class="timezone-offset">GMT+0</span>
+                    <span class="timezone-offset">{{ getCityOffset('London') }}</span>
                     <span class="current-time">{{ getCityTime('London') }}</span>
                   </div>
                   <div class="city-item">
                     <span class="city-name">파리</span>
-                    <span class="timezone-offset">GMT+1</span>
+                    <span class="timezone-offset">{{ getCityOffset('Paris') }}</span>
                     <span class="current-time">{{ getCityTime('Paris') }}</span>
                   </div>
                   <div class="city-item">
                     <span class="city-name">베를린</span>
-                    <span class="timezone-offset">GMT+1</span>
+                    <span class="timezone-offset">{{ getCityOffset('Berlin') }}</span>
                     <span class="current-time">{{ getCityTime('Berlin') }}</span>
                   </div>
                   <div class="city-item">
                     <span class="city-name">로마</span>
-                    <span class="timezone-offset">GMT+1</span>
+                    <span class="timezone-offset">{{ getCityOffset('Rome') }}</span>
                     <span class="current-time">{{ getCityTime('Rome') }}</span>
                   </div>
                   <div class="city-item">
                     <span class="city-name">마드리드</span>
-                    <span class="timezone-offset">GMT+1</span>
+                    <span class="timezone-offset">{{ getCityOffset('Madrid') }}</span>
                     <span class="current-time">{{ getCityTime('Madrid') }}</span>
                   </div>
                   <div class="city-item">
                     <span class="city-name">모스크바</span>
-                    <span class="timezone-offset">GMT+3</span>
+                    <span class="timezone-offset">{{ getCityOffset('Moscow') }}</span>
                     <span class="current-time">{{ getCityTime('Moscow') }}</span>
                   </div>
                 </div>
@@ -128,27 +128,27 @@
                 <div class="city-list">
                   <div class="city-item">
                     <span class="city-name">뉴욕</span>
-                    <span class="timezone-offset">GMT-5</span>
+                    <span class="timezone-offset">{{ getCityOffset('New York') }}</span>
                     <span class="current-time">{{ getCityTime('New York') }}</span>
                   </div>
                   <div class="city-item">
                     <span class="city-name">로스앤젤레스</span>
-                    <span class="timezone-offset">GMT-8</span>
+                    <span class="timezone-offset">{{ getCityOffset('Los Angeles') }}</span>
                     <span class="current-time">{{ getCityTime('Los Angeles') }}</span>
                   </div>
                   <div class="city-item">
                     <span class="city-name">시카고</span>
-                    <span class="timezone-offset">GMT-6</span>
+                    <span class="timezone-offset">{{ getCityOffset('Chicago') }}</span>
                     <span class="current-time">{{ getCityTime('Chicago') }}</span>
                   </div>
                   <div class="city-item">
                     <span class="city-name">토론토</span>
-                    <span class="timezone-offset">GMT-5</span>
+                    <span class="timezone-offset">{{ getCityOffset('Toronto') }}</span>
                     <span class="current-time">{{ getCityTime('Toronto') }}</span>
                   </div>
                   <div class="city-item">
                     <span class="city-name">밴쿠버</span>
-                    <span class="timezone-offset">GMT-8</span>
+                    <span class="timezone-offset">{{ getCityOffset('Vancouver') }}</span>
                     <span class="current-time">{{ getCityTime('Vancouver') }}</span>
                   </div>
                 </div>
@@ -159,17 +159,17 @@
                 <div class="city-list">
                   <div class="city-item">
                     <span class="city-name">시드니</span>
-                    <span class="timezone-offset">GMT+10</span>
+                    <span class="timezone-offset">{{ getCityOffset('Sydney') }}</span>
                     <span class="current-time">{{ getCityTime('Sydney') }}</span>
                   </div>
                   <div class="city-item">
                     <span class="city-name">멜버른</span>
-                    <span class="timezone-offset">GMT+10</span>
+                    <span class="timezone-offset">{{ getCityOffset('Melbourne') }}</span>
                     <span class="current-time">{{ getCityTime('Melbourne') }}</span>
                   </div>
                   <div class="city-item">
                     <span class="city-name">오클랜드</span>
-                    <span class="timezone-offset">GMT+12</span>
+                    <span class="timezone-offset">{{ getCityOffset('Auckland') }}</span>
                     <span class="current-time">{{ getCityTime('Auckland') }}</span>
                   </div>
                 </div>
@@ -286,35 +286,43 @@ import dayjs from '@/utils/dayjs'
 const currentTime = ref(dayjs())
 let timer: ReturnType<typeof setInterval> | undefined
 
-const timezoneOffsets: Record<string, number> = {
-  'Seoul': 9,
-  'Tokyo': 9,
-  'Beijing': 8,
-  'Shanghai': 8,
-  'Hong Kong': 8,
-  'Singapore': 8,
-  'London': 0,
-  'Paris': 1,
-  'Berlin': 1,
-  'Rome': 1,
-  'Madrid': 1,
-  'Moscow': 3,
-  'New York': -5,
-  'Los Angeles': -8,
-  'Chicago': -6,
-  'Toronto': -5,
-  'Vancouver': -8,
-  'Sydney': 10,
-  'Melbourne': 10,
-  'Auckland': 12
+// IANA 시간대: 서머타임(일광절약시간)이 자동 반영됨
+const cityTimezones: Record<string, string> = {
+  'Seoul': 'Asia/Seoul',
+  'Tokyo': 'Asia/Tokyo',
+  'Beijing': 'Asia/Shanghai',
+  'Shanghai': 'Asia/Shanghai',
+  'Hong Kong': 'Asia/Hong_Kong',
+  'Singapore': 'Asia/Singapore',
+  'London': 'Europe/London',
+  'Paris': 'Europe/Paris',
+  'Berlin': 'Europe/Berlin',
+  'Rome': 'Europe/Rome',
+  'Madrid': 'Europe/Madrid',
+  'Moscow': 'Europe/Moscow',
+  'New York': 'America/New_York',
+  'Los Angeles': 'America/Los_Angeles',
+  'Chicago': 'America/Chicago',
+  'Toronto': 'America/Toronto',
+  'Vancouver': 'America/Vancouver',
+  'Sydney': 'Australia/Sydney',
+  'Melbourne': 'Australia/Melbourne',
+  'Auckland': 'Pacific/Auckland'
 }
 
 const getCityTime = (city: string): string => {
-  const offset = timezoneOffsets[city]
-  if (offset === undefined) return '--:--'
-  
-  const cityTime = currentTime.value.utcOffset(offset)
-  return cityTime.format('HH:mm')
+  const timezone = cityTimezones[city]
+  if (!timezone) return '--:--'
+  return currentTime.value.tz(timezone).format('HH:mm')
+}
+
+// 지금 시점의 오프셋을 'GMT+9', 'GMT-4', 'GMT+5:30' 형태로 표시
+const getCityOffset = (city: string): string => {
+  const timezone = cityTimezones[city]
+  if (!timezone) return ''
+  const [, sign, hours, minutes] = currentTime.value.tz(timezone).format('Z').match(/([+-])(\d{2}):(\d{2})/) || []
+  if (!sign) return ''
+  return `GMT${sign}${Number(hours)}${minutes === '00' ? '' : `:${minutes}`}`
 }
 
 onMounted(() => {

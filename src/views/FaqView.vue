@@ -137,17 +137,17 @@ const faqs: FAQ[] = [
     keywords: ["설치", "PWA", "모바일", "앱", "홈화면", "오프라인"]
   },
   {
-    question: "위치 정보가 정확하지 않아요",
+    question: "현재 위치의 도시가 다르게 나와요",
     answer: `
-      <p>위치 기능이 정확하지 않을 때는 다음을 확인해보세요:</p>
+      <p>Split Flap Clock은 GPS 대신 <strong>기기에 설정된 시간대</strong>로 현재 위치를 정합니다. 다르게 나오면 다음을 확인해보세요:</p>
       <ul>
-        <li><strong>권한 확인:</strong> 브라우저에서 위치 접근 권한을 허용했는지 확인</li>
-        <li><strong>GPS 활성화:</strong> 기기의 GPS/위치 서비스가 켜져 있는지 확인</li>
-        <li><strong>환경:</strong> 실내에서는 GPS 신호가 약할 수 있습니다</li>
+        <li><strong>기기 시간대:</strong> 기기 설정의 날짜·시간 → 시간대가 맞는지 확인</li>
+        <li><strong>같은 시간대 도시:</strong> 같은 시간대의 도시(예: 부산)는 대표 도시(서울)로 표시됩니다</li>
+        <li><strong>직접 선택:</strong> 설정에서 원하는 도시를 직접 고를 수 있습니다</li>
         <li><strong>수동 설정:</strong> 설정에서 직접 원하는 도시를 선택하세요</li>
       </ul>
     `,
-    keywords: ["위치", "GPS", "권한", "정확도", "수동설정"]
+    keywords: ["위치", "GPS", "시간대", "정확도", "수동설정"]
   },
   {
     question: "시간이 정확하지 않아요",
@@ -224,7 +224,6 @@ const faqs: FAQ[] = [
       <ul>
         <li><strong>시간 표시:</strong> 기기의 시스템 시간을 사용하여 표시</li>
         <li><strong>설정 유지:</strong> 이전에 저장한 설정들이 그대로 유지</li>
-        <li><strong>제한사항:</strong> 위치 기반 자동 설정은 인터넷 연결이 필요</li>
         <li><strong>권장사항:</strong> 처음 설치 시에는 인터넷 연결 상태에서 설정을 완료하세요</li>
       </ul>
     `,
@@ -237,7 +236,7 @@ const faqs: FAQ[] = [
       <ul>
         <li><strong>로컬 저장:</strong> 모든 설정은 사용자 기기에만 저장됩니다</li>
         <li><strong>서버 전송 없음:</strong> 개인정보를 외부 서버로 전송하지 않습니다</li>
-        <li><strong>위치 정보:</strong> 위치는 즉시 처리 후 삭제되며, 저장되지 않습니다</li>
+        <li><strong>위치 정보:</strong> GPS나 위치 권한을 사용하지 않으며, 위치를 수집하지 않습니다</li>
         <li><strong>투명성:</strong> 자세한 내용은 <a href="/privacy">개인정보처리방침</a>을 참고하세요</li>
       </ul>
     `,

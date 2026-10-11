@@ -45,17 +45,17 @@
                   현재 시간대
                 </a-typography-title>
                 <a-typography-text class="timezone-display">
-                  {{ currentTimezone }} ({{ currentCityDisplay }})
+                  UTC{{ currentOffset }} ({{ currentCityDisplay }})
                 </a-typography-text>
                 <a-typography-text type="secondary" class="setting-description">
-                  선택된 도시의 시간대입니다.
+                  선택된 도시의 지금 시간대입니다. 서머타임이 자동으로 반영됩니다.
                 </a-typography-text>
               </div>
 
               <!-- 위치 기반 자동 설정 -->
               <div class="setting-item">
                 <a-typography-title :level="4" class="setting-label">
-                  위치 기반 자동 설정
+                  기기 시간대 자동 설정
                 </a-typography-title>
                 <a-button 
                   type="primary" 
@@ -63,10 +63,10 @@
                   :icon="h(EnvironmentOutlined)"
                   @click="handleAutoLocation"
                 >
-                  현재 위치로 설정
+                  이 기기 시간대 따르기
                 </a-button>
                 <a-typography-text type="secondary" class="setting-description">
-                  GPS를 사용해 현재 위치의 시간을 자동으로 설정합니다.
+                  위치 권한 없이, 이 기기에 설정된 시간대의 시간을 보여줍니다.
                 </a-typography-text>
               </div>
             </a-space>
@@ -217,6 +217,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, h } from 'vue'
+import { useRouter } from 'vue-router'
 import {
   Layout as ALayout,
   Button as AButton,
@@ -256,7 +257,12 @@ import dayjs from '@/utils/dayjs'
  * @since 1.0.0
  */
 
-const { currentLocation, getSupportedCities, getCurrentLocation, getTimezoneByCity, getCityDisplayName, getCityKoreanName } = useLocation()
+const { currentLocation, getSupportedCities, getCurrentLocation, getTimezoneByCity, getUtcOffset, getCityDisplayName, getCityKoreanName } = useLocation()
+
+const router = useRouter()
+
+// 도시 선택의 '자동' 값: 저장된 도시 없이 기기 시간대를 따름
+const AUTO_CITY = '__auto__'
 const { setThemeMode } = useTheme()
 const { 
   settings, 
@@ -285,20 +291,22 @@ const animationIntensity = computed({
   set: (value) => setAnimationLevel(value)
 })
 
-const previewText = computed(() => {
-  return `${selectedCity.value || 'SEOUL'}`
-})
+const previewText = computed(() => currentCityDisplay.value)
 
-const previewTime = computed(() => {
-  const now = dayjs()
-  return now.format('HH')
-})
+const previewTime = computed(() => dayjs().tz(currentTimezone.value).format('HH:mm'))
 
 const cityOptions = computed(() => {
-  return getSupportedCities().map(city => ({
-    value: city.name,
-    label: `${getCityDisplayName(city.name)} ${city.timezone}`
-  }))
+  const deviceCity = currentLocation.value?.city
+  const autoLabel = deviceCity
+    ? `자동 · 이 기기 시간대 (${getCityKoreanName(deviceCity)})`
+    : '자동 · 이 기기 시간대'
+  return [
+    { value: AUTO_CITY, label: autoLabel },
+    ...getSupportedCities().map(city => ({
+      value: city.name,
+      label: `${getCityDisplayName(city.name)} UTC${getUtcOffset(city.timezone)}`
+    }))
+  ]
 })
 
 const themeOptions = [
@@ -313,8 +321,14 @@ const intensityOptions = [
   { value: 'high', label: '높음 (화려함)' }
 ]
 
-const currentCity = computed(() => selectedCity.value || 'Seoul')
-const currentTimezone = computed(() => getTimezoneByCity(currentCity.value))
+const isAutoCity = computed(() => !selectedCity.value || selectedCity.value === AUTO_CITY)
+const currentCity = computed(() => isAutoCity.value
+  ? (currentLocation.value?.city || 'Seoul')
+  : selectedCity.value!)
+const currentTimezone = computed(() => isAutoCity.value
+  ? (currentLocation.value?.timezone || getTimezoneByCity('Seoul'))
+  : getTimezoneByCity(currentCity.value))
+const currentOffset = computed(() => getUtcOffset(currentTimezone.value))
 const currentCityDisplay = computed(() => getCityKoreanName(currentCity.value))
 
 /**
@@ -331,9 +345,9 @@ const filterCityOption = (input: string, option: any): boolean => {
 }
 
 /**
- * ## 자동 위치 설정
+ * ## 기기 시간대 따르기
  * 
- * **GPS를 사용**하여 현재 위치의 도시와 시간대를 자동으로 설정합니다.
+ * **기기 시간대**를 따르도록 도시 선택을 "자동"으로 바꿉니다 (GPS·위치 권한 불필요).
  * 
  * @example
  * ```typescript
@@ -347,14 +361,11 @@ const handleAutoLocation = async (): Promise<void> => {
     const location = await getCurrentLocation()
     
     if (location) {
-      selectedCity.value = location.city
-      message.success(`위치가 ${location.city}로 설정되었습니다.`)
+      selectedCity.value = AUTO_CITY
+      message.success(`이 기기 시간대(${getCityKoreanName(location.city)})를 따릅니다. 저장을 눌러 적용하세요.`)
     } else {
-      message.error('위치 정보를 가져올 수 없습니다.')
+      message.error('이 기기의 시간대를 확인할 수 없습니다. 도시를 직접 골라 주세요.')
     }
-  } catch (error) {
-    console.error('위치 조회 실패:', error)
-    message.error('위치 정보를 가져오는데 실패했습니다.')
   } finally {
     isLocationLoading.value = false
   }
@@ -403,10 +414,13 @@ const saveSettings = async (): Promise<void> => {
   isSaving.value = true
   
   try {
-    // 도시 및 시간대 저장 (선택한 도시가 있을 때만)
-    if (selectedCity.value) {
-      localStorage.setItem('selectedCity', selectedCity.value)
-      localStorage.setItem('selectedTimezone', getTimezoneByCity(selectedCity.value))
+    // 도시 저장 ('자동'이면 저장된 도시를 지워 기기 시간대를 따름)
+    // selectedTimezone은 예전 버전의 고정 오프셋 값이라 더는 쓰지 않음
+    localStorage.removeItem('selectedTimezone')
+    if (isAutoCity.value) {
+      localStorage.removeItem('selectedCity')
+    } else {
+      localStorage.setItem('selectedCity', selectedCity.value!)
     }
     
     // 테마 설정 저장 및 적용
@@ -419,9 +433,9 @@ const saveSettings = async (): Promise<void> => {
     
     message.success('설정이 저장되었습니다.')
     
-    // 잠시 후 홈 화면으로 이동
+    // 잠시 후 홈 화면으로 이동 (history.back은 직접 들어온 경우 앱 밖으로 나갈 수 있음)
     setTimeout(() => {
-      window.history.back()
+      router.push('/')
     }, 1000)
     
   } catch (error) {
@@ -439,9 +453,8 @@ const saveSettings = async (): Promise<void> => {
  */
 const loadUserSettings = (): void => {
   // 저장된 도시 로드
-  // 저장된 도시가 없으면 홈 화면에 보이는 도시(현재 위치, 기본 서울)를 보여줌
-  const savedCity = localStorage.getItem('selectedCity')
-  selectedCity.value = savedCity || currentLocation.value?.city || 'Seoul'
+  // 저장된 도시가 없으면 '자동'(기기 시간대)
+  selectedCity.value = localStorage.getItem('selectedCity') || AUTO_CITY
   
   // 저장된 테마 모드 로드
   const savedTheme = localStorage.getItem('theme-mode') as 'light' | 'dark' | 'system'
@@ -453,6 +466,7 @@ const loadUserSettings = (): void => {
 onMounted(() => {
   loadSettings() // useSettings의 loadSettings 사용
   loadUserSettings()
+  getCurrentLocation() // '자동' 항목에 기기 시간대 도시를 표시
 })
 </script>
 
@@ -618,7 +632,7 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
-  scale: 0.6;
+  --flap-w: 1.6rem;
 }
 
 .preview-label {
