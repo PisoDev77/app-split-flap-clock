@@ -1,4 +1,5 @@
 import { ref, watch } from 'vue'
+import { onMediaQueryChange } from '@/utils/mediaQuery'
 
 
 /**
@@ -116,7 +117,7 @@ const initializeTheme = (): void => {
   updateTheme()
   
   // 시스템 테마 변경 감지
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+  onMediaQueryChange('(prefers-color-scheme: dark)', () => {
     if (themeMode.value === 'system') {
       updateTheme()
     }

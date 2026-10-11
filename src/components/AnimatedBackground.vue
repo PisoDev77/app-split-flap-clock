@@ -23,6 +23,7 @@
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useTheme } from '@/composables/useTheme'
 import type { BackgroundEffect } from '@/composables/useSettings'
+import { onMediaQueryChange } from '@/utils/mediaQuery'
 
 /**
  * ## 애니메이션 배경
@@ -289,8 +290,7 @@ const start = () => {
 
 const onVisibilityChange = () => (document.hidden ? stop() : start())
 
-let reducedMotionQuery: MediaQueryList | null = null
-const onReducedMotionChange = (e: MediaQueryListEvent) => { prefersReducedMotion.value = e.matches }
+let stopReducedMotionWatch: (() => void) | null = null
 let hourTimer: ReturnType<typeof setInterval> | undefined
 
 watch(() => [props.enabled, props.effect, props.intensity, prefersReducedMotion.value], () => {
@@ -299,9 +299,10 @@ watch(() => [props.enabled, props.effect, props.intensity, prefersReducedMotion.
 })
 
 onMounted(() => {
-  reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
-  prefersReducedMotion.value = reducedMotionQuery.matches
-  reducedMotionQuery.addEventListener('change', onReducedMotionChange)
+  prefersReducedMotion.value = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  stopReducedMotionWatch = onMediaQueryChange('(prefers-reduced-motion: reduce)', (e) => {
+    prefersReducedMotion.value = e.matches
+  })
   document.addEventListener('visibilitychange', onVisibilityChange)
   if (canvasRef.value) {
     resizeObserver = new ResizeObserver(() => { if (rafId !== null) resize() })
@@ -313,7 +314,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   stop()
-  reducedMotionQuery?.removeEventListener('change', onReducedMotionChange)
+  stopReducedMotionWatch?.()
   document.removeEventListener('visibilitychange', onVisibilityChange)
   resizeObserver?.disconnect()
   clearInterval(hourTimer)

@@ -1,7 +1,6 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
-import { setupTheme } from './plugins/theme'
 import { useTheme } from './composables/useTheme'
 import './style.css'
 import './components/ui/ui.css'
@@ -21,7 +20,6 @@ import './components/ui/ui.css'
 const app = createApp(App)
 
 app.use(router)
-setupTheme()
 
 // 테마 초기화
 const { initializeTheme } = useTheme()

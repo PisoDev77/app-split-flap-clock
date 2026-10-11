@@ -1,4 +1,5 @@
 import { ref, computed, watch } from 'vue'
+import { onMediaQueryChange } from '@/utils/mediaQuery'
 
 /**
  * ## 사용자 설정 관리 컴포저블
@@ -32,6 +33,8 @@ interface Settings {
   /** @deprecated backgroundEffect로 대체. 예전 저장값 변환용으로만 남김 */
   showParticles: boolean
   backgroundEffect: BackgroundEffect
+  /** 성능·접근성 모드 전에 쓰던 효과·강도. 배경을 다시 켤 때 되돌림 */
+  beforeLowPower?: { effect: BackgroundEffect, intensity: 'low' | 'medium' | 'high' }
   animationIntensity: 'low' | 'medium' | 'high'
   timeFormat: '12h' | '24h'
   enableSounds: boolean
@@ -212,7 +215,18 @@ const resetSettings = (): void => {
  * enablePerformanceMode()
  * ```
  */
+// 성능·접근성 모드로 끄기 전에 쓰던 효과·강도를 기억 (이미 꺼져 있으면 덮어쓰지 않음)
+const rememberEffect = (): void => {
+  if (settings.value.backgroundEffectsEnabled && settings.value.backgroundEffect !== 'none') {
+    settings.value.beforeLowPower = {
+      effect: settings.value.backgroundEffect,
+      intensity: settings.value.animationIntensity
+    }
+  }
+}
+
 const enablePerformanceMode = (): void => {
+  rememberEffect()
   settings.value.backgroundEffectsEnabled = false
   settings.value.backgroundEffect = 'none'
   settings.value.animationIntensity = 'low'
@@ -230,6 +244,7 @@ const enablePerformanceMode = (): void => {
  * ```
  */
 const enableAccessibilityMode = (): void => {
+  rememberEffect()
   settings.value.reducedMotion = true
   settings.value.backgroundEffectsEnabled = false
   settings.value.backgroundEffect = 'none'
@@ -247,6 +262,18 @@ const effectsEnabled = computed(() => {
   return settings.value.backgroundEffectsEnabled && !settings.value.reducedMotion
 })
 
+// 배경 효과를 다시 켜면 성능 모드 이전 상태로 되돌림
+// (안 그러면 효과가 '그라디언트만', 강도 '낮음'에 갇혀 있음)
+watch(() => settings.value.backgroundEffectsEnabled, (enabled, wasEnabled) => {
+  if (!enabled || wasEnabled) return
+  const backup = settings.value.beforeLowPower
+  if (!backup) return
+  settings.value.reducedMotion = false
+  settings.value.backgroundEffect = backup.effect
+  settings.value.animationIntensity = backup.intensity
+  settings.value.beforeLowPower = undefined
+})
+
 // 설정 변경 감지 및 자동 저장
 watch(settings, () => {
   saveSettings()
@@ -254,7 +281,7 @@ watch(settings, () => {
 
 // 시스템 설정 변경 감지
 if (typeof window !== 'undefined') {
-  window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', (e) => {
+  onMediaQueryChange('(prefers-reduced-motion: reduce)', (e) => {
     if (e.matches && !settings.value.reducedMotion) {
       enableAccessibilityMode()
     }
