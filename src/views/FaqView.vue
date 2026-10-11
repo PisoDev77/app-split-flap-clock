@@ -303,13 +303,15 @@ const filteredFaqs = computed(() => {
 
 <style scoped>
 .faq-view {
-  height: 100vh;
+  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
 }
 
 .layout {
-  height: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
   background: var(--color-canvas-default);
 }
 
@@ -355,7 +357,6 @@ const filteredFaqs = computed(() => {
   flex: 1;
   padding: 24px;
   background: var(--color-canvas-subtle);
-  overflow-y: auto;
 }
 
 .faq-container {

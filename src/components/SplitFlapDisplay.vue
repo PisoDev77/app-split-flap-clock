@@ -175,8 +175,9 @@ onUnmounted(() => {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 2rem;
   user-select: none;
+  /* 칸 크기: 부모가 --flap-w를 주면 그 값, 아니면 화면 너비에 맞춰 자동 */
+  --flap-size: var(--flap-w, clamp(1.75rem, 9.5vw, 4.5rem));
 }
 
 .flap-container {
@@ -187,8 +188,8 @@ onUnmounted(() => {
 
 .flap-unit {
   position: relative;
-  width: 4.5rem;
-  height: 6.5rem;
+  width: var(--flap-size);
+  height: calc(var(--flap-size) * 1.44);
   background: linear-gradient(135deg, #2c3e50, #34495e);
   border-radius: 8px;
   box-shadow: 
@@ -241,7 +242,7 @@ onUnmounted(() => {
 
 .flap-text {
   font-family: 'Courier New', monospace;
-  font-size: 2.8rem;
+  font-size: calc(var(--flap-size) * 0.62);
   font-weight: bold;
   color: #ecf0f1;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
@@ -253,7 +254,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 6.5rem; /* Full height to span both flaps */
+  height: calc(var(--flap-size) * 1.44); /* Full height to span both flaps */
 }
 
 .flap-top .flap-text-top {
@@ -395,103 +396,6 @@ onUnmounted(() => {
 
 .dark-theme .flap-text {
   color: #f0f6fc;
-}
-
-/* 모바일 반응형 - 더 큰 크기로 조정 */
-@media (max-width: 768px) {
-  .flap-unit {
-    width: 3.5rem;
-    height: 5rem;
-  }
-  
-  .flap-text {
-    font-size: 2.2rem;
-    height: 5rem; /* Full height for smaller flaps */
-  }
-}
-
-@media (max-width: 480px) {
-  .flap-unit {
-    width: 2rem;
-    height: 3rem;
-  }
-  
-  .flap-text {
-    font-size: 1.4rem;
-    height: 3rem;
-  }
-  
-  .flap-container {
-    gap: 0.5px;
-  }
-}
-
-/* iPhone SE 및 유사 디바이스 (375px 이하) */
-@media (max-width: 375px) {
-  .flap-unit {
-    width: 1.8rem;
-    height: 2.6rem;
-  }
-  
-  .flap-text {
-    font-size: 1.2rem;
-    height: 2.6rem;
-  }
-  
-  .flap-container {
-    gap: 0.4px;
-  }
-}
-
-/* 매우 작은 화면 최적화 - 크기 증가 */
-@media (max-width: 320px) {
-  .flap-unit {
-    width: 1.6rem;
-    height: 2.2rem;
-  }
-  
-  .flap-text {
-    font-size: 1rem;
-    height: 2.2rem;
-  }
-  
-  .flap-container {
-    gap: 0.3px;
-  }
-}
-
-/* 극소형 화면 최적화 (280px 이하) */
-@media (max-width: 280px) {
-  .flap-unit {
-    width: 1.5rem;
-    height: 2.2rem;
-  }
-  
-  .flap-text {
-    font-size: 1rem;
-    height: 2.2rem;
-  }
-  
-  .flap-container {
-    gap: 0.3px;
-  }
-}
-
-/* 초극소형 화면 최적화 (240px 이하) */
-@media (max-width: 240px) {
-  .flap-unit {
-    width: 1.2rem;
-    height: 1.8rem;
-  }
-  
-  .flap-text {
-    font-size: 0.85rem;
-    height: 1.8rem;
-  }
-  
-  .flap-container {
-    gap: 0.2px;
-  }
 }
 
 /* 접근성: 스크린 리더 전용 텍스트 */

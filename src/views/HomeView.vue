@@ -26,7 +26,7 @@
       
       <a-layout-content class="content">
         <div class="clock-container" role="main" aria-label="시계 표시 영역">
-          <div class="city-display">
+          <div class="city-display" :style="cityFlapStyle">
             <div class="city-container">
               <SplitFlapDisplay :text="cityName" aria-label="현재 도시" />
               <span class="city-label">현재 위치</span>
@@ -100,6 +100,13 @@ const cityName = computed(() => {
   return displayCity === 'LOADING...' ? displayCity : getCityKoreanName(displayCity)
 })
 
+// 도시 이름이 길면 칸을 줄여 한 줄에 들어가게 함
+const cityFlapStyle = computed(() => {
+  const length = Math.max(cityName.value.length, 1)
+  return {
+    '--flap-w': `min(clamp(1.75rem, 9.5vw, 4.5rem), calc((100vw - 6rem) / ${length}))`
+  }
+})
 
 // 시간을 시, 분, 초로 분리
 const hours = computed(() => {
@@ -159,7 +166,8 @@ onUnmounted(() => {
 
 <style scoped>
 .home-view {
-  height: 100vh;
+  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
 }
@@ -172,7 +180,8 @@ onUnmounted(() => {
 }
 
 .layout {
-  height: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
   background: transparent;
 }
 
@@ -246,14 +255,6 @@ onUnmounted(() => {
   z-index: 1; /* 배경보다 앞에 표시하되 드롭다운보다는 뒤에 */
 }
 
-/* Make content area take full viewport height on mobile */
-@media (max-width: 768px) {
-  .content {
-    min-height: calc(100vh - 64px); /* Full viewport height minus header */
-    padding: 16px;
-  }
-}
-
 .clock-container {
   display: flex;
   flex-direction: column;
@@ -313,7 +314,7 @@ onUnmounted(() => {
 .time-units {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: clamp(0.15rem, 1vw, 0.5rem);
   justify-content: center;
   flex-wrap: nowrap; /* 강제로 한 줄 유지 */
   white-space: nowrap; /* 줄바꿈 방지 */
@@ -321,11 +322,13 @@ onUnmounted(() => {
 
 
 .time-separator {
-  font-size: 3rem;
+  font-size: clamp(1.25rem, 6vw, 3rem);
   font-weight: bold;
   color: var(--color-fg-default);
   font-family: 'Courier New', monospace;
-  margin: 0 0.25rem;
+  margin: 0 clamp(0.05rem, 0.8vw, 0.25rem);
+  flex-shrink: 0;
+  line-height: 1;
   opacity: 0.7;
   animation: pulse 2s ease-in-out infinite;
   /* 브라우저 호환성 */
@@ -429,19 +432,6 @@ onUnmounted(() => {
     padding: 1.5rem;
   }
   
-  .time-units {
-    gap: 0.5rem;
-  }
-  
-  .time-separator {
-    font-size: 3rem;
-    margin: 0 0.25rem;
-  }
-  
-  .time-label {
-    font-size: 0.75rem;
-  }
-  
   .date-text {
     font-size: 1rem;
   }
@@ -465,92 +455,8 @@ onUnmounted(() => {
     padding: 1rem;
   }
   
-  .time-units {
-    gap: 0.25rem;
-    justify-content: center;
-    width: 100%;
-    max-width: 100vw;
-    box-sizing: border-box;
-    padding: 0 8px;
-  }
-  
-  .time-separator {
-    font-size: 1.4rem;
-    margin: 0 0.1rem;
-    flex-shrink: 0;
-    line-height: 1;
-  }
-  
-  .time-unit {
-    flex-shrink: 0;
-    min-width: 0;
-  }
-  
-  
   .date-text {
     font-size: 0.9rem;
   }
 }
-
-/* iPhone SE 및 유사 디바이스 (375px 이하) */
-@media (max-width: 375px) {
-  .time-units {
-    gap: 0.2rem;
-    max-width: 100vw;
-    padding: 0 12px;
-  }
-  
-  .time-separator {
-    font-size: 1.3rem;
-    margin: 0 0.08rem;
-  }
-}
-
-/* 매우 작은 화면 (320px 이하) */
-@media (max-width: 320px) {
-  .time-units {
-    gap: 0.15rem;
-    max-width: 100vw;
-    padding: 0 8px;
-  }
-  
-  .time-separator {
-    font-size: 1.2rem;
-    margin: 0 0.05rem;
-  }
-  
-}
-
-/* 극소형 화면 (280px 이하) */
-@media (max-width: 280px) {
-  .time-units {
-    gap: 0.1rem;
-    max-width: 100vw;
-    padding: 0 6px;
-    transform: scale(0.9);
-    transform-origin: center;
-  }
-  
-  .time-separator {
-    font-size: 1rem;
-    margin: 0 0.025rem;
-  }
-  
-}
-
-/* 초극소형 화면 (240px 이하) */
-@media (max-width: 240px) {
-  .time-units {
-    gap: 0.05rem;
-    max-width: 100vw;
-    padding: 0 8px;
-    transform: scale(0.8);
-    transform-origin: center;
-  }
-  
-  .time-separator {
-    font-size: 0.9rem;
-    margin: 0 0.02rem;
-  }
-  
-}</style>
+</style>

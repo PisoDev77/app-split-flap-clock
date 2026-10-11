@@ -252,7 +252,7 @@ import dayjs from '@/utils/dayjs'
  * @since 1.0.0
  */
 
-const { getSupportedCities, getCurrentLocation, getTimezoneByCity, getCityDisplayName, getCityKoreanName } = useLocation()
+const { currentLocation, getSupportedCities, getCurrentLocation, getTimezoneByCity, getCityDisplayName, getCityKoreanName } = useLocation()
 const { setThemeMode } = useTheme()
 const { 
   settings, 
@@ -263,7 +263,8 @@ const {
   enablePerformanceMode: activatePerformanceMode 
 } = useSettings()
 
-const selectedCity = ref('')
+// undefined여야 선택 칸에 안내 문구(placeholder)가 보임
+const selectedCity = ref<string | undefined>(undefined)
 const selectedTheme = ref<'light' | 'dark' | 'system'>('system')
 const isLocationLoading = ref(false)
 const isSaving = ref(false)
@@ -400,9 +401,11 @@ const saveSettings = async (): Promise<void> => {
   isSaving.value = true
   
   try {
-    // 도시 및 시간대 저장
-    localStorage.setItem('selectedCity', selectedCity.value)
-    localStorage.setItem('selectedTimezone', getTimezoneByCity(selectedCity.value))
+    // 도시 및 시간대 저장 (선택한 도시가 있을 때만)
+    if (selectedCity.value) {
+      localStorage.setItem('selectedCity', selectedCity.value)
+      localStorage.setItem('selectedTimezone', getTimezoneByCity(selectedCity.value))
+    }
     
     // 테마 설정 저장 및 적용
     setThemeMode(selectedTheme.value)
@@ -434,10 +437,9 @@ const saveSettings = async (): Promise<void> => {
  */
 const loadUserSettings = (): void => {
   // 저장된 도시 로드
+  // 저장된 도시가 없으면 홈 화면에 보이는 도시(현재 위치, 기본 서울)를 보여줌
   const savedCity = localStorage.getItem('selectedCity')
-  if (savedCity) {
-    selectedCity.value = savedCity
-  }
+  selectedCity.value = savedCity || currentLocation.value?.city || 'Seoul'
   
   // 저장된 테마 모드 로드
   const savedTheme = localStorage.getItem('theme-mode') as 'light' | 'dark' | 'system'
@@ -454,13 +456,15 @@ onMounted(() => {
 
 <style scoped>
 .settings-view {
-  height: 100vh;
+  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
 }
 
 .layout {
-  height: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
   background: var(--color-canvas-default);
 }
 
@@ -506,7 +510,6 @@ onMounted(() => {
   flex: 1;
   padding: 24px;
   background: var(--color-canvas-subtle);
-  overflow-y: auto;
   min-height: calc(100vh - 64px);
 }
 

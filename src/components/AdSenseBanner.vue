@@ -4,7 +4,7 @@
     class="adsense-banner"
     :class="{ 'mobile': isMobile }"
   >
-    <div class="ad-container">
+    <div v-if="!isDevelopment" class="ad-container">
       <!-- Google AdSense 광고 슬롯 -->
       <ins 
         class="adsbygoogle"
@@ -195,10 +195,9 @@ declare global {
   background: rgba(var(--color-canvas-default-rgb), 0.95);
   backdrop-filter: blur(8px);
   border-top: 1px solid var(--color-border-muted);
-  position: fixed;
+  /* sticky: 화면 아래에 붙어 있되, 페이지 끝에서는 자기 자리를 차지해 내용을 가리지 않음 */
+  position: sticky;
   bottom: 0;
-  left: 0;
-  right: 0;
   z-index: 1000;
   box-shadow: var(--shadow-medium);
 }
