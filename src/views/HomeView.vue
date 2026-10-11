@@ -3,7 +3,7 @@
     <!-- 애니메이션 배경 -->
     <AnimatedBackground 
       :enabled="backgroundEffectsEnabled"
-      :show-particles="showParticles"
+      :effect="backgroundEffect"
       :intensity="animationIntensity"
     />
     
@@ -90,7 +90,7 @@ const { currentTime: time, startTimer, stopTimer } = useTime()
 const { settings, loadSettings } = useSettings()
 
 const backgroundEffectsEnabled = computed(() => settings.value.backgroundEffectsEnabled)
-const showParticles = computed(() => settings.value.showParticles)
+const backgroundEffect = computed(() => settings.value.backgroundEffect)
 const animationIntensity = computed(() => settings.value.animationIntensity)
 
 // 설정에서 고른 도시 (없으면 이 기기 시간대를 따름)
@@ -155,6 +155,8 @@ onUnmounted(() => {
 }
 
 .layout {
+  position: relative;
+  z-index: 1; /* 고정된 배경(z-index 0) 위에 내용 표시 */
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -240,8 +242,10 @@ onUnmounted(() => {
   width: 100%;
   max-width: 800px;
   padding: 2rem;
-  background: rgba(var(--color-canvas-default-rgb), 0.85);
-  backdrop-filter: blur(12px);
+  /* 반투명 유리: 뒤의 배경 효과가 은은하게 비침 */
+  background: rgba(var(--color-canvas-default-rgb), 0.45);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   border-radius: 20px;
   border: 1px solid rgba(var(--color-border-default-rgb), 0.3);
   box-shadow: var(--shadow-large);

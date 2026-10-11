@@ -97,9 +97,9 @@
                   <div class="preview-container">
                     <AnimatedBackground 
                       :enabled="backgroundEffectsEnabled"
-                      :show-particles="showParticlesEnabled"
+                      :effect="backgroundEffect"
                       :intensity="animationIntensity"
-                      class="preview-background"
+                      contained
                     />
                     <div class="preview-content">
                       <div class="preview-city">
@@ -136,22 +136,20 @@
                 </div>
               </div>
 
-              <!-- 파티클 효과 -->
+              <!-- 배경 효과 종류 -->
               <div class="setting-item">
-                <div class="setting-row">
-                  <div class="setting-label-group">
-                    <h4 class="ui-title setting-label">
-                      파티클 효과
-                    </h4>
-                    <span class="ui-text ui-text--secondary setting-description">
-                      배경의 떠다니는 파티클 효과를 표시합니다.
-                    </span>
-                  </div>
-                  <UiSwitch
-                    v-model:checked="showParticlesEnabled"
-                    :disabled="!backgroundEffectsEnabled"
-                  />
-                </div>
+                <h4 class="ui-title setting-label">
+                  효과 종류
+                </h4>
+                <UiSelect
+                  v-model:value="backgroundEffect"
+                  class="setting-input"
+                  :options="BACKGROUND_EFFECT_OPTIONS"
+                  :disabled="!backgroundEffectsEnabled"
+                />
+                <span class="ui-text ui-text--secondary setting-description">
+                  배경에 보일 움직임을 고릅니다. 위 미리보기에서 바로 확인할 수 있어요.
+                </span>
               </div>
 
               <!-- 애니메이션 강도 -->
@@ -229,7 +227,7 @@ import AnimatedBackground from '@/components/AnimatedBackground.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import { useLocation } from '@/composables/useLocation'
 import { useTheme } from '@/composables/useTheme'
-import { useSettings } from '@/composables/useSettings'
+import { useSettings, BACKGROUND_EFFECT_OPTIONS } from '@/composables/useSettings'
 import dayjs from '@/utils/dayjs'
 
 /**
@@ -271,9 +269,9 @@ const backgroundEffectsEnabled = computed({
   get: () => settings.value.backgroundEffectsEnabled,
   set: (value) => settings.value.backgroundEffectsEnabled = value
 })
-const showParticlesEnabled = computed({
-  get: () => settings.value.showParticles,
-  set: (value) => settings.value.showParticles = value
+const backgroundEffect = computed({
+  get: () => settings.value.backgroundEffect,
+  set: (value) => settings.value.backgroundEffect = value
 })
 const animationIntensity = computed({
   get: () => settings.value.animationIntensity,
@@ -404,7 +402,6 @@ const saveSettings = async (): Promise<void> => {
     
     // 애니메이션 설정 저장
     localStorage.setItem('backgroundEffectsEnabled', String(backgroundEffectsEnabled.value))
-    localStorage.setItem('showParticles', String(showParticlesEnabled.value))
     localStorage.setItem('animationIntensity', animationIntensity.value)
     
     message.success('설정이 저장되었습니다.')
@@ -583,14 +580,6 @@ onMounted(() => {
   overflow: hidden;
 }
 
-.preview-background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1;
-}
 
 .preview-content {
   position: relative;

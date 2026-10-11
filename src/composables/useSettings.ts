@@ -15,9 +15,23 @@ import { ref, computed, watch } from 'vue'
  * @since 1.0.0
  */
 
+export type BackgroundEffect = 'particles' | 'stars' | 'snow' | 'rain' | 'bokeh' | 'aurora' | 'none'
+
+export const BACKGROUND_EFFECT_OPTIONS: { value: BackgroundEffect, label: string }[] = [
+  { value: 'particles', label: '✨ 반짝이는 입자' },
+  { value: 'stars', label: '🌌 별과 별똥별' },
+  { value: 'snow', label: '❄️ 눈' },
+  { value: 'rain', label: '🌧️ 비' },
+  { value: 'bokeh', label: '🔆 보케 (흐린 빛)' },
+  { value: 'aurora', label: '🌈 오로라' },
+  { value: 'none', label: '그라디언트만' }
+]
+
 interface Settings {
   backgroundEffectsEnabled: boolean
+  /** @deprecated backgroundEffect로 대체. 예전 저장값 변환용으로만 남김 */
   showParticles: boolean
+  backgroundEffect: BackgroundEffect
   animationIntensity: 'low' | 'medium' | 'high'
   timeFormat: '12h' | '24h'
   enableSounds: boolean
@@ -27,6 +41,7 @@ interface Settings {
 const DEFAULT_SETTINGS: Settings = {
   backgroundEffectsEnabled: true,
   showParticles: true,
+  backgroundEffect: 'particles',
   animationIntensity: 'medium',
   timeFormat: '24h',
   enableSounds: false,
@@ -52,6 +67,10 @@ const loadSettings = (): void => {
     if (savedSettings) {
       const parsed = JSON.parse(savedSettings)
       settings.value = { ...DEFAULT_SETTINGS, ...parsed }
+      // 예전 버전: 파티클 스위치를 끈 사람은 '그라디언트만'으로
+      if (!parsed.backgroundEffect && parsed.showParticles === false) {
+        settings.value.backgroundEffect = 'none'
+      }
     }
     
     // 개별 설정들도 체크 (하위 호환성)
@@ -195,7 +214,7 @@ const resetSettings = (): void => {
  */
 const enablePerformanceMode = (): void => {
   settings.value.backgroundEffectsEnabled = false
-  settings.value.showParticles = false
+  settings.value.backgroundEffect = 'none'
   settings.value.animationIntensity = 'low'
   settings.value.reducedMotion = true
 }
@@ -213,14 +232,14 @@ const enablePerformanceMode = (): void => {
 const enableAccessibilityMode = (): void => {
   settings.value.reducedMotion = true
   settings.value.backgroundEffectsEnabled = false
-  settings.value.showParticles = false
+  settings.value.backgroundEffect = 'none'
   settings.value.animationIntensity = 'low'
 }
 
 // 계산된 속성들
 const isPerformanceMode = computed(() => {
   return !settings.value.backgroundEffectsEnabled && 
-         !settings.value.showParticles && 
+         settings.value.backgroundEffect === 'none' && 
          settings.value.animationIntensity === 'low'
 })
 
