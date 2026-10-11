@@ -1,4 +1,5 @@
 import { ref, computed, watch } from 'vue'
+import { theme } from 'ant-design-vue'
 
 interface ThemeConfig {
   token?: Record<string, any>
@@ -63,6 +64,8 @@ const themeConfig = computed<ThemeConfig>(() => {
   const colors = isDarkMode.value ? GITHUB_COLORS.dark : GITHUB_COLORS.light
   
   return {
+    // 다크 알고리즘이 없으면 선택 항목 배경 같은 파생 색이 라이트용으로 남아 글씨가 안 보임
+    algorithm: isDarkMode.value ? theme.darkAlgorithm : theme.defaultAlgorithm,
     token: {
       colorPrimary: colors.colorPrimary,
       colorSuccess: colors.colorSuccess,
