@@ -1,6 +1,6 @@
 <template>
   <div v-if="showInstallPrompt" class="pwa-install-prompt">
-    <a-card class="install-card" :bordered="false">
+    <UiCard class="install-card" :bordered="false">
       <template #title>
         <div class="install-header">
           <div class="app-icon">📱</div>
@@ -20,29 +20,31 @@
         </ul>
         
         <div class="install-actions">
-          <a-button 
+          <UiButton 
             type="primary" 
             size="large"
             :loading="isInstalling"
             @click="handleInstall"
           >
             설치하기
-          </a-button>
-          <a-button 
+          </UiButton>
+          <UiButton 
             type="text" 
             @click="dismissPrompt"
           >
             나중에
-          </a-button>
+          </UiButton>
         </div>
       </div>
-    </a-card>
+    </UiCard>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
-import { Card as ACard, Button as AButton, message } from 'ant-design-vue'
+import UiButton from '@/components/ui/UiButton.vue'
+import UiCard from '@/components/ui/UiCard.vue'
+import { message } from '@/composables/useToast'
 import { showInstallPrompt as showPWAInstallPrompt, canInstallPWA } from '@/utils/pwa'
 
 /**
@@ -269,7 +271,7 @@ onUnmounted(() => {
   align-items: center;
 }
 
-.install-actions .ant-btn-primary {
+.install-actions .ui-btn--primary {
   flex: 1;
 }
 
@@ -320,7 +322,7 @@ onUnmounted(() => {
     gap: 8px;
   }
   
-  .install-actions .ant-btn {
+  .install-actions .ui-btn {
     width: 100%;
   }
 }</style>

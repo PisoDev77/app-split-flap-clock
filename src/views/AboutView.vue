@@ -1,25 +1,25 @@
 <template>
   <div class="about-view">
-    <a-layout class="layout">
-      <a-layout-header class="header">
+    <div class="layout">
+      <header class="header">
         <div class="header-content">
-          <a-button 
+          <UiButton 
             type="text" 
-            :icon="h(ArrowLeftOutlined)"
+            :icon="ArrowLeftOutlined"
             class="back-btn"
             aria-label="이전 페이지로 돌아가기"
             @click="$router.back()"
           >
             뒤로
-          </a-button>
+          </UiButton>
           <h1 class="page-title">소개</h1>
           <div class="header-spacer" />
         </div>
-      </a-layout-header>
+      </header>
       
-      <a-layout-content class="content">
+      <div class="content">
         <div class="about-container" role="main">
-          <a-card class="hero-card">
+          <UiCard class="hero-card">
             <div class="hero-content">
               <div class="app-icon">
                 <img src="/icons/icon-192x192.png" alt="Split Flap Clock">
@@ -29,18 +29,18 @@
                 클래식한 분할 플랩 디스플레이로 시간을 표시하는 아름다운 시계 앱
               </p>
             </div>
-          </a-card>
+          </UiCard>
 
-          <a-card class="info-card" title="🎯 앱의 목적">
+          <UiCard class="info-card" title="🎯 앱의 목적">
             <p>
               Split Flap Clock은 공항이나 기차역에서 볼 수 있는 클래식한 분할 플랩 디스플레이를 
               디지털로 재현한 시계 앱입니다. 단순히 시간을 확인하는 것을 넘어서, 
               향수를 불러일으키는 아날로그적 감성과 현대적 기능을 결합했습니다.
             </p>
-          </a-card>
+          </UiCard>
 
-          <a-card class="info-card" title="✨ 주요 기능">
-            <a-space direction="vertical" size="large" class="feature-list">
+          <UiCard class="info-card" title="✨ 주요 기능">
+            <div class="ui-stack feature-list">
               <div class="feature-item">
                 <h4>🌍 전 세계 시간대 지원</h4>
                 <p>세계 주요 도시의 시간을 실시간으로 확인할 수 있습니다.</p>
@@ -65,21 +65,21 @@
                 <h4>⚡ PWA 지원</h4>
                 <p>앱처럼 설치하여 오프라인에서도 사용할 수 있습니다.</p>
               </div>
-            </a-space>
-          </a-card>
-
-          <a-card class="info-card" title="🛠️ 기술 스택">
-            <div class="tech-stack">
-              <a-tag color="blue">Vue 3</a-tag>
-              <a-tag color="green">TypeScript</a-tag>
-              <a-tag color="purple">Ant Design Vue</a-tag>
-              <a-tag color="orange">Vite</a-tag>
-              <a-tag color="red">PWA</a-tag>
-              <a-tag color="cyan">CSS3 Animations</a-tag>
             </div>
-          </a-card>
+          </UiCard>
 
-          <a-card class="info-card" title="🎨 디자인 철학">
+          <UiCard class="info-card" title="🛠️ 기술 스택">
+            <div class="tech-stack">
+              <UiTag color="blue">Vue 3</UiTag>
+              <UiTag color="green">TypeScript</UiTag>
+              <UiTag color="purple">Day.js</UiTag>
+              <UiTag color="orange">Vite</UiTag>
+              <UiTag color="red">PWA</UiTag>
+              <UiTag color="cyan">CSS3 Animations</UiTag>
+            </div>
+          </UiCard>
+
+          <UiCard class="info-card" title="🎨 디자인 철학">
             <p>
               Split Flap Clock은 <strong>미니멀리즘</strong>과 <strong>기능성</strong>을 추구합니다. 
               복잡한 기능보다는 시간 확인이라는 본질적 목적에 충실하면서도, 
@@ -90,10 +90,10 @@
               클래식한 분할 플랩 디스플레이의 물리적 움직임을 CSS 애니메이션으로 섬세하게 구현하여, 
               디지털 환경에서도 아날로그적 따뜻함을 느낄 수 있도록 했습니다.
             </p>
-          </a-card>
+          </UiCard>
 
-          <a-card class="info-card" title="🌟 특별한 가치">
-            <a-space direction="vertical" size="middle">
+          <UiCard class="info-card" title="🌟 특별한 가치">
+            <div class="ui-stack ui-stack--middle">
               <div class="value-item">
                 <h4>⏰ 시간에 대한 새로운 인식</h4>
                 <p>단순한 숫자가 아닌, 물리적 움직임이 있는 시간 표시로 시간의 흐름을 더욱 생생하게 느낄 수 있습니다.</p>
@@ -106,36 +106,30 @@
                 <h4>🌈 감성적 경험</h4>
                 <p>향수를 불러일으키는 레트로 디자인으로 일상에 작은 즐거움을 더합니다.</p>
               </div>
-            </a-space>
-          </a-card>
+            </div>
+          </UiCard>
 
-          <a-card class="info-card" title="📞 개발자 정보">
+          <UiCard class="info-card" title="📞 개발자 정보">
             <div class="developer-info">
               <p><strong>개발자:</strong> Piso Developer</p>
               <p><strong>문의:</strong> <a href="https://github.com/PisoDev77/app-split-flap-clock/issues" target="_blank" rel="noopener">GitHub Issues</a></p>
               <p><strong>버전:</strong> 1.5</p>
               <p><strong>최종 업데이트:</strong> {{ lastUpdated }}</p>
             </div>
-          </a-card>
+          </UiCard>
         </div>
-      </a-layout-content>
+      </div>
       
       <AppFooter />
-    </a-layout>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, h } from 'vue'
-import {
-  Layout as ALayout,
-  Button as AButton,
-  Card as ACard,
-  Space as ASpace,
-  Tag as ATag,
-  LayoutContent as ALayoutContent,
-  LayoutHeader as ALayoutHeader
-} from 'ant-design-vue'
+import { computed } from 'vue'
+import UiButton from '@/components/ui/UiButton.vue'
+import UiCard from '@/components/ui/UiCard.vue'
+import UiTag from '@/components/ui/UiTag.vue'
 import { ArrowLeftOutlined } from '@ant-design/icons-vue'
 import AppFooter from '@/components/AppFooter.vue'
 
@@ -157,6 +151,8 @@ const lastUpdated = computed(() => {
 }
 
 .layout {
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
   min-height: 100dvh;
   background: var(--color-canvas-default);

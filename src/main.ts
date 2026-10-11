@@ -4,6 +4,7 @@ import router from './router'
 import { setupTheme } from './plugins/theme'
 import { useTheme } from './composables/useTheme'
 import './style.css'
+import './components/ui/ui.css'
 
 /**
  * ## Vue 앱 초기화
@@ -12,7 +13,7 @@ import './style.css'
  * 
  * ### 설정 내용
  * - Vue Router 설정
- * - Ant Design Vue 컴포넌트는 각 화면에서 필요한 것만 import
+ * - UI 부품은 src/components/ui (직접 만든 가벼운 컴포넌트)
  * - 테마 시스템 초기화
  * 
  * @since 1.0.0

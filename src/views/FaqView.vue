@@ -1,105 +1,100 @@
 <template>
   <div class="faq-view">
-    <a-layout class="layout">
-      <a-layout-header class="header">
+    <div class="layout">
+      <header class="header">
         <div class="header-content">
-          <a-button 
+          <UiButton 
             type="text" 
-            :icon="h(ArrowLeftOutlined)"
+            :icon="ArrowLeftOutlined"
             class="back-btn"
             aria-label="이전 페이지로 돌아가기"
             @click="$router.back()"
           >
             뒤로
-          </a-button>
+          </UiButton>
           <h1 class="page-title">자주 묻는 질문</h1>
           <div class="header-spacer" />
         </div>
-      </a-layout-header>
+      </header>
       
-      <a-layout-content class="content">
+      <div class="content">
         <div class="faq-container" role="main">
-          <a-card class="intro-card">
+          <UiCard class="intro-card">
             <h2>❓ 자주 묻는 질문 (FAQ)</h2>
             <p>
               Split Flap Clock 사용 중 궁금한 점들을 모아놨습니다. 
               원하는 답변을 찾지 못하셨다면 개발자에게 직접 문의해주세요.
             </p>
             <div class="search-box">
-              <a-input 
+              <UiInput 
                 v-model:value="searchQuery"
                 placeholder="궁금한 내용을 검색해보세요..."
-                :prefix="h(SearchOutlined)"
+                :prefix="SearchOutlined"
                 size="large"
                 class="search-input"
                 aria-label="FAQ 검색"
               />
             </div>
-          </a-card>
+          </UiCard>
 
-          <a-collapse v-model:active-key="activeKeys" ghost size="large">
-            <a-collapse-panel 
+          <UiCollapse v-model:active-key="activeKeys">
+            <UiCollapsePanel 
               v-for="(faq, index) in filteredFaqs" 
-              :key="index" 
+              :key="index" :panel-key="String(index)" 
               :header="faq.question" 
               class="faq-panel"
             >
               <!-- answer는 이 파일에 직접 쓴 고정 문구라 안전함 -->
               <!-- eslint-disable-next-line vue/no-v-html -->
               <div class="faq-answer" v-html="faq.answer" />
-            </a-collapse-panel>
-          </a-collapse>
+            </UiCollapsePanel>
+          </UiCollapse>
 
-          <a-card v-if="filteredFaqs.length === 0 && searchQuery" class="contact-card">
+          <UiCard v-if="filteredFaqs.length === 0 && searchQuery" class="contact-card">
             <h3>🔍 찾으시는 답변이 없나요?</h3>
             <p>검색하신 "{{ searchQuery }}"에 대한 답변을 찾을 수 없습니다.</p>
             <p>아래에서 직접 문의해주세요.</p>
             <div class="contact-info">
               <p><strong>문의:</strong> <a href="https://github.com/PisoDev77/app-split-flap-clock/issues" target="_blank" rel="noopener">GitHub Issues</a> (GitHub 계정 필요, 글은 공개됩니다)</p>
             </div>
-          </a-card>
+          </UiCard>
 
-          <a-card class="help-card">
+          <UiCard class="help-card">
             <h3>💬 추가 도움이 필요하신가요?</h3>
             <p>
               더 자세한 정보는 <a href="/guide">사용법 가이드</a>를 참고하시거나, 
               아래 연락처로 문의해주세요.
             </p>
             <div class="contact-actions">
-              <a-button
+              <UiButton
                 type="primary"
                 size="large"
-                :icon="h(MailOutlined)"
+                :icon="MailOutlined"
                 href="https://github.com/PisoDev77/app-split-flap-clock/issues"
                 target="_blank"
               >
                 문의하기
-              </a-button>
-              <a-button size="large" :icon="h(BookOutlined)" @click="$router.push('/guide')">
+              </UiButton>
+              <UiButton size="large" :icon="BookOutlined" @click="$router.push('/guide')">
                 사용법 가이드
-              </a-button>
+              </UiButton>
             </div>
-          </a-card>
+          </UiCard>
         </div>
-      </a-layout-content>
+      </div>
       
       <AppFooter />
-    </a-layout>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, h } from 'vue'
-import {
-  Layout as ALayout,
-  Button as AButton,
-  Card as ACard,
-  Collapse as ACollapse,
-  Input as AInput,
-  CollapsePanel as ACollapsePanel,
-  LayoutContent as ALayoutContent,
-  LayoutHeader as ALayoutHeader
-} from 'ant-design-vue'
+import { ref, computed } from 'vue'
+import UiButton from '@/components/ui/UiButton.vue'
+import UiCard from '@/components/ui/UiCard.vue'
+import UiCollapse from '@/components/ui/UiCollapse.vue'
+import UiCollapsePanel from '@/components/ui/UiCollapsePanel.vue'
+import UiInput from '@/components/ui/UiInput.vue'
 import { ArrowLeftOutlined, SearchOutlined, MailOutlined, BookOutlined } from '@ant-design/icons-vue'
 import AppFooter from '@/components/AppFooter.vue'
 
@@ -324,6 +319,8 @@ const filteredFaqs = computed(() => {
 }
 
 .layout {
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
   min-height: 100dvh;
   background: var(--color-canvas-default);
@@ -528,7 +525,7 @@ const filteredFaqs = computed(() => {
     flex-direction: column;
   }
   
-  .contact-actions .ant-btn {
+  .contact-actions .ui-btn {
     width: 100%;
   }
 }

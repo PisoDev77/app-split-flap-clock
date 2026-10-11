@@ -1,34 +1,34 @@
 <template>
   <div class="timezone-view">
-    <a-layout class="layout">
-      <a-layout-header class="header">
+    <div class="layout">
+      <header class="header">
         <div class="header-content">
-          <a-button 
+          <UiButton 
             type="text" 
-            :icon="h(ArrowLeftOutlined)"
+            :icon="ArrowLeftOutlined"
             class="back-btn"
             aria-label="이전 페이지로 돌아가기"
             @click="$router.back()"
           >
             뒤로
-          </a-button>
+          </UiButton>
           <h1 class="page-title">세계 시간대</h1>
           <div class="header-spacer" />
         </div>
-      </a-layout-header>
+      </header>
       
-      <a-layout-content class="content">
+      <div class="content">
         <div class="timezone-container" role="main">
-          <a-card class="intro-card">
+          <UiCard class="intro-card">
             <h2>🌍 세계 시간대 정보</h2>
             <p>
               전 세계의 시간대 시스템과 Split Flap Clock에서 지원하는 주요 도시들의 
               시간 정보를 확인해보세요. GMT, UTC의 개념부터 시차 계산법까지 
               시간대에 대한 모든 것을 알아보겠습니다.
             </p>
-          </a-card>
+          </UiCard>
 
-          <a-card class="info-card" title="⏰ 시간대 기본 개념">
+          <UiCard class="info-card" title="⏰ 시간대 기본 개념">
             <h3>GMT (Greenwich Mean Time)</h3>
             <p>
               <strong>그리니치 평균시</strong>는 영국 런던의 그리니치 천문대를 기준으로 한 시간입니다. 
@@ -47,9 +47,9 @@
               <li><strong>GMT+0</strong> 또는 <strong>UTC+0</strong>: GMT와 동일 (영국)</li>
               <li><strong>GMT-5</strong> 또는 <strong>UTC-5</strong>: GMT보다 5시간 느림 (뉴욕)</li>
             </ul>
-          </a-card>
+          </UiCard>
 
-          <a-card class="info-card" title="🏙️ 주요 도시별 시간대">
+          <UiCard class="info-card" title="🏙️ 주요 도시별 시간대">
             <div class="timezone-grid">
               <div class="timezone-region">
                 <h3>아시아</h3>
@@ -175,9 +175,9 @@
                 </div>
               </div>
             </div>
-          </a-card>
+          </UiCard>
 
-          <a-card class="info-card" title="🧮 시차 계산하기">
+          <UiCard class="info-card" title="🧮 시차 계산하기">
             <h3>기본 계산법</h3>
             <p>
               두 도시 간의 시차를 계산하는 방법은 각 도시의 GMT 오프셋 차이를 구하는 것입니다.
@@ -213,9 +213,9 @@
               <li><strong>적용 기간:</strong> 대략 3월~11월 (국가별로 다름)</li>
               <li><strong>시차 변화:</strong> 표준 시차에서 ±1시간</li>
             </ul>
-          </a-card>
+          </UiCard>
 
-          <a-card class="info-card" title="🌐 비즈니스 시간대 활용">
+          <UiCard class="info-card" title="🌐 비즈니스 시간대 활용">
             <h3>국제 회의 시간 정하기</h3>
             <p>여러 국가의 참석자가 있는 회의 시간을 정할 때 고려사항:</p>
             <ul>
@@ -238,9 +238,9 @@
               <li><strong>도착 후:</strong> 현지 시간에 맞춰 식사와 수면 시간 조정</li>
               <li><strong>짧은 여행:</strong> 3일 이하면 본국 시간 유지가 더 효율적</li>
             </ul>
-          </a-card>
+          </UiCard>
 
-          <a-card class="info-card" title="💡 Split Flap Clock 활용 팁">
+          <UiCard class="info-card" title="💡 Split Flap Clock 활용 팁">
             <h3>다중 시간대 관리</h3>
             <ul>
               <li><strong>북마크 활용:</strong> 자주 확인하는 도시들을 즐겨찾기에 추가</li>
@@ -261,24 +261,19 @@
               <li><strong>여행 계획:</strong> 목적지 시간대 미리 확인</li>
               <li><strong>온라인 이벤트:</strong> 해외 라이브 스트리밍/게임 시간 확인</li>
             </ul>
-          </a-card>
+          </UiCard>
         </div>
-      </a-layout-content>
+      </div>
       
       <AppFooter />
-    </a-layout>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, h } from 'vue'
-import {
-  Layout as ALayout,
-  Button as AButton,
-  Card as ACard,
-  LayoutContent as ALayoutContent,
-  LayoutHeader as ALayoutHeader
-} from 'ant-design-vue'
+import { ref, onMounted, onUnmounted } from 'vue'
+import UiButton from '@/components/ui/UiButton.vue'
+import UiCard from '@/components/ui/UiCard.vue'
 import { ArrowLeftOutlined } from '@ant-design/icons-vue'
 import AppFooter from '@/components/AppFooter.vue'
 import dayjs from '@/utils/dayjs'
@@ -348,6 +343,8 @@ onUnmounted(() => {
 }
 
 .layout {
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
   min-height: 100dvh;
   background: var(--color-canvas-default);

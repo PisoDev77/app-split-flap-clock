@@ -1,100 +1,98 @@
 <template>
   <div class="settings-view">
-    <a-layout class="layout">
-      <a-layout-header class="header">
+    <div class="layout">
+      <header class="header">
         <div class="header-content">
-          <a-button 
+          <UiButton 
             type="text" 
-            :icon="h(ArrowLeftOutlined)"
+            :icon="ArrowLeftOutlined"
             class="back-btn"
             aria-label="이전 페이지로 돌아가기"
             @click="$router.back()"
           >
             뒤로
-          </a-button>
+          </UiButton>
           <h1 class="page-title">설정</h1>
           <div class="header-spacer" />
         </div>
-      </a-layout-header>
+      </header>
       
-      <a-layout-content class="content">
+      <div class="content">
         <div class="settings-container" role="main">
-          <a-card class="settings-card" title="시간 및 위치 설정">
-            <a-space direction="vertical" size="large" class="settings-form">
+          <UiCard class="settings-card" title="시간 및 위치 설정">
+            <div class="ui-stack settings-form">
               <!-- 도시 선택 -->
               <div class="setting-item">
-                <a-typography-title :level="4" class="setting-label">
+                <h4 class="ui-title setting-label">
                   도시 선택
-                </a-typography-title>
-                <a-select
+                </h4>
+                <UiSelect
                   v-model:value="selectedCity"
                   placeholder="도시를 선택하세요"
                   class="setting-input"
                   :options="cityOptions"
-                  show-search
-                  :filter-option="filterCityOption"
                 />
-                <a-typography-text type="secondary" class="setting-description">
+                <span class="ui-text ui-text--secondary setting-description">
                   시간을 표시할 도시를 선택합니다.
-                </a-typography-text>
+                </span>
               </div>
 
               <!-- 시간대 표시 -->
               <div class="setting-item">
-                <a-typography-title :level="4" class="setting-label">
+                <h4 class="ui-title setting-label">
                   현재 시간대
-                </a-typography-title>
-                <a-typography-text class="timezone-display">
+                </h4>
+                <span class="ui-text timezone-display">
                   UTC{{ currentOffset }} ({{ currentCityDisplay }})
-                </a-typography-text>
-                <a-typography-text type="secondary" class="setting-description">
+                </span>
+                <span class="ui-text ui-text--secondary setting-description">
                   선택된 도시의 지금 시간대입니다. 서머타임이 자동으로 반영됩니다.
-                </a-typography-text>
+                </span>
               </div>
 
               <!-- 위치 기반 자동 설정 -->
               <div class="setting-item">
-                <a-typography-title :level="4" class="setting-label">
+                <h4 class="ui-title setting-label">
                   기기 시간대 자동 설정
-                </a-typography-title>
-                <a-button 
+                </h4>
+                <UiButton 
                   type="primary" 
                   :loading="isLocationLoading"
-                  :icon="h(EnvironmentOutlined)"
+                  :icon="EnvironmentOutlined"
                   @click="handleAutoLocation"
                 >
                   이 기기 시간대 따르기
-                </a-button>
-                <a-typography-text type="secondary" class="setting-description">
+                </UiButton>
+                <span class="ui-text ui-text--secondary setting-description">
                   위치 권한 없이, 이 기기에 설정된 시간대의 시간을 보여줍니다.
-                </a-typography-text>
+                </span>
               </div>
-            </a-space>
-          </a-card>
+            </div>
+          </UiCard>
 
-          <a-card class="settings-card" title="화면 설정">
-            <a-space direction="vertical" size="large" class="settings-form">
+          <UiCard class="settings-card" title="화면 설정">
+            <div class="ui-stack settings-form">
               <!-- 테마 설정 -->
               <div class="setting-item">
-                <a-typography-title :level="4" class="setting-label">
+                <h4 class="ui-title setting-label">
                   테마 모드
-                </a-typography-title>
-                <a-select
+                </h4>
+                <UiSelect
                   v-model:value="selectedTheme"
                   class="setting-input"
                   :options="themeOptions"
                   @change="handleThemeChange"
                 />
-                <a-typography-text type="secondary" class="setting-description">
+                <span class="ui-text ui-text--secondary setting-description">
                   앱의 색상 테마를 선택합니다.
-                </a-typography-text>
+                </span>
               </div>
 
               <!-- 테마 미리보기 -->
               <div class="setting-item">
-                <a-typography-title :level="4" class="setting-label">
+                <h4 class="ui-title setting-label">
                   미리보기
-                </a-typography-title>
+                </h4>
                 <div class="theme-preview">
                   <div class="preview-container">
                     <AnimatedBackground 
@@ -116,23 +114,23 @@
                   </div>
                 </div>
               </div>
-            </a-space>
-          </a-card>
+            </div>
+          </UiCard>
 
-          <a-card class="settings-card" title="애니메이션 설정">
-            <a-space direction="vertical" size="large" class="settings-form">
+          <UiCard class="settings-card" title="애니메이션 설정">
+            <div class="ui-stack settings-form">
               <!-- 배경 효과 -->
               <div class="setting-item">
                 <div class="setting-row">
                   <div class="setting-label-group">
-                    <a-typography-title :level="4" class="setting-label">
+                    <h4 class="ui-title setting-label">
                       배경 효과
-                    </a-typography-title>
-                    <a-typography-text type="secondary" class="setting-description">
+                    </h4>
+                    <span class="ui-text ui-text--secondary setting-description">
                       시간대별 동적 배경 효과를 활성화합니다.
-                    </a-typography-text>
+                    </span>
                   </div>
-                  <a-switch
+                  <UiSwitch
                     v-model:checked="backgroundEffectsEnabled"
                   />
                 </div>
@@ -142,14 +140,14 @@
               <div class="setting-item">
                 <div class="setting-row">
                   <div class="setting-label-group">
-                    <a-typography-title :level="4" class="setting-label">
+                    <h4 class="ui-title setting-label">
                       파티클 효과
-                    </a-typography-title>
-                    <a-typography-text type="secondary" class="setting-description">
+                    </h4>
+                    <span class="ui-text ui-text--secondary setting-description">
                       배경의 떠다니는 파티클 효과를 표시합니다.
-                    </a-typography-text>
+                    </span>
                   </div>
-                  <a-switch
+                  <UiSwitch
                     v-model:checked="showParticlesEnabled"
                     :disabled="!backgroundEffectsEnabled"
                   />
@@ -158,46 +156,45 @@
 
               <!-- 애니메이션 강도 -->
               <div class="setting-item">
-                <a-typography-title :level="4" class="setting-label">
+                <h4 class="ui-title setting-label">
                   애니메이션 강도
-                </a-typography-title>
-                <a-select
+                </h4>
+                <UiSelect
                   v-model:value="animationIntensity"
                   class="setting-input"
                   :options="intensityOptions"
                   :disabled="!backgroundEffectsEnabled"
                 />
-                <a-typography-text type="secondary" class="setting-description">
+                <span class="ui-text ui-text--secondary setting-description">
                   애니메이션의 강도를 조절합니다. 높을수록 더 화려합니다.
-                </a-typography-text>
+                </span>
               </div>
 
               <!-- 성능 모드 -->
               <div class="setting-item">
                 <div class="setting-row">
                   <div class="setting-label-group">
-                    <a-typography-title :level="4" class="setting-label">
+                    <h4 class="ui-title setting-label">
                       성능 모드
-                    </a-typography-title>
-                    <a-typography-text type="secondary" class="setting-description">
+                    </h4>
+                    <span class="ui-text ui-text--secondary setting-description">
                       저성능 기기를 위해 모든 효과를 비활성화합니다.
-                    </a-typography-text>
+                    </span>
                   </div>
-                  <a-button 
+                  <UiButton 
                     size="small"
-                    type="dashed"
                     @click="handlePerformanceModeClick"
                   >
                     성능 모드 활성화
-                  </a-button>
+                  </UiButton>
                 </div>
               </div>
-            </a-space>
-          </a-card>
+            </div>
+          </UiCard>
 
           <!-- 설정 저장 버튼 -->
           <div class="save-section">
-            <a-button 
+            <UiButton 
               type="primary" 
               size="large"
               :loading="isSaving"
@@ -205,32 +202,24 @@
               @click="saveSettings"
             >
               설정 저장
-            </a-button>
+            </UiButton>
           </div>
         </div>
-      </a-layout-content>
+      </div>
       
       <AppFooter />
-    </a-layout>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, h } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import {
-  Layout as ALayout,
-  Button as AButton,
-  Card as ACard,
-  Space as ASpace,
-  Select as ASelect,
-  Switch as ASwitch,
-  message,
-  LayoutContent as ALayoutContent,
-  LayoutHeader as ALayoutHeader,
-  TypographyText as ATypographyText,
-  TypographyTitle as ATypographyTitle
-} from 'ant-design-vue'
+import UiButton from '@/components/ui/UiButton.vue'
+import UiCard from '@/components/ui/UiCard.vue'
+import UiSelect from '@/components/ui/UiSelect.vue'
+import UiSwitch from '@/components/ui/UiSwitch.vue'
+import { message } from '@/composables/useToast'
 import { 
   ArrowLeftOutlined, 
   EnvironmentOutlined 
@@ -330,19 +319,6 @@ const currentTimezone = computed(() => isAutoCity.value
   : getTimezoneByCity(currentCity.value))
 const currentOffset = computed(() => getUtcOffset(currentTimezone.value))
 const currentCityDisplay = computed(() => getCityKoreanName(currentCity.value))
-
-/**
- * ## 도시 검색 필터
- * 
- * **도시 선택 드롭다운**에서 검색 기능을 제공합니다.
- * 
- * @param {string} input - **사용자 입력**
- * @param {any} option - **선택 옵션**
- * @returns {boolean} **필터 결과**
- */
-const filterCityOption = (input: string, option: any): boolean => {
-  return option.label.toLowerCase().includes(input.toLowerCase())
-}
 
 /**
  * ## 기기 시간대 따르기
@@ -479,6 +455,8 @@ onMounted(() => {
 }
 
 .layout {
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
   min-height: 100dvh;
   background: var(--color-canvas-default);

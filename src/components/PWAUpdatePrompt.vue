@@ -6,7 +6,7 @@
       role="alert"
       aria-live="polite"
     >
-      <a-card class="update-card" :bordered="false">
+      <UiCard class="update-card" :bordered="false">
         <template #title>
           <div class="update-header">
             <div class="update-icon">🚀</div>
@@ -25,30 +25,32 @@
           </ul>
           
           <div class="update-actions">
-            <a-button 
+            <UiButton 
               type="primary" 
               size="large"
               :loading="isUpdating"
               @click="updateApp"
             >
               {{ isUpdating ? '업데이트 중...' : '지금 업데이트' }}
-            </a-button>
-            <a-button 
+            </UiButton>
+            <UiButton 
               type="text" 
               @click="dismissUpdate"
             >
               나중에
-            </a-button>
+            </UiButton>
           </div>
         </div>
-      </a-card>
+      </UiCard>
     </div>
   </Transition>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
-import { Card as ACard, Button as AButton, message } from 'ant-design-vue'
+import UiButton from '@/components/ui/UiButton.vue'
+import UiCard from '@/components/ui/UiCard.vue'
+import { message } from '@/composables/useToast'
 
 /**
  * ## PWA 업데이트 프롬프트 컴포넌트
@@ -282,7 +284,7 @@ onUnmounted(() => {
   align-items: center;
 }
 
-.update-actions .ant-btn-primary {
+.update-actions .ui-btn--primary {
   flex: 1;
 }
 
@@ -337,7 +339,7 @@ onUnmounted(() => {
     gap: 8px;
   }
   
-  .update-actions .ant-btn {
+  .update-actions .ui-btn {
     width: 100%;
   }
 }

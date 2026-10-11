@@ -1,0 +1,251 @@
+/* 직접 만든 UI 부품 공통 스타일. 색은 style.css의 --color-* 변수를 씀 (다크 모드 자동) */
+
+/* Button */
+.ui-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 15px;
+  border: 1px solid var(--color-border-default);
+  border-radius: 6px;
+  background: var(--color-canvas-default);
+  color: var(--color-fg-default);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s, opacity 0.2s;
+}
+.ui-btn:hover { border-color: var(--color-accent-fg); color: var(--color-accent-fg); }
+.ui-btn:focus-visible { outline: 2px solid var(--color-accent-fg); outline-offset: 2px; }
+.ui-btn:disabled { cursor: not-allowed; opacity: 0.6; }
+.ui-btn--small { height: 28px; padding: 0 8px; font-size: 13px; }
+.ui-btn--large { height: 44px; padding: 0 18px; font-size: 16px; }
+.ui-btn--block { display: flex; width: 100%; }
+.ui-btn--primary { background: var(--color-accent-fg); border-color: var(--color-accent-fg); color: #fff; }
+.ui-btn--primary:hover { color: #fff; opacity: 0.88; }
+.ui-btn--text { background: transparent; border-color: transparent; }
+.ui-btn--text:hover { background: var(--color-canvas-subtle); border-color: transparent; }
+.ui-btn__icon { font-size: 1em; display: inline-flex; }
+.ui-btn__spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: ui-spin 0.8s linear infinite;
+}
+@keyframes ui-spin { to { transform: rotate(360deg); } }
+
+/* Card */
+.ui-card {
+  background: var(--color-canvas-default);
+  border: 1px solid var(--color-border-default);
+  border-radius: 8px;
+  color: var(--color-fg-default);
+}
+.ui-card--borderless { border-color: transparent; }
+.ui-card__head {
+  display: flex;
+  align-items: center;
+  min-height: 56px;
+  padding: 0 24px;
+  border-bottom: 1px solid var(--color-border-default);
+  font-size: 16px;
+  font-weight: 600;
+}
+.ui-card__body { padding: 24px; }
+@media (max-width: 480px) {
+  .ui-card__head { padding: 0 16px; }
+  .ui-card__body { padding: 16px; }
+}
+
+/* Select */
+.ui-select { position: relative; display: block; }
+.ui-select::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  width: 7px;
+  height: 7px;
+  border-right: 1.5px solid var(--color-fg-muted);
+  border-bottom: 1.5px solid var(--color-fg-muted);
+  transform: translateY(-70%) rotate(45deg);
+  pointer-events: none;
+}
+.ui-select__native {
+  width: 100%;
+  height: 40px;
+  padding: 0 36px 0 12px;
+  border: 1px solid var(--color-border-default);
+  border-radius: 6px;
+  background: var(--color-canvas-default);
+  color: var(--color-fg-default);
+  font: inherit;
+  font-size: 14px;
+  appearance: none;
+  cursor: pointer;
+}
+.ui-select__native:focus-visible { outline: 2px solid var(--color-accent-fg); outline-offset: 1px; }
+.ui-select--disabled .ui-select__native { cursor: not-allowed; opacity: 0.6; }
+
+/* Switch */
+.ui-switch {
+  position: relative;
+  flex-shrink: 0;
+  width: 44px;
+  height: 22px;
+  padding: 0;
+  border: none;
+  border-radius: 11px;
+  background: var(--color-border-default);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.ui-switch--on { background: var(--color-accent-fg); }
+.ui-switch:disabled { cursor: not-allowed; opacity: 0.5; }
+.ui-switch:focus-visible { outline: 2px solid var(--color-accent-fg); outline-offset: 2px; }
+.ui-switch__thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s;
+}
+.ui-switch--on .ui-switch__thumb { transform: translateX(22px); }
+
+/* Input */
+.ui-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--color-border-default);
+  border-radius: 6px;
+  background: var(--color-canvas-default);
+  color: var(--color-fg-default);
+}
+.ui-input--large { height: 44px; font-size: 16px; }
+.ui-input:focus-within { border-color: var(--color-accent-fg); }
+.ui-input__prefix { color: var(--color-fg-muted); display: inline-flex; }
+.ui-input__native {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
+
+/* Tag */
+.ui-tag {
+  display: inline-block;
+  padding: 0 7px;
+  border: 1px solid var(--tag-border, var(--color-border-default));
+  border-radius: 4px;
+  background: var(--tag-bg, var(--color-canvas-subtle));
+  color: var(--tag-fg, var(--color-fg-default));
+  font-size: 12px;
+  line-height: 20px;
+}
+.ui-tag--blue { --tag-fg: #0958d9; --tag-bg: #e6f4ff; --tag-border: #91caff; }
+.ui-tag--green { --tag-fg: #389e0d; --tag-bg: #f6ffed; --tag-border: #b7eb8f; }
+.ui-tag--purple { --tag-fg: #531dab; --tag-bg: #f9f0ff; --tag-border: #d3adf7; }
+.ui-tag--orange { --tag-fg: #d46b08; --tag-bg: #fff7e6; --tag-border: #ffd591; }
+.ui-tag--cyan { --tag-fg: #08979c; --tag-bg: #e6fffb; --tag-border: #87e8de; }
+.ui-tag--red { --tag-fg: #cf1322; --tag-bg: #fff1f0; --tag-border: #ffa39e; }
+[data-theme='dark'] .ui-tag--blue { --tag-fg: #69b1ff; --tag-bg: #111a2c; --tag-border: #15325b; }
+[data-theme='dark'] .ui-tag--green { --tag-fg: #95de64; --tag-bg: #162312; --tag-border: #274916; }
+[data-theme='dark'] .ui-tag--purple { --tag-fg: #b37feb; --tag-bg: #1a1325; --tag-border: #301c4d; }
+[data-theme='dark'] .ui-tag--orange { --tag-fg: #ffa940; --tag-bg: #2b1d11; --tag-border: #593815; }
+[data-theme='dark'] .ui-tag--cyan { --tag-fg: #5cdbd3; --tag-bg: #112123; --tag-border: #144848; }
+[data-theme='dark'] .ui-tag--red { --tag-fg: #ff7875; --tag-bg: #2a1215; --tag-border: #58181c; }
+
+/* Collapse */
+.ui-collapse__panel { border-bottom: 1px solid var(--color-border-default); }
+.ui-collapse__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  color: var(--color-fg-default);
+  font-weight: 500;
+  cursor: pointer;
+  list-style: none;
+}
+.ui-collapse__header::-webkit-details-marker { display: none; }
+.ui-collapse__header::before {
+  content: '';
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform 0.2s;
+}
+.ui-collapse__panel[open] > .ui-collapse__header::before { transform: rotate(45deg); }
+.ui-collapse__body { padding: 0 16px 16px 34px; color: var(--color-fg-default); }
+
+/* Toast */
+.ui-toast-host {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: max-content;
+  max-width: calc(100vw - 32px);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.ui-toast {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 14px;
+  border-radius: 8px;
+  background: var(--color-canvas-default);
+  box-shadow: var(--shadow-large);
+  color: var(--color-fg-default);
+  font-size: 14px;
+}
+.ui-toast__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+}
+.ui-toast--success .ui-toast__icon { background: var(--color-success-fg); }
+.ui-toast--error .ui-toast__icon { background: var(--color-danger-fg); }
+.ui-toast--info .ui-toast__icon { background: var(--color-accent-fg); }
+.ui-toast-enter-active, .ui-toast-leave-active { transition: opacity 0.2s, transform 0.2s; }
+.ui-toast-enter-from, .ui-toast-leave-to { opacity: 0; transform: translateY(-8px); }
+
+/* 공통 */
+.ui-stack { display: flex; flex-direction: column; gap: 24px; width: 100%; }
+.ui-stack--middle { gap: 16px; }
+.ui-stack--small { gap: 8px; }
+.ui-title { margin: 0 0 8px; color: var(--color-fg-default); font-size: 20px; font-weight: 600; line-height: 1.4; }
+.ui-text { color: var(--color-fg-default); }
+.ui-text--secondary { color: var(--color-fg-muted); }

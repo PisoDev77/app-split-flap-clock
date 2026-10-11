@@ -1,25 +1,24 @@
 <template>
   <div id="app" :class="{ 'dark-theme': isDarkMode }">
-    <a-config-provider :theme="themeConfig">
-      <div class="app-container">
-        <OfflineIndicator />
-        <router-view />
-        <PWAInstallPrompt />
-        <PWAUpdatePrompt />
-        <ResponsiveTestOverlay v-if="isDevelopment" />
-      </div>
-    </a-config-provider>
+    <div class="app-container">
+      <OfflineIndicator />
+      <router-view />
+      <PWAInstallPrompt />
+      <PWAUpdatePrompt />
+      <UiToastHost />
+      <ResponsiveTestOverlay v-if="isDevelopment" />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { onMounted, computed } from 'vue'
-import { ConfigProvider as AConfigProvider } from 'ant-design-vue'
 import { useTheme } from '@/composables/useTheme'
 import PWAInstallPrompt from '@/components/PWAInstallPrompt.vue'
 import PWAUpdatePrompt from '@/components/PWAUpdatePrompt.vue'
 import OfflineIndicator from '@/components/OfflineIndicator.vue'
 import ResponsiveTestOverlay from '@/components/ResponsiveTestOverlay.vue'
+import UiToastHost from '@/components/ui/UiToastHost.vue'
 import { setupPWAListeners, setupNetworkListeners } from '@/utils/pwa'
 
 /**
@@ -35,7 +34,7 @@ import { setupPWAListeners, setupNetworkListeners } from '@/utils/pwa'
  * @since 1.0.0
  */
 
-const { isDarkMode, themeConfig } = useTheme()
+const { isDarkMode } = useTheme()
 
 // 개발 환경 체크
 const isDevelopment = computed(() => process.env.NODE_ENV === 'development')

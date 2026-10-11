@@ -1,34 +1,34 @@
 <template>
   <div class="guide-view">
-    <a-layout class="layout">
-      <a-layout-header class="header">
+    <div class="layout">
+      <header class="header">
         <div class="header-content">
-          <a-button 
+          <UiButton 
             type="text" 
-            :icon="h(ArrowLeftOutlined)"
+            :icon="ArrowLeftOutlined"
             class="back-btn"
             aria-label="이전 페이지로 돌아가기"
             @click="$router.back()"
           >
             뒤로
-          </a-button>
+          </UiButton>
           <h1 class="page-title">사용법 가이드</h1>
           <div class="header-spacer" />
         </div>
-      </a-layout-header>
+      </header>
       
-      <a-layout-content class="content">
+      <div class="content">
         <div class="guide-container" role="main">
-          <a-card class="intro-card">
+          <UiCard class="intro-card">
             <h2>📖 Split Flap Clock 사용법</h2>
             <p>
               Split Flap Clock의 모든 기능을 효과적으로 활용하는 방법을 단계별로 안내합니다. 
               각 기능의 상세한 사용법과 팁을 확인해보세요.
             </p>
-          </a-card>
+          </UiCard>
 
-          <a-collapse v-model:active-key="activeKeys" ghost>
-            <a-collapse-panel key="1" header="🏠 메인 화면 사용법">
+          <UiCollapse v-model:active-key="activeKeys">
+            <UiCollapsePanel panel-key="1" header="🏠 메인 화면 사용법">
               <div class="guide-section">
                 <h3>시간 표시 영역</h3>
                 <ul>
@@ -56,9 +56,9 @@
                   <li><strong>기능:</strong> 클릭하면 설정 페이지로 이동합니다</li>
                 </ul>
               </div>
-            </a-collapse-panel>
+            </UiCollapsePanel>
 
-            <a-collapse-panel key="2" header="⚙️ 설정 페이지 활용법">
+            <UiCollapsePanel panel-key="2" header="⚙️ 설정 페이지 활용법">
               <div class="guide-section">
                 <h3>1. 시간 및 도시 설정</h3>
                 <h4>도시 선택</h4>
@@ -122,9 +122,9 @@
                   <li><strong>자동 이동:</strong> 저장 후 1초 뒤 자동으로 홈 화면으로 돌아갑니다</li>
                 </ul>
               </div>
-            </a-collapse-panel>
+            </UiCollapsePanel>
 
-            <a-collapse-panel key="3" header="🌍 도시 및 시간대 이해하기">
+            <UiCollapsePanel panel-key="3" header="🌍 도시 및 시간대 이해하기">
               <div class="guide-section">
                 <h3>지원 도시 목록</h3>
                 <p>Split Flap Clock은 다음 지역의 주요 도시들을 지원합니다:</p>
@@ -152,9 +152,9 @@
                   <li><strong>개인정보:</strong> GPS나 위치 권한을 쓰지 않으며 위치를 수집하지 않습니다</li>
                 </ul>
               </div>
-            </a-collapse-panel>
+            </UiCollapsePanel>
 
-            <a-collapse-panel key="4" header="📱 모바일 사용 팁">
+            <UiCollapsePanel panel-key="4" header="📱 모바일 사용 팁">
               <div class="guide-section">
                 <h3>PWA 설치</h3>
                 <ul>
@@ -176,9 +176,9 @@
                   <li><strong>빠른 실행:</strong> 홈 화면에 추가하면 앱처럼 빠르게 실행</li>
                 </ul>
               </div>
-            </a-collapse-panel>
+            </UiCollapsePanel>
 
-            <a-collapse-panel key="5" header="🎨 시각적 커스터마이징">
+            <UiCollapsePanel panel-key="5" header="🎨 시각적 커스터마이징">
               <div class="guide-section">
                 <h3>테마 선택 가이드</h3>
                 <ul>
@@ -203,9 +203,9 @@
                   <li><strong>저녁:</strong> 붉은 노을색 계열</li>
                 </ul>
               </div>
-            </a-collapse-panel>
+            </UiCollapsePanel>
 
-            <a-collapse-panel key="6" header="🔧 문제 해결">
+            <UiCollapsePanel panel-key="6" header="🔧 문제 해결">
               <div class="guide-section">
                 <h3>일반적인 문제</h3>
                 
@@ -244,10 +244,10 @@
                   <li><strong>빠른 로딩:</strong> PWA로 설치하여 사용</li>
                 </ul>
               </div>
-            </a-collapse-panel>
-          </a-collapse>
+            </UiCollapsePanel>
+          </UiCollapse>
 
-          <a-card class="help-card">
+          <UiCard class="help-card">
             <h3>💡 더 많은 도움이 필요하신가요?</h3>
             <p>
               추가적인 문의사항이나 기술적 문제가 있으시면 
@@ -257,26 +257,21 @@
             <div class="contact-info">
               <p><strong>문의:</strong> <a href="https://github.com/PisoDev77/app-split-flap-clock/issues" target="_blank" rel="noopener">GitHub Issues</a> (GitHub 계정 필요, 글은 공개됩니다)</p>
             </div>
-          </a-card>
+          </UiCard>
         </div>
-      </a-layout-content>
+      </div>
       
       <AppFooter />
-    </a-layout>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, h } from 'vue'
-import {
-  Layout as ALayout,
-  Button as AButton,
-  Card as ACard,
-  Collapse as ACollapse,
-  CollapsePanel as ACollapsePanel,
-  LayoutContent as ALayoutContent,
-  LayoutHeader as ALayoutHeader
-} from 'ant-design-vue'
+import { ref } from 'vue'
+import UiButton from '@/components/ui/UiButton.vue'
+import UiCard from '@/components/ui/UiCard.vue'
+import UiCollapse from '@/components/ui/UiCollapse.vue'
+import UiCollapsePanel from '@/components/ui/UiCollapsePanel.vue'
 import { ArrowLeftOutlined } from '@ant-design/icons-vue'
 import AppFooter from '@/components/AppFooter.vue'
 
@@ -292,6 +287,8 @@ const activeKeys = ref(['1'])
 }
 
 .layout {
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
   min-height: 100dvh;
   background: var(--color-canvas-default);

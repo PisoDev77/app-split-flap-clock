@@ -1,21 +1,15 @@
-import { ref, computed, watch } from 'vue'
-import { theme } from 'ant-design-vue'
+import { ref, watch } from 'vue'
 
-interface ThemeConfig {
-  token?: Record<string, any>
-  algorithm?: any
-}
 
 /**
  * ## 테마 관리 컴포저블
  * 
- * **라이트/다크 모드** 전환과 Ant Design Vue 테마 설정을 관리합니다.
+ * **라이트/다크 모드** 전환을 관리합니다. 색은 style.css의 CSS 변수가 담당합니다.
  * 
  * ### 기능
  * - 다크/라이트 모드 전환
  * - 시스템 테마 자동 감지
  * - 로컬 스토리지 저장
- * - Ant Design Vue 테마 동기화
  * 
  * @since 1.0.0
  */
@@ -24,83 +18,6 @@ type ThemeMode = 'light' | 'dark' | 'system'
 
 const themeMode = ref<ThemeMode>('system')
 const isDarkMode = ref(false)
-
-// GitHub 스타일 색상 팔레트
-const GITHUB_COLORS = {
-  light: {
-    colorPrimary: '#0969da',
-    colorSuccess: '#1a7f37',
-    colorWarning: '#9a6700',
-    colorError: '#d1242f',
-    colorInfo: '#0969da',
-    colorBgContainer: '#ffffff',
-    colorBgElevated: '#f6f8fa',
-    colorBorder: '#d1d9e0',
-    colorText: '#24292f',
-    colorTextSecondary: '#656d76'
-  },
-  dark: {
-    colorPrimary: '#58a6ff',
-    colorSuccess: '#3fb950',
-    colorWarning: '#d29922',
-    colorError: '#f85149',
-    colorInfo: '#58a6ff',
-    colorBgContainer: '#0d1117',
-    colorBgElevated: '#161b22',
-    colorBorder: '#30363d',
-    colorText: '#f0f6fc',
-    colorTextSecondary: '#8b949e'
-  }
-}
-
-/**
- * ## Ant Design Vue 테마 설정
- * 
- * **현재 테마 모드**에 따른 Ant Design Vue 테마 설정을 반환합니다.
- * 
- * @returns {ThemeConfig} **Ant Design Vue 테마 설정 객체**
- */
-const themeConfig = computed<ThemeConfig>(() => {
-  const colors = isDarkMode.value ? GITHUB_COLORS.dark : GITHUB_COLORS.light
-  
-  return {
-    // 다크 알고리즘이 없으면 선택 항목 배경 같은 파생 색이 라이트용으로 남아 글씨가 안 보임
-    algorithm: isDarkMode.value ? theme.darkAlgorithm : theme.defaultAlgorithm,
-    token: {
-      colorPrimary: colors.colorPrimary,
-      colorSuccess: colors.colorSuccess,
-      colorWarning: colors.colorWarning,
-      colorError: colors.colorError,
-      colorInfo: colors.colorInfo,
-      colorBgContainer: colors.colorBgContainer,
-      colorBgElevated: colors.colorBgElevated,
-      colorBorder: colors.colorBorder,
-      colorText: colors.colorText,
-      colorTextSecondary: colors.colorTextSecondary,
-      borderRadius: 6,
-      controlHeight: 40,
-      fontSize: 14,
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif'
-    },
-    components: {
-      Layout: {
-        colorBgHeader: colors.colorBgContainer,
-        colorBgBody: colors.colorBgContainer
-      },
-      Button: {
-        borderRadius: 6,
-        controlHeight: 36
-      },
-      Input: {
-        borderRadius: 6,
-        controlHeight: 36
-      },
-      Card: {
-        borderRadius: 8
-      }
-    }
-  }
-})
 
 /**
  * ## 시스템 테마 감지
@@ -213,7 +130,6 @@ export function useTheme() {
   return {
     themeMode,
     isDarkMode,
-    themeConfig,
     setThemeMode,
     toggleTheme,
     initializeTheme,

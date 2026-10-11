@@ -24,7 +24,7 @@
 
 - **Frontend**: Vue 3 + TypeScript
 - **Build Tool**: Vite
-- **UI Framework**: Ant Design Vue
+- **UI**: 직접 만든 가벼운 컴포넌트 (`src/components/ui`) + Ant Design Icons
 - **PWA**: Vite PWA Plugin + Workbox
 - **Date/Time**: Day.js
 - **Styling**: CSS3 + CSS Custom Properties
@@ -77,7 +77,6 @@ split-flap/
 │   │   ├── HomeView.vue            # 메인 시계 화면
 │   │   └── SettingsView.vue        # 설정 화면
 │   ├── plugins/               # Vue 플러그인
-│   │   ├── ant-design.ts           # Ant Design Vue 설정
 │   │   └── theme.ts                # 테마 초기화
 │   ├── utils/                 # 유틸리티 함수
 │   │   └── pwa.ts                  # PWA 관련 기능
@@ -174,7 +173,7 @@ split-flap/
 ## 🙏 감사의 말
 
 - [Vue.js](https://vuejs.org/) - 프레임워크
-- [Ant Design Vue](https://antdv.com/) - UI 컴포넌트
+- [Ant Design Icons Vue](https://github.com/ant-design/ant-design-icons) - 아이콘
 - [Vite](https://vitejs.dev/) - 빌드 도구
 - [Day.js](https://day.js.org/) - 날짜/시간 라이브러리
 

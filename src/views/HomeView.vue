@@ -7,23 +7,23 @@
       :intensity="animationIntensity"
     />
     
-    <a-layout class="layout">
-      <a-layout-header class="header">
+    <div class="layout">
+      <header class="header">
         <div class="header-content">
           <h1 class="app-title">Split Flap Clock</h1>
           <div class="header-controls">
-            <a-button 
+            <UiButton 
               type="text" 
-              :icon="h(SettingOutlined)"
+              :icon="SettingOutlined"
               class="settings-btn"
               aria-label="설정 페이지 열기"
               @click="$router.push('/settings')"
             />
           </div>
         </div>
-      </a-layout-header>
+      </header>
       
-      <a-layout-content class="content">
+      <div class="content">
         <div class="clock-container" role="main" aria-label="시계 표시 영역">
           <div class="city-display" :style="cityFlapStyle">
             <div class="city-container">
@@ -43,27 +43,21 @@
           </div>
           
           <div class="date-info">
-            <a-typography-text class="date-text" role="text" aria-label="현재 날짜">
+            <span class="ui-text date-text" role="text" aria-label="현재 날짜">
               {{ currentDate }}
-            </a-typography-text>
+            </span>
           </div>
         </div>
-      </a-layout-content>
+      </div>
       
       <AppFooter class="desktop-only-footer" />
-    </a-layout>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, h } from 'vue'
-import {
-  Layout as ALayout,
-  Button as AButton,
-  LayoutContent as ALayoutContent,
-  LayoutHeader as ALayoutHeader,
-  TypographyText as ATypographyText
-} from 'ant-design-vue'
+import { computed, onMounted, onUnmounted } from 'vue'
+import UiButton from '@/components/ui/UiButton.vue'
 import { SettingOutlined } from '@ant-design/icons-vue'
 import SplitFlapDisplay from '@/components/SplitFlapDisplay.vue'
 import AnimatedBackground from '@/components/AnimatedBackground.vue'
@@ -161,6 +155,8 @@ onUnmounted(() => {
 }
 
 .layout {
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
   min-height: 100dvh;
   background: transparent;
