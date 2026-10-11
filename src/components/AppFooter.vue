@@ -2,12 +2,12 @@
   <footer class="app-footer">
     <div class="footer-content">
       <div class="footer-section">
-        <h4>Split Flap Clock</h4>
+        <h2>Split Flap Clock</h2>
         <p>클래식한 분할 플랩 디스플레이로 시간을 확인하세요</p>
       </div>
       
       <div class="footer-section">
-        <h4>페이지</h4>
+        <h2>페이지</h2>
         <ul class="footer-links">
           <li><router-link to="/about">소개</router-link></li>
           <li><router-link to="/guide">사용법 가이드</router-link></li>
@@ -17,7 +17,7 @@
       </div>
       
       <div class="footer-section">
-        <h4>설정</h4>
+        <h2>설정</h2>
         <ul class="footer-links">
           <li><router-link to="/settings">설정</router-link></li>
           <li><router-link to="/privacy">개인정보처리방침</router-link></li>
@@ -25,7 +25,7 @@
       </div>
       
       <div class="footer-section">
-        <h4>연락처</h4>
+        <h2>연락처</h2>
         <ul class="footer-links">
           <li><a href="https://github.com/PisoDev77/app-split-flap-clock/issues" target="_blank" rel="noopener">문의하기</a></li>
           <li><a href="https://github.com/PisoDev77/app-split-flap-clock/issues/new" target="_blank" rel="noopener">버그 신고</a></li>
@@ -70,7 +70,7 @@ const currentYear = computed(() => new Date().getFullYear())
   gap: 2rem;
 }
 
-.footer-section h4 {
+.footer-section h2 {
   color: var(--color-fg-default);
   font-size: 1.1rem;
   font-weight: 600;
@@ -168,7 +168,7 @@ const currentYear = computed(() => new Date().getFullYear())
     text-align: center;
   }
   
-  .footer-section h4 {
+  .footer-section h2 {
     font-size: 1rem;
   }
 }

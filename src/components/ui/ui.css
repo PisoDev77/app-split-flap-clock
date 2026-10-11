@@ -33,6 +33,9 @@
 }
 .ui-btn--primary { background: var(--color-accent-fg); border-color: var(--color-accent-fg); color: #fff; }
 .ui-btn--primary:hover { color: #fff; opacity: 0.88; }
+/* 다크 모드 강조색(#58a6ff)은 밝아서 흰 글씨 대비가 2.5:1 → 어두운 글씨로 (8:1) */
+[data-theme='dark'] .ui-btn--primary,
+[data-theme='dark'] .ui-btn--primary:hover { color: #0d1117; }
 .ui-btn--text { background: transparent; border-color: transparent; }
 .ui-btn--text:hover { background: var(--color-canvas-subtle); border-color: transparent; }
 .ui-btn__icon { font-size: 1em; display: inline-flex; }
@@ -55,13 +58,14 @@
 }
 .ui-card--borderless { border-color: transparent; }
 .ui-card__head {
+  margin: 0;
   display: flex;
   align-items: center;
   min-height: 56px;
   padding: 0 24px;
   border-bottom: 1px solid var(--color-border-default);
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 17px;
+  font-weight: 700;
 }
 .ui-card__body { padding: 24px; }
 @media (max-width: 480px) {
@@ -172,10 +176,10 @@
   line-height: 20px;
 }
 .ui-tag--blue { --tag-fg: #0958d9; --tag-bg: #e6f4ff; --tag-border: #91caff; }
-.ui-tag--green { --tag-fg: #389e0d; --tag-bg: #f6ffed; --tag-border: #b7eb8f; }
+.ui-tag--green { --tag-fg: #237804; --tag-bg: #f6ffed; --tag-border: #b7eb8f; }
 .ui-tag--purple { --tag-fg: #531dab; --tag-bg: #f9f0ff; --tag-border: #d3adf7; }
-.ui-tag--orange { --tag-fg: #d46b08; --tag-bg: #fff7e6; --tag-border: #ffd591; }
-.ui-tag--cyan { --tag-fg: #08979c; --tag-bg: #e6fffb; --tag-border: #87e8de; }
+.ui-tag--orange { --tag-fg: #ad4e00; --tag-bg: #fff7e6; --tag-border: #ffd591; }
+.ui-tag--cyan { --tag-fg: #006d75; --tag-bg: #e6fffb; --tag-border: #87e8de; }
 .ui-tag--red { --tag-fg: #cf1322; --tag-bg: #fff1f0; --tag-border: #ffa39e; }
 [data-theme='dark'] .ui-tag--blue { --tag-fg: #69b1ff; --tag-bg: #111a2c; --tag-border: #15325b; }
 [data-theme='dark'] .ui-tag--green { --tag-fg: #95de64; --tag-bg: #162312; --tag-border: #274916; }
@@ -253,10 +257,20 @@
 .ui-toast-enter-active, .ui-toast-leave-active { transition: opacity 0.2s, transform 0.2s; }
 .ui-toast-enter-from, .ui-toast-leave-to { opacity: 0; transform: translateY(-8px); }
 
+/* 키보드 포커스 표시 (링크·접기 제목 등 기본 요소) */
+a:focus-visible,
+summary:focus-visible,
+select:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--color-accent-fg);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
 /* 공통 */
 .ui-stack { display: flex; flex-direction: column; gap: 24px; width: 100%; }
 .ui-stack--middle { gap: 16px; }
 .ui-stack--small { gap: 8px; }
-.ui-title { margin: 0 0 8px; color: var(--color-fg-default); font-size: 20px; font-weight: 600; line-height: 1.4; }
+.ui-title { margin: 0 0 8px; color: var(--color-fg-default); font-size: 15px; font-weight: 600; line-height: 1.4; }
 .ui-text { color: var(--color-fg-default); }
 .ui-text--secondary { color: var(--color-fg-muted); }

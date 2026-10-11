@@ -437,7 +437,8 @@ const filteredFaqs = computed(() => {
   font-weight: 600;
 }
 
-.faq-answer a {
+/* v-html 내용은 scoped 스타일이 안 닿아서 :deep 필요 (안 그러면 다크 모드에서 기본 파란색) */
+.faq-answer :deep(a) {
   color: var(--color-accent-fg);
   text-decoration: underline;
 }
@@ -495,7 +496,8 @@ const filteredFaqs = computed(() => {
   margin: 0 0 1.5rem 0;
 }
 
-.help-card a {
+/* 문단 안 링크만 (UiButton 링크까지 파란 글씨가 되어 버튼 글자가 안 보였음) */
+.help-card p a {
   color: var(--color-accent-fg);
   text-decoration: underline;
 }

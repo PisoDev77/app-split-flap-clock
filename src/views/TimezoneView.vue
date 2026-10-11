@@ -590,26 +590,12 @@ onUnmounted(() => {
   }
   
   .city-item {
-    grid-template-columns: 1fr auto;
-    grid-template-rows: auto auto;
-    gap: 0.5rem;
+    gap: 0.75rem;
+    padding: 0.6rem 0.75rem;
   }
-  
-  .city-name {
-    grid-column: 1;
-    grid-row: 1;
-  }
-  
+
   .timezone-offset {
-    grid-column: 2;
-    grid-row: 1;
-  }
-  
-  .current-time {
-    grid-column: 1 / -1;
-    grid-row: 2;
-    text-align: center;
-    font-size: 1.2rem;
+    font-size: 0.8rem;
   }
 }
 

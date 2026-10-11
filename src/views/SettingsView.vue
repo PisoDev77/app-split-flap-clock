@@ -23,9 +23,9 @@
             <div class="ui-stack settings-form">
               <!-- 도시 선택 -->
               <div class="setting-item">
-                <h4 class="ui-title setting-label">
+                <h3 class="ui-title setting-label">
                   도시 선택
-                </h4>
+                </h3>
                 <UiSelect
                   v-model:value="selectedCity"
                   aria-label="도시 선택"
@@ -40,9 +40,9 @@
 
               <!-- 시간대 표시 -->
               <div class="setting-item">
-                <h4 class="ui-title setting-label">
+                <h3 class="ui-title setting-label">
                   현재 시간대
-                </h4>
+                </h3>
                 <span class="ui-text timezone-display">
                   UTC{{ currentOffset }} ({{ currentCityDisplay }})
                 </span>
@@ -53,9 +53,9 @@
 
               <!-- 기기 시간대 자동 설정 -->
               <div class="setting-item">
-                <h4 class="ui-title setting-label">
+                <h3 class="ui-title setting-label">
                   기기 시간대 자동 설정
-                </h4>
+                </h3>
                 <UiButton 
                   type="primary" 
                   :loading="isLocationLoading"
@@ -75,9 +75,9 @@
             <div class="ui-stack settings-form">
               <!-- 테마 설정 -->
               <div class="setting-item">
-                <h4 class="ui-title setting-label">
+                <h3 class="ui-title setting-label">
                   테마 모드
-                </h4>
+                </h3>
                 <UiSelect
                   v-model:value="selectedTheme"
                   aria-label="테마 모드"
@@ -92,9 +92,9 @@
 
               <!-- 테마 미리보기 -->
               <div class="setting-item">
-                <h4 class="ui-title setting-label">
+                <h3 class="ui-title setting-label">
                   미리보기
-                </h4>
+                </h3>
                 <div class="theme-preview">
                   <div class="preview-container">
                     <AnimatedBackground 
@@ -125,9 +125,9 @@
               <div class="setting-item">
                 <div class="setting-row">
                   <div class="setting-label-group">
-                    <h4 class="ui-title setting-label">
+                    <h3 class="ui-title setting-label">
                       배경 효과
-                    </h4>
+                    </h3>
                     <span class="ui-text ui-text--secondary setting-description">
                       시간대별 동적 배경 효과를 활성화합니다.
                     </span>
@@ -141,9 +141,9 @@
 
               <!-- 배경 효과 종류 -->
               <div class="setting-item">
-                <h4 class="ui-title setting-label">
+                <h3 class="ui-title setting-label">
                   효과 종류
-                </h4>
+                </h3>
                 <UiSelect
                   v-model:value="backgroundEffect"
                   aria-label="배경 효과 종류"
@@ -158,9 +158,9 @@
 
               <!-- 애니메이션 강도 -->
               <div class="setting-item">
-                <h4 class="ui-title setting-label">
+                <h3 class="ui-title setting-label">
                   애니메이션 강도
-                </h4>
+                </h3>
                 <UiSelect
                   v-model:value="animationIntensity"
                   aria-label="애니메이션 강도"
@@ -177,9 +177,9 @@
               <div class="setting-item">
                 <div class="setting-row">
                   <div class="setting-label-group">
-                    <h4 class="ui-title setting-label">
+                    <h3 class="ui-title setting-label">
                       성능 모드
-                    </h4>
+                    </h3>
                     <span class="ui-text ui-text--secondary setting-description">
                       저성능 기기를 위해 모든 효과를 비활성화합니다.
                     </span>

@@ -42,27 +42,27 @@
           <UiCard class="info-card" title="✨ 주요 기능">
             <div class="ui-stack feature-list">
               <div class="feature-item">
-                <h4>🌍 전 세계 시간대 지원</h4>
+                <h3>🌍 전 세계 시간대 지원</h3>
                 <p>세계 주요 도시의 시간을 실시간으로 확인할 수 있습니다.</p>
               </div>
               <div class="feature-item">
-                <h4>📍 기기 시간대 자동 설정</h4>
+                <h3>📍 기기 시간대 자동 설정</h3>
                 <p>위치 권한 없이 기기의 시간대를 읽어 현재 도시의 시간을 보여줍니다. 서머타임도 자동으로 반영됩니다.</p>
               </div>
               <div class="feature-item">
-                <h4>🎨 다양한 테마</h4>
+                <h3>🎨 다양한 테마</h3>
                 <p>라이트, 다크, 시스템 설정에 따른 테마를 지원합니다.</p>
               </div>
               <div class="feature-item">
-                <h4>🎭 애니메이션 효과</h4>
+                <h3>🎭 애니메이션 효과</h3>
                 <p>시간대별 동적 배경과 파티클 효과로 생동감 있는 화면을 제공합니다.</p>
               </div>
               <div class="feature-item">
-                <h4>📱 반응형 디자인</h4>
+                <h3>📱 반응형 디자인</h3>
                 <p>모바일, 태블릿, 데스크톱 모든 기기에서 최적화된 경험을 제공합니다.</p>
               </div>
               <div class="feature-item">
-                <h4>⚡ PWA 지원</h4>
+                <h3>⚡ PWA 지원</h3>
                 <p>앱처럼 설치하여 오프라인에서도 사용할 수 있습니다.</p>
               </div>
             </div>
@@ -95,15 +95,15 @@
           <UiCard class="info-card" title="🌟 특별한 가치">
             <div class="ui-stack ui-stack--middle">
               <div class="value-item">
-                <h4>⏰ 시간에 대한 새로운 인식</h4>
+                <h3>⏰ 시간에 대한 새로운 인식</h3>
                 <p>단순한 숫자가 아닌, 물리적 움직임이 있는 시간 표시로 시간의 흐름을 더욱 생생하게 느낄 수 있습니다.</p>
               </div>
               <div class="value-item">
-                <h4>🎯 집중력 향상</h4>
+                <h3>🎯 집중력 향상</h3>
                 <p>산만한 요소 없이 깔끔한 인터페이스로 시간에만 집중할 수 있어 업무나 학습에 도움이 됩니다.</p>
               </div>
               <div class="value-item">
-                <h4>🌈 감성적 경험</h4>
+                <h3>🌈 감성적 경험</h3>
                 <p>향수를 불러일으키는 레트로 디자인으로 일상에 작은 즐거움을 더합니다.</p>
               </div>
             </div>
@@ -126,7 +126,6 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
 import UiButton from '@/components/ui/UiButton.vue'
 import UiCard from '@/components/ui/UiCard.vue'
 import UiTag from '@/components/ui/UiTag.vue'
@@ -136,13 +135,8 @@ import { useGoBack } from '@/composables/useGoBack'
 
 const goBack = useGoBack()
 
-const lastUpdated = computed(() => {
-  return new Date().toLocaleDateString('ko-KR', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  })
-})
+// 실제로 앱을 고친 날짜 (예전에는 볼 때마다 오늘 날짜가 표시됨)
+const lastUpdated = '2026년 10월 12일'
 </script>
 
 <style scoped>
@@ -270,7 +264,7 @@ const lastUpdated = computed(() => {
   border: 1px solid var(--color-border-muted);
 }
 
-.feature-item h4 {
+.feature-item h3 {
   color: var(--color-fg-default);
   margin: 0 0 0.5rem 0;
   font-size: 1.1rem;
@@ -303,6 +297,11 @@ const lastUpdated = computed(() => {
 .developer-info p {
   margin: 0.5rem 0;
   color: var(--color-fg-default);
+}
+
+.developer-info a {
+  color: var(--color-accent-fg);
+  text-decoration: underline;
 }
 
 .developer-info strong {

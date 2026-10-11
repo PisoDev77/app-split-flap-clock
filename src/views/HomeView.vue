@@ -27,18 +27,18 @@
         <div class="clock-container" role="main" aria-label="시계 표시 영역">
           <div class="city-display" :style="cityFlapStyle">
             <div class="city-container">
-              <SplitFlapDisplay :text="cityName" aria-label="현재 도시" />
+              <SplitFlapDisplay :text="cityName" label="도시" />
               <span class="city-label">{{ cityLabel }}</span>
             </div>
           </div>
           
-          <div class="time-display" role="timer" aria-live="polite" aria-label="현재 시간">
+          <div class="time-display" role="timer" aria-label="현재 시간">
             <div class="time-units">
-              <SplitFlapDisplay :text="hours" aria-label="시간" />
+              <SplitFlapDisplay :text="hours" label="시" />
               <div class="time-separator" aria-hidden="true">:</div>
-              <SplitFlapDisplay :text="minutes" aria-label="분" />
+              <SplitFlapDisplay :text="minutes" label="분" />
               <div class="time-separator" aria-hidden="true">:</div>
-              <SplitFlapDisplay :text="seconds" aria-label="초" />
+              <SplitFlapDisplay :text="seconds" label="초" />
             </div>
           </div>
           
@@ -113,7 +113,7 @@ const timezone = computed(() => {
 const cityFlapStyle = computed(() => {
   const length = Math.max(cityName.value.length, 1)
   return {
-    '--flap-w': `min(clamp(1.75rem, 9.5vw, 4.5rem), calc((100vw - 6rem) / ${length}))`
+    '--flap-w': `min(clamp(1.75rem, calc(11vw - 2px), 4.5rem), calc((100vw - 6rem) / ${length}))`
   }
 })
 

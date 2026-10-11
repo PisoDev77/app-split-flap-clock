@@ -2,7 +2,7 @@
   <div 
     class="split-flap-display"
     role="img" 
-    :aria-label="`분할 플랩 디스플레이: ${props.text}`"
+    :aria-label="props.label ? `${props.label} ${props.text}` : props.text"
   >
     <div class="flap-container">
       <div 
@@ -44,6 +44,8 @@ import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 
 interface Props {
   text: string
+  /** 화면 낭독기용 이름 (예: '시' → "시 23"). aria-label을 직접 넘기면 값이 덮여 숫자가 안 읽힘 */
+  label?: string
   flipDuration?: number
   characterSet?: string[]
   respectReducedMotion?: boolean
@@ -51,6 +53,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   flipDuration: 600,
+  label: undefined,
   respectReducedMotion: true,
   characterSet: () => [
     'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 
@@ -177,7 +180,7 @@ onUnmounted(() => {
   align-items: center;
   user-select: none;
   /* 칸 크기: 부모가 --flap-w를 주면 그 값, 아니면 화면 너비에 맞춰 자동 */
-  --flap-size: var(--flap-w, clamp(1.75rem, 9.5vw, 4.5rem));
+  --flap-size: var(--flap-w, clamp(1.75rem, calc(11vw - 2px), 4.5rem));
 }
 
 .flap-container {
