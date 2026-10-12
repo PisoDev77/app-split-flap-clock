@@ -29,6 +29,9 @@ export default defineConfig({
         skipWaiting: true,
         clientsClaim: true,
         navigateFallback: 'index.html',
+        // 블로그 위젯(/embed)은 서비스 워커가 대신 답하면 안 됨: 저장된 index.html에는
+        // X-Frame-Options: DENY가 붙어 있어 다른 사이트 iframe에서 두 번째부터 안 보임
+        navigateFallbackDenylist: [/^\/embed/],
         // 아이콘 만들 때 쓰던 개발용 페이지는 앱에 저장하지 않음
         globIgnores: ['**/generate-icons.html', '**/google*.html', '**/naver*.html'],
         // SUIT 글꼴(외부 CDN)도 받아 두어 오프라인·Play 앱에서 글꼴이 바뀌지 않게 함

@@ -49,6 +49,7 @@ const q = (key: string) => {
 }
 
 const isEnglish = q('lang') === 'en'
+if (isEnglish) document.documentElement.lang = 'en'
 const city = findCity(String(q('city')))
 const timezone = city?.timezone ?? deviceTimezone()
 const is12h = q('h') === '12'
