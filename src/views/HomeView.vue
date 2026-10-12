@@ -13,38 +13,23 @@
           <h1 class="app-title">Split Flap Clock</h1>
           <div class="header-controls">
             <UiButton
-              v-if="wakeLockSupported"
+              v-for="action in clockActions"
+              :key="action.key"
               type="text"
-              :icon="keepScreenOn ? BulbFilled : BulbOutlined"
-              class="settings-btn"
-              :class="{ 'is-on': keepScreenOn }"
-              :aria-label="keepScreenOn ? t.wakeOff : t.wake"
-              :aria-pressed="keepScreenOn"
-              :title="t.wake"
-              @click="keepScreenOn = !keepScreenOn"
-            />
-            <UiButton
-              v-if="fullscreenSupported"
-              type="text"
-              :icon="isFullscreen ? FullscreenExitOutlined : FullscreenOutlined"
-              class="settings-btn"
-              :aria-label="isFullscreen ? t.fullscreenOff : t.fullscreen"
-              :title="t.fullscreen"
-              @click="toggleFullscreen"
-            />
-            <UiButton
-              type="text"
-              :icon="ShareAltOutlined"
-              class="settings-btn"
-              :aria-label="t.share"
-              :title="t.share"
-              @click="shareClock"
+              :icon="action.icon"
+              class="settings-btn desktop-only"
+              :class="{ 'is-on': action.on }"
+              :aria-label="action.label"
+              :aria-pressed="action.pressed"
+              :title="action.title"
+              @click="action.run"
             />
             <UiButton 
               type="text" 
               :icon="SettingOutlined"
               class="settings-btn gear-btn"
               :aria-label="t.settings"
+              :title="t.settingsTitle"
               @click="$router.push(lp('/settings'))"
             />
           </div>
@@ -76,6 +61,22 @@
             </span>
           </div>
 
+          <!-- 폰: 머리말 대신 시계 바로 아래에 도구 버튼 -->
+          <div class="clock-actions mobile-only">
+            <UiButton
+              v-for="action in clockActions"
+              :key="action.key"
+              type="text"
+              :icon="action.icon"
+              class="clock-action-btn"
+              :class="{ 'is-on': action.on }"
+              :aria-label="action.label"
+              :aria-pressed="action.pressed"
+              :title="action.title"
+              @click="action.run"
+            />
+          </div>
+
           <!-- 12월~1월 1일: 새해 카운트다운 안내 -->
           <router-link v-if="newYearSoon" :to="lp('/countdown/new-year')" class="lang-pill">
             {{ t.countdown(newYearSoon) }}
@@ -94,7 +95,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted } from 'vue'
+import { computed, onMounted, onUnmounted, type Component } from 'vue'
 import UiButton from '@/components/ui/UiButton.vue'
 import { useRoute } from 'vue-router'
 import { SettingOutlined, BulbOutlined, BulbFilled, FullscreenOutlined, FullscreenExitOutlined, ShareAltOutlined } from '@ant-design/icons-vue'
@@ -137,7 +138,7 @@ const { isEn, lp, pick } = useLocale()
 const t = pick({
   ko: {
     wake: '화면 켜두기', wakeOff: '화면 켜두기 끄기', fullscreen: '전체 화면', fullscreenOff: '전체 화면 끝내기',
-    share: '이 시계 링크 공유', settings: '설정 페이지 열기', clockArea: '시계 표시 영역', city: '도시',
+    share: '이 시계 링크 공유', settings: '설정 페이지 열기', settingsTitle: '설정', clockArea: '시계 표시 영역', city: '도시',
     now: '현재 시간', h: '시', m: '분', s: '초', date: '현재 날짜',
     shared: '공유받은 도시', selected: '선택한 도시', here: '현재 위치',
     am: '오전', pm: '오후', dateFormat: 'YYYY년 M월 D일 dddd',
@@ -146,7 +147,7 @@ const t = pick({
   },
   en: {
     wake: 'Keep screen on', wakeOff: 'Stop keeping screen on', fullscreen: 'Fullscreen', fullscreenOff: 'Exit fullscreen',
-    share: 'Share this clock', settings: 'Open settings', clockArea: 'Clock', city: 'City',
+    share: 'Share this clock', settings: 'Open settings', settingsTitle: 'Settings', clockArea: 'Clock', city: 'City',
     now: 'Current time', h: 'Hour', m: 'Minute', s: 'Second', date: 'Today',
     shared: 'Shared city', selected: 'Selected city', here: 'Your time zone',
     am: 'AM', pm: 'PM', dateFormat: 'dddd, MMMM D, YYYY',
@@ -234,6 +235,43 @@ const shareClock = () => shareLink(
   t.value.shareTitle,
   savedCity ? t.value.shareCity(isEn.value ? savedCity : cityName.value) : t.value.shareDefault
 )
+
+
+// 화면 켜두기·전체 화면·공유: PC는 머리말, 폰은 시계 아래에 같은 버튼을 그림
+interface ClockAction {
+  key: string
+  icon: Component
+  label: string
+  title: string
+  on?: boolean
+  pressed?: boolean
+  run: () => void
+}
+const clockActions = computed<ClockAction[]>(() => {
+  const actions: ClockAction[] = []
+  if (wakeLockSupported) {
+    actions.push({
+      key: 'wake',
+      icon: keepScreenOn.value ? BulbFilled : BulbOutlined,
+      label: keepScreenOn.value ? t.value.wakeOff : t.value.wake,
+      title: t.value.wake,
+      on: keepScreenOn.value,
+      pressed: keepScreenOn.value,
+      run: () => { keepScreenOn.value = !keepScreenOn.value }
+    })
+  }
+  if (fullscreenSupported) {
+    actions.push({
+      key: 'fullscreen',
+      icon: isFullscreen.value ? FullscreenExitOutlined : FullscreenOutlined,
+      label: isFullscreen.value ? t.value.fullscreenOff : t.value.fullscreen,
+      title: t.value.fullscreen,
+      run: toggleFullscreen
+    })
+  }
+  actions.push({ key: 'share', icon: ShareAltOutlined, label: t.value.share, title: t.value.share, run: shareClock })
+  return actions
+})
 
 onMounted(async () => {
   loadSettings() // 설정 로드
@@ -326,6 +364,73 @@ onUnmounted(() => {
 
 .gear-btn:hover {
   transform: rotate(90deg);
+}
+
+.mobile-only {
+  display: none;
+}
+
+/* 폰 시계 아래 도구 버튼: 테두리 없이 조용하게 */
+.clock-actions {
+  gap: 4px;
+  margin-top: -0.5rem;
+}
+
+.clock-action-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  font-size: 18px;
+  color: var(--color-fg-muted);
+}
+
+.clock-action-btn.is-on {
+  color: var(--color-accent-fg);
+  background: var(--color-canvas-subtle);
+}
+
+/* 폰(세로 768px 이하, 가로로 눕힌 폰): 머리말 막대를 없애고 설정만 오른쪽 위에 띄움 */
+@media (max-width: 768px), (orientation: landscape) and (max-height: 500px) {
+  .header {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: auto;
+    padding: calc(env(safe-area-inset-top) + 12px) calc(env(safe-area-inset-right) + 12px) 0 0;
+    background: none;
+    border: none;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    z-index: 2;
+  }
+
+  .app-title {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .desktop-only {
+    display: none;
+  }
+
+  .mobile-only {
+    display: flex;
+  }
+
+  .gear-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    color: var(--color-fg-muted);
+    background: rgba(var(--color-canvas-default-rgb), 0.35);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
 }
 
 /* Ensure settings button is visible and accessible on all screen sizes */
@@ -512,14 +617,6 @@ onUnmounted(() => {
 
 /* 모바일 반응형 */
 @media (max-width: 768px) {
-  .header {
-    padding: 0 16px;
-  }
-  
-  .app-title {
-    font-size: 1.25rem;
-  }
-  
   .content {
     padding: 16px;
   }
@@ -535,14 +632,6 @@ onUnmounted(() => {
 }
 
 @media (max-width: 480px) {
-  .header {
-    padding: 0 12px;
-  }
-  
-  .app-title {
-    font-size: 1.1rem;
-  }
-  
   .content {
     padding: 12px;
   }
@@ -559,10 +648,6 @@ onUnmounted(() => {
 
 /* 가로로 눕힌 폰 (탁상시계 거치): 머리말을 줄이고 시계를 화면 높이에 맞춤 */
 @media (orientation: landscape) and (max-height: 500px) {
-  .header {
-    height: 48px;
-  }
-
   .content {
     padding: 8px;
   }
