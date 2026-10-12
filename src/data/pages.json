@@ -1,7 +1,8 @@
 {
   "/": {
     "title": "Split Flap Clock",
-    "description": "공항·기차역 플립시계를 그대로 옮긴 무료 온라인 탁상시계. 설치·광고·위치 권한 없이 바로 쓰고, 서울·뉴욕·런던 등 세계 시간과 배경 효과 6가지를 지원합니다."
+    "description": "공항·기차역 플립시계를 그대로 옮긴 무료 온라인 탁상시계. 설치·광고·위치 권한 없이 바로 쓰고, 서울·뉴욕·런던 등 세계 시간과 배경 효과 6가지를 지원합니다.",
+    "fullTitle": "플립시계 Split Flap Clock - 무료 온라인 탁상시계·세계시계"
   },
   "/about": {
     "title": "소개",
@@ -30,5 +31,31 @@
   "/privacy": {
     "title": "개인정보처리방침",
     "description": "Split Flap Clock 개인정보처리방침. 위치와 개인 데이터를 수집하지 않으며 설정은 기기 안에만 저장됩니다."
+  },
+  "/en": {
+    "lang": "en",
+    "title": "Flip Clock",
+    "fullTitle": "Flip Clock Online · Free Split Flap Desk Clock & World Clock",
+    "description": "A free online flip clock that looks like an airport split-flap board. Keep it on your desk with screen wake lock and fullscreen, check world times with daylight saving, no sign-up and no ads."
+  },
+  "/en/study": {
+    "lang": "en",
+    "title": "Study Clock · Focus Timer",
+    "description": "A free flip clock for studying with a 25, 50 or 90 minute focus timer (Pomodoro), screen wake lock, fullscreen and a clean mode for study-with-me streams."
+  },
+  "/en/world-clock": {
+    "lang": "en",
+    "title": "World Clock · Current Time in 20 Cities",
+    "description": "Current local time in New York, London, Paris, Tokyo, Seoul, Sydney and more, with UTC offsets and daylight saving time handled automatically."
+  },
+  "/en/settings": {
+    "lang": "en",
+    "title": "Settings",
+    "description": "Flip clock settings: city, theme, background effects and 12/24-hour time."
+  },
+  "/en/privacy": {
+    "lang": "en",
+    "title": "Privacy Policy",
+    "description": "Split Flap Clock privacy policy. No location or personal data is collected; settings stay on your device."
   }
 }

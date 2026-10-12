@@ -1,4 +1,5 @@
 import { useRouter } from 'vue-router'
+import { useLocale } from '@/composables/useLocale'
 
 /**
  * ## 뒤로 가기
@@ -8,11 +9,12 @@ import { useRouter } from 'vue-router'
  */
 export function useGoBack() {
   const router = useRouter()
+  const { lp } = useLocale()
   return () => {
     if (window.history.state?.back) {
       router.back()
     } else {
-      router.push('/')
+      router.push(lp('/'))
     }
   }
 }

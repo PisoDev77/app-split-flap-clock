@@ -60,10 +60,11 @@ export const shareLink = async (url: string, title: string, text: string): Promi
       if ((error as DOMException).name === 'AbortError') return
     }
   }
+  const en = document.documentElement.lang === 'en'
   try {
     await navigator.clipboard.writeText(url)
-    message.success('링크를 복사했어요')
+    message.success(en ? 'Link copied' : '링크를 복사했어요')
   } catch {
-    message.error('링크를 복사하지 못했어요')
+    message.error(en ? "Couldn't copy the link" : '링크를 복사하지 못했어요')
   }
 }

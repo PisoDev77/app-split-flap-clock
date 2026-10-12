@@ -18,9 +18,9 @@
               :icon="keepScreenOn ? BulbFilled : BulbOutlined"
               class="settings-btn"
               :class="{ 'is-on': keepScreenOn }"
-              :aria-label="keepScreenOn ? '화면 켜두기 끄기' : '화면 켜두기'"
+              :aria-label="keepScreenOn ? t.wakeOff : t.wake"
               :aria-pressed="keepScreenOn"
-              title="화면 켜두기"
+              :title="t.wake"
               @click="keepScreenOn = !keepScreenOn"
             />
             <UiButton
@@ -28,53 +28,58 @@
               type="text"
               :icon="isFullscreen ? FullscreenExitOutlined : FullscreenOutlined"
               class="settings-btn"
-              :aria-label="isFullscreen ? '전체 화면 끝내기' : '전체 화면'"
-              title="전체 화면"
+              :aria-label="isFullscreen ? t.fullscreenOff : t.fullscreen"
+              :title="t.fullscreen"
               @click="toggleFullscreen"
             />
             <UiButton
               type="text"
               :icon="ShareAltOutlined"
               class="settings-btn"
-              aria-label="이 시계 링크 공유"
-              title="링크 공유"
+              :aria-label="t.share"
+              :title="t.share"
               @click="shareClock"
             />
             <UiButton 
               type="text" 
               :icon="SettingOutlined"
               class="settings-btn gear-btn"
-              aria-label="설정 페이지 열기"
-              @click="$router.push('/settings')"
+              :aria-label="t.settings"
+              @click="$router.push(lp('/settings'))"
             />
           </div>
         </div>
       </header>
       
       <div class="content">
-        <div class="clock-container" role="main" aria-label="시계 표시 영역">
+        <div class="clock-container" role="main" :aria-label="t.clockArea">
           <div class="city-display" :style="cityFlapStyle">
             <div class="city-container">
-              <SplitFlapDisplay :text="cityName" label="도시" />
+              <SplitFlapDisplay :text="cityName" :label="t.city" />
               <span class="city-label">{{ cityLabel }}</span>
             </div>
           </div>
           
-          <div class="time-display" role="timer" aria-label="현재 시간">
+          <div class="time-display" role="timer" :aria-label="t.now">
             <div class="time-units">
-              <SplitFlapDisplay :text="hours" label="시" />
+              <SplitFlapDisplay :text="hours" :label="t.h" />
               <div class="time-separator" aria-hidden="true">:</div>
-              <SplitFlapDisplay :text="minutes" label="분" />
+              <SplitFlapDisplay :text="minutes" :label="t.m" />
               <div class="time-separator" aria-hidden="true">:</div>
-              <SplitFlapDisplay :text="seconds" label="초" />
+              <SplitFlapDisplay :text="seconds" :label="t.s" />
             </div>
           </div>
           
           <div class="date-info">
-            <span class="ui-text date-text" role="text" aria-label="현재 날짜">
+            <span class="ui-text date-text" role="text" :aria-label="t.date">
               {{ currentDate }}
             </span>
           </div>
+
+          <!-- 브라우저 언어와 페이지 언어가 다르면 다른 언어판을 살짝 안내 -->
+          <router-link v-if="otherLanguage" :to="otherLanguage.to" class="lang-pill" :lang="otherLanguage.lang">
+            {{ otherLanguage.label }}
+          </router-link>
         </div>
       </div>
       
@@ -98,6 +103,7 @@ import { useTime } from '@/composables/useTime'
 import { useSettings } from '@/composables/useSettings'
 import dayjs from '@/utils/dayjs'
 import { parseShareQuery, buildShareUrl, shareLink } from '@/utils/shareLink'
+import { useLocale } from '@/composables/useLocale'
 
 /**
  * ## 홈 화면 뷰
@@ -122,6 +128,33 @@ const { currentTime: time, startTimer, stopTimer } = useTime()
 const { settings, loadSettings } = useSettings()
 
 const backgroundEffectsEnabled = computed(() => settings.value.backgroundEffectsEnabled)
+const { isEn, lp, pick } = useLocale()
+const t = pick({
+  ko: {
+    wake: '화면 켜두기', wakeOff: '화면 켜두기 끄기', fullscreen: '전체 화면', fullscreenOff: '전체 화면 끝내기',
+    share: '이 시계 링크 공유', settings: '설정 페이지 열기', clockArea: '시계 표시 영역', city: '도시',
+    now: '현재 시간', h: '시', m: '분', s: '초', date: '현재 날짜',
+    shared: '공유받은 도시', selected: '선택한 도시', here: '현재 위치',
+    am: '오전', pm: '오후', dateFormat: 'YYYY년 M월 D일 dddd',
+    shareTitle: '플립시계', shareCity: (city: string) => `${city} 시간을 플립시계로 보세요`, shareDefault: '공항 안내판처럼 넘어가는 플립시계'
+  },
+  en: {
+    wake: 'Keep screen on', wakeOff: 'Stop keeping screen on', fullscreen: 'Fullscreen', fullscreenOff: 'Exit fullscreen',
+    share: 'Share this clock', settings: 'Open settings', clockArea: 'Clock', city: 'City',
+    now: 'Current time', h: 'Hour', m: 'Minute', s: 'Second', date: 'Today',
+    shared: 'Shared city', selected: 'Selected city', here: 'Your time zone',
+    am: 'AM', pm: 'PM', dateFormat: 'dddd, MMMM D, YYYY',
+    shareTitle: 'Flip Clock', shareCity: (city: string) => `See ${city} time on a flip clock`, shareDefault: 'A free split-flap clock for your desk'
+  }
+})
+
+const otherLanguage = computed(() => {
+  const browserKo = typeof navigator !== 'undefined' && navigator.language.toLowerCase().startsWith('ko')
+  if (isEn.value && browserKo) return { to: '/', label: '한국어로 보기 →', lang: 'ko' }
+  if (!isEn.value && !browserKo) return { to: '/en', label: 'View in English →', lang: 'en' }
+  return null
+})
+
 // 공유 링크로 들어오면 그 모양으로 보여 줌 (내 설정은 바꾸지 않음)
 const shared = parseShareQuery(useRoute().query)
 
@@ -142,10 +175,12 @@ const savedCity = shared.city ?? localStorage.getItem('selectedCity')
 
 const cityName = computed(() => {
   const city = savedCity || currentLocation.value?.city
-  return city ? getCityKoreanName(city) : 'LOADING...'
+  if (!city) return 'LOADING...'
+  // 영어판은 공항 안내판처럼 대문자 영어 도시명
+  return isEn.value ? city.toUpperCase() : getCityKoreanName(city)
 })
 
-const cityLabel = computed(() => shared.city ? '공유받은 도시' : savedCity ? '선택한 도시' : '현재 위치')
+const cityLabel = computed(() => shared.city ? t.value.shared : savedCity ? t.value.selected : t.value.here)
 
 // IANA 시간대 → 서머타임 자동 반영
 const timezone = computed(() => {
@@ -173,16 +208,16 @@ const minutes = computed(() => zonedTime.value?.format('mm') ?? '00')
 const seconds = computed(() => zonedTime.value?.format('ss') ?? '00')
 const currentDate = computed(() => {
   if (!zonedTime.value) return ''
-  const date = zonedTime.value.format('YYYY년 M월 D일 dddd')
+  const date = zonedTime.value.locale(isEn.value ? 'en' : 'ko').format(t.value.dateFormat)
   // 12시간 표시일 때 오전/오후를 날짜 줄에 함께 보여 줌
-  return is12h.value ? `${zonedTime.value.hour() < 12 ? '오전' : '오후'} · ${date}` : date
+  return is12h.value ? `${zonedTime.value.hour() < 12 ? t.value.am : t.value.pm} · ${date}` : date
 })
 
 // 자동(기기 시간대)이면 도시를 넣지 않음 → 받은 사람도 자기 시간대로 봄
 const shareClock = () => shareLink(
-  buildShareUrl('/', { city: savedCity ?? undefined, effect: backgroundEffect.value, is12h: is12h.value }),
-  '플립시계',
-  savedCity ? `${cityName.value} 시간을 플립시계로 보세요` : '공항 안내판처럼 넘어가는 플립시계'
+  buildShareUrl(lp('/'), { city: savedCity ?? undefined, effect: backgroundEffect.value, is12h: is12h.value }),
+  t.value.shareTitle,
+  savedCity ? t.value.shareCity(isEn.value ? savedCity : cityName.value) : t.value.shareDefault
 )
 
 onMounted(async () => {
@@ -525,5 +560,20 @@ onUnmounted(() => {
   .city-label {
     display: none;
   }
+}
+.lang-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 16px;
+  margin-top: -1rem;
+  border-radius: 999px;
+  color: var(--color-accent-fg);
+  font-size: 0.95rem;
+  text-decoration: none;
+}
+
+.lang-pill:hover {
+  background: var(--color-canvas-subtle);
 }
 </style>

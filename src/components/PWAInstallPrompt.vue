@@ -5,18 +5,15 @@
         <div class="install-header">
           <div class="app-icon">📱</div>
           <div class="install-title">
-            <h3>앱 설치</h3>
-            <p>홈 화면에 플립시계를 추가하세요</p>
+            <h3>{{ t.title }}</h3>
+            <p>{{ t.subtitle }}</p>
           </div>
         </div>
       </template>
       
       <div class="install-content">
         <ul class="install-benefits">
-          <li>홈 화면에서 바로 접근</li>
-          <li>오프라인에서도 사용 가능</li>
-          <li>빠른 로딩 속도</li>
-          <li>화면 켜두고 탁상시계로</li>
+          <li v-for="benefit in t.benefits" :key="benefit">{{ benefit }}</li>
         </ul>
         
         <div class="install-actions">
@@ -26,13 +23,13 @@
             :loading="isInstalling"
             @click="handleInstall"
           >
-            설치하기
+            {{ t.install }}
           </UiButton>
           <UiButton 
             type="text" 
             @click="dismissPrompt"
           >
-            나중에
+            {{ t.later }}
           </UiButton>
         </div>
       </div>
@@ -43,6 +40,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import UiButton from '@/components/ui/UiButton.vue'
+import { useLocale } from '@/composables/useLocale'
 import UiCard from '@/components/ui/UiCard.vue'
 import { message } from '@/composables/useToast'
 import { showInstallPrompt as showPWAInstallPrompt, canInstallPWA } from '@/utils/pwa'
@@ -61,6 +59,22 @@ import { showInstallPrompt as showPWAInstallPrompt, canInstallPWA } from '@/util
  */
 
 const showInstallPrompt = ref(false)
+
+const { pick } = useLocale()
+const t = pick({
+  ko: {
+    title: '앱 설치', subtitle: '홈 화면에 플립시계를 추가하세요',
+    benefits: ['홈 화면에서 바로 접근', '오프라인에서도 사용 가능', '빠른 로딩 속도', '화면 켜두고 탁상시계로'],
+    install: '설치하기', later: '나중에', installed: '앱이 성공적으로 설치되었습니다!', canceled: '설치가 취소되었습니다.',
+    failed: '설치 중 오류가 발생했습니다.', remind: '7일 후에 다시 알려드리겠습니다.'
+  },
+  en: {
+    title: 'Install the app', subtitle: 'Add Flip Clock to your home screen',
+    benefits: ['Open it from your home screen', 'Works offline', 'Loads fast', 'Keep the screen on as a desk clock'],
+    install: 'Install', later: 'Not now', installed: 'App installed!', canceled: 'Install canceled.',
+    failed: 'Something went wrong while installing.', remind: "We'll remind you in 7 days."
+  }
+})
 const isInstalling = ref(false)
 
 const DISMISS_STORAGE_KEY = 'pwa-install-dismissed'
@@ -108,15 +122,15 @@ const handleInstall = async (): Promise<void> => {
     const installed = await showPWAInstallPrompt()
     
     if (installed) {
-      message.success('앱이 성공적으로 설치되었습니다!')
+      message.success(t.value.installed)
       showInstallPrompt.value = false
       localStorage.removeItem(DISMISS_STORAGE_KEY)
     } else {
-      message.info('설치가 취소되었습니다.')
+      message.info(t.value.canceled)
     }
   } catch (error) {
     console.error('PWA 설치 오류:', error)
-    message.error('설치 중 오류가 발생했습니다.')
+    message.error(t.value.failed)
   } finally {
     isInstalling.value = false
   }
@@ -135,7 +149,7 @@ const handleInstall = async (): Promise<void> => {
 const dismissPrompt = (): void => {
   showInstallPrompt.value = false
   localStorage.setItem(DISMISS_STORAGE_KEY, Date.now().toString())
-  message.info('7일 후에 다시 알려드리겠습니다.')
+  message.info(t.value.remind)
 }
 
 /**

@@ -1,10 +1,10 @@
 <template>
   <div class="not-found" role="main">
     <SplitFlapDisplay text="404" />
-    <h1 class="title">페이지를 찾을 수 없어요</h1>
-    <p class="description">주소가 바뀌었거나 없는 페이지예요.</p>
-    <UiButton type="primary" size="large" :icon="HomeOutlined" @click="$router.replace('/')">
-      시계로 돌아가기
+    <h1 class="title">{{ t.title }}</h1>
+    <p class="description">{{ t.body }}</p>
+    <UiButton type="primary" size="large" :icon="HomeOutlined" @click="$router.replace(lp('/'))">
+      {{ t.home }}
     </UiButton>
   </div>
 </template>
@@ -13,6 +13,13 @@
 import { HomeOutlined } from '@ant-design/icons-vue'
 import SplitFlapDisplay from '@/components/SplitFlapDisplay.vue'
 import UiButton from '@/components/ui/UiButton.vue'
+import { useLocale } from '@/composables/useLocale'
+
+const { lp, pick } = useLocale()
+const t = pick({
+  ko: { title: '페이지를 찾을 수 없어요', body: '주소가 바뀌었거나 없는 페이지예요.', home: '시계로 돌아가기' },
+  en: { title: 'Page not found', body: 'This page moved or never existed.', home: 'Back to the clock' }
+})
 
 /**
  * ## 없는 주소 안내

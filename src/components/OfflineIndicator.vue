@@ -11,15 +11,15 @@
           📡
         </div>
         <div class="offline-text">
-          <h4>오프라인 모드</h4>
-          <p>인터넷 연결이 끊어졌습니다. 기본 기능은 계속 사용할 수 있습니다.</p>
+          <h4>{{ t.title }}</h4>
+          <p>{{ t.body }}</p>
         </div>
         <button 
           class="offline-retry"
           :disabled="isChecking"
           @click="checkConnection"
         >
-          {{ isChecking ? '확인 중...' : '재시도' }}
+          {{ isChecking ? t.checking : t.retry }}
         </button>
       </div>
     </div>
@@ -28,6 +28,13 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
+import { useLocale } from '@/composables/useLocale'
+
+const { pick } = useLocale()
+const t = pick({
+  ko: { title: '오프라인 모드', body: '인터넷 연결이 끊어졌습니다. 기본 기능은 계속 사용할 수 있습니다.', checking: '확인 중...', retry: '재시도' },
+  en: { title: 'Offline', body: 'You are offline. The clock keeps working.', checking: 'Checking...', retry: 'Retry' }
+})
 
 /**
  * ## 오프라인 상태 표시 컴포넌트

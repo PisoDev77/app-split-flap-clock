@@ -13,28 +13,28 @@
             type="text"
             :icon="ArrowLeftOutlined"
             class="back-btn"
-            aria-label="이전 페이지로 돌아가기"
+            :aria-label="t.backLabel"
             @click="goBack"
           >
-            뒤로
+            {{ t.back }}
           </UiButton>
-          <h1 class="page-title">공부 시계</h1>
+          <h1 class="page-title">{{ t.title }}</h1>
           <div class="header-controls">
             <UiButton
               v-if="fullscreenSupported"
               type="text"
               :icon="isFullscreen ? FullscreenExitOutlined : FullscreenOutlined"
               class="icon-btn"
-              :aria-label="isFullscreen ? '전체 화면 끝내기' : '전체 화면'"
-              title="전체 화면"
+              :aria-label="isFullscreen ? t.fullscreenOff : t.fullscreen"
+              :title="t.fullscreen"
               @click="toggleFullscreen"
             />
             <UiButton
               type="text"
               :icon="ShareAltOutlined"
               class="icon-btn"
-              aria-label="공부 시계 링크 공유"
-              title="링크 공유"
+              :aria-label="t.share"
+              :title="t.share"
               @click="share"
             />
           </div>
@@ -42,28 +42,28 @@
       </header>
 
       <div class="content" role="main">
-        <section class="panel" aria-label="지금 시각">
+        <section class="panel" :aria-label="t.now">
           <div class="now-units">
-            <SplitFlapDisplay :text="nowHours" label="시" />
+            <SplitFlapDisplay :text="nowHours" :label="t.h" />
             <div class="sep" aria-hidden="true">:</div>
-            <SplitFlapDisplay :text="nowMinutes" label="분" />
+            <SplitFlapDisplay :text="nowMinutes" :label="t.m" />
           </div>
           <p class="now-date">{{ nowDate }}</p>
         </section>
 
-        <section class="panel timer-panel" :class="{ 'is-done': done }" aria-label="집중 타이머">
+        <section class="panel timer-panel" :class="{ 'is-done': done }" :aria-label="t.timer">
           <p class="timer-status" aria-live="polite">{{ statusText }}</p>
           <div class="timer-units">
             <template v-if="remainingParts.h">
-              <SplitFlapDisplay :text="remainingParts.h" label="남은 시" />
+              <SplitFlapDisplay :text="remainingParts.h" :label="t.leftH" />
               <div class="sep" aria-hidden="true">:</div>
             </template>
-            <SplitFlapDisplay :text="remainingParts.m" label="남은 분" />
+            <SplitFlapDisplay :text="remainingParts.m" :label="t.leftM" />
             <div class="sep" aria-hidden="true">:</div>
-            <SplitFlapDisplay :text="remainingParts.s" label="남은 초" />
+            <SplitFlapDisplay :text="remainingParts.s" :label="t.leftS" />
           </div>
 
-          <div class="presets" role="group" aria-label="집중 시간 고르기">
+          <div class="presets" role="group" :aria-label="t.choose">
             <UiButton
               v-for="minutes in PRESETS"
               :key="minutes"
@@ -71,25 +71,34 @@
               :aria-pressed="durationMinutes === minutes"
               @click="choose(minutes)"
             >
-              {{ minutes }}분
+              {{ t.minutes(minutes) }}
             </UiButton>
           </div>
 
           <div class="actions">
             <UiButton type="primary" size="large" :icon="running ? PauseOutlined : CaretRightOutlined" @click="running ? pause() : start()">
-              {{ running ? '잠깐 멈춤' : remainingMs < durationMinutes * 60000 && !done ? '이어서' : '시작' }}
+              {{ running ? t.pause : remainingMs < durationMinutes * 60000 && !done ? t.resume : t.start }}
             </UiButton>
-            <UiButton size="large" :icon="UndoOutlined" @click="reset">처음으로</UiButton>
+            <UiButton size="large" :icon="UndoOutlined" @click="reset">{{ t.reset }}</UiButton>
           </div>
         </section>
 
-        <UiCard v-if="!clean" class="guide-card" title="공부 시계 이렇게 써요">
+        <UiCard v-if="!clean && !isEn" class="guide-card" title="공부 시계 이렇게 써요">
           <ul>
             <li><strong>25분 집중 + 5분 휴식</strong>(뽀모도로)이 처음 시작하기 좋아요. 익숙해지면 50분, 긴 공부는 90분.</li>
             <li>이 화면을 열어 두면 <strong>화면이 꺼지지 않아요</strong>. 폰을 눕히면 가로로 크게 보여요.</li>
             <li>타이머는 새로고침하거나 앱을 잠깐 닫아도 이어서 흘러가요.</li>
             <li>스터디 윗미 방송(OBS 등)에는 주소 끝에 <code>?clean=1</code>을 붙이면 머리말·설명 없이 시계만 나와요.</li>
             <li>배경 효과와 다크 모드는 <router-link to="/settings">설정</router-link>에서 바꿀 수 있어요.</li>
+          </ul>
+        </UiCard>
+        <UiCard v-if="!clean && isEn" class="guide-card" title="How to use the study clock">
+          <ul>
+            <li><strong>25 minutes of focus + 5 minutes of rest</strong> (Pomodoro) is a good start. Move to 50 minutes when it feels easy, or 90 for long sessions.</li>
+            <li>While this page is open <strong>your screen stays on</strong>. Turn your phone sideways for a bigger clock.</li>
+            <li>The timer keeps running even if you reload or briefly close the app.</li>
+            <li>For study-with-me streams (OBS and similar), add <code>?clean=1</code> to the address to show only the clocks.</li>
+            <li>Change background effects and dark mode in <router-link to="/en/settings">Settings</router-link>.</li>
           </ul>
         </UiCard>
       </div>
@@ -116,6 +125,7 @@ import { useSettings } from '@/composables/useSettings'
 import { useWakeLock } from '@/composables/useWakeLock'
 import { useFullscreen } from '@/composables/useFullscreen'
 import { shareLink } from '@/utils/shareLink'
+import { useLocale } from '@/composables/useLocale'
 import dayjs from '@/utils/dayjs'
 
 /**
@@ -139,6 +149,29 @@ interface SavedTimer {
 }
 
 const route = useRoute()
+const { isEn, lp, pick } = useLocale()
+const t = pick({
+  ko: {
+    back: '뒤로', backLabel: '이전 페이지로 돌아가기', title: '공부 시계',
+    fullscreen: '전체 화면', fullscreenOff: '전체 화면 끝내기', share: '공부 시계 링크 공유',
+    now: '지금 시각', h: '시', m: '분', timer: '집중 타이머', leftH: '남은 시', leftM: '남은 분', leftS: '남은 초',
+    choose: '집중 시간 고르기', minutes: (n: number) => `${n}분`,
+    start: '시작', pause: '잠깐 멈춤', resume: '이어서', reset: '처음으로',
+    done: '끝! 잠깐 쉬어요 ☕', endsAt: (time: string) => `${time}에 끝나요`, focus: (n: number) => `${n}분 집중`,
+    timeFormat: 'A h:mm', dateFormat: 'M월 D일 dddd',
+    shareTitle: '공부 시계 · 플립시계', shareText: '플립시계로 25·50·90분 집중 타이머를 켜 두세요'
+  },
+  en: {
+    back: 'Back', backLabel: 'Go back', title: 'Study Clock',
+    fullscreen: 'Fullscreen', fullscreenOff: 'Exit fullscreen', share: 'Share the study clock',
+    now: 'Current time', h: 'Hour', m: 'Minute', timer: 'Focus timer', leftH: 'Hours left', leftM: 'Minutes left', leftS: 'Seconds left',
+    choose: 'Choose focus time', minutes: (n: number) => `${n} min`,
+    start: 'Start', pause: 'Pause', resume: 'Resume', reset: 'Reset',
+    done: 'Done! Take a break ☕', endsAt: (time: string) => `Ends at ${time}`, focus: (n: number) => `${n}-minute focus`,
+    timeFormat: 'h:mm A', dateFormat: 'dddd, MMMM D',
+    shareTitle: 'Study Clock · Flip Clock', shareText: 'A flip clock with a 25, 50 or 90 minute focus timer'
+  }
+})
 const goBack = useGoBack()
 const clean = computed(() => route.query.clean === '1')
 
@@ -150,7 +183,7 @@ const { supported: fullscreenSupported, isFullscreen, toggle: toggleFullscreen }
 const now = ref(Date.now())
 const nowHours = computed(() => dayjs(now.value).format('HH'))
 const nowMinutes = computed(() => dayjs(now.value).format('mm'))
-const nowDate = computed(() => dayjs(now.value).format('M월 D일 dddd'))
+const nowDate = computed(() => dayjs(now.value).locale(isEn.value ? 'en' : 'ko').format(t.value.dateFormat))
 
 // ----- 타이머 -----
 const durationMinutes = ref<number>(25)
@@ -175,9 +208,9 @@ const remainingParts = computed(() => {
 })
 
 const statusText = computed(() => {
-  if (done.value) return '끝! 잠깐 쉬어요 ☕'
-  if (running.value) return `${dayjs(endAt.value!).format('A h:mm')}에 끝나요`
-  return `${durationMinutes.value}분 집중`
+  if (done.value) return t.value.done
+  if (running.value) return t.value.endsAt(dayjs(endAt.value!).locale(isEn.value ? 'en' : 'ko').format(t.value.timeFormat))
+  return t.value.focus(durationMinutes.value)
 })
 
 const save = () => {
@@ -225,11 +258,7 @@ watch(done, (isDone) => {
   save()
 })
 
-const share = () => shareLink(
-  'https://piso-split-flap.netlify.app/study',
-  '공부 시계 · 플립시계',
-  '플립시계로 25·50·90분 집중 타이머를 켜 두세요'
-)
+const share = () => shareLink(`https://piso-split-flap.netlify.app${lp('/study')}`, t.value.shareTitle, t.value.shareText)
 
 let timer: ReturnType<typeof setInterval> | undefined
 onMounted(() => {

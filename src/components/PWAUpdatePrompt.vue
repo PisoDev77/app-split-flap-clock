@@ -1,11 +1,11 @@
 <template>
   <Transition name="update-banner">
     <div v-if="showBanner" class="update-banner" role="status" aria-live="polite">
-      <span class="update-banner__text">새 버전이 준비됐어요</span>
+      <span class="update-banner__text">{{ t.ready }}</span>
       <UiButton type="primary" size="small" @click="reload">
-        새로고침
+        {{ t.reload }}
       </UiButton>
-      <button type="button" class="update-banner__close" aria-label="닫기" @click="showBanner = false">
+      <button type="button" class="update-banner__close" :aria-label="t.close" @click="showBanner = false">
         ×
       </button>
     </div>
@@ -16,6 +16,7 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import UiButton from '@/components/ui/UiButton.vue'
+import { useLocale } from '@/composables/useLocale'
 
 /**
  * ## 새 버전 적용
@@ -36,6 +37,11 @@ const CHECK_INTERVAL_MS = 60 * 60 * 1000
 const route = useRoute()
 const router = useRouter()
 const showBanner = ref(false)
+const { pick } = useLocale()
+const t = pick({
+  ko: { ready: '새 버전이 준비됐어요', reload: '새로고침', close: '닫기' },
+  en: { ready: 'A new version is ready', reload: 'Reload', close: 'Close' }
+})
 
 let updateReady = false
 let checkTimer: ReturnType<typeof setInterval> | undefined
@@ -45,7 +51,7 @@ const reload = () => window.location.reload()
 
 const onControllerChange = () => {
   updateReady = true
-  if (route.path === '/') {
+  if (route.path === '/' || route.path === '/en') {
     reload()
   } else {
     showBanner.value = true
@@ -70,7 +76,7 @@ onMounted(() => {
   }
 
   removeAfterEach = router.afterEach((to) => {
-    if (updateReady && to.path === '/') reload()
+    if (updateReady && (to.path === '/' || to.path === '/en')) reload()
   })
 
   checkTimer = setInterval(checkForUpdate, CHECK_INTERVAL_MS)

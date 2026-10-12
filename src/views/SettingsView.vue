@@ -7,54 +7,54 @@
             type="text" 
             :icon="ArrowLeftOutlined"
             class="back-btn"
-            aria-label="이전 페이지로 돌아가기"
+            :aria-label="t.backLabel"
             @click="goBack"
           >
-            뒤로
+            {{ t.back }}
           </UiButton>
-          <h1 class="page-title">설정</h1>
+          <h1 class="page-title">{{ t.title }}</h1>
           <div class="header-spacer" />
         </div>
       </header>
       
       <div class="content">
         <div class="settings-container" role="main">
-          <UiCard class="settings-card" title="시간 및 도시 설정">
+          <UiCard class="settings-card" :title="t.cardCity">
             <div class="ui-stack settings-form">
               <!-- 도시 선택 -->
               <div class="setting-item">
                 <h3 class="ui-title setting-label">
-                  도시 선택
+                  {{ t.city }}
                 </h3>
                 <UiSelect
                   v-model:value="selectedCity"
-                  aria-label="도시 선택"
-                  placeholder="도시를 선택하세요"
+                  :aria-label="t.city"
+                  :placeholder="t.cityPlaceholder"
                   class="setting-input"
                   :options="cityOptions"
                 />
                 <span class="ui-text ui-text--secondary setting-description">
-                  시간을 표시할 도시를 선택합니다.
+                  {{ t.cityDesc }}
                 </span>
               </div>
 
               <!-- 시간대 표시 -->
               <div class="setting-item">
                 <h3 class="ui-title setting-label">
-                  현재 시간대
+                  {{ t.zone }}
                 </h3>
                 <span class="ui-text timezone-display">
                   UTC{{ currentOffset }} ({{ currentCityDisplay }})
                 </span>
                 <span class="ui-text ui-text--secondary setting-description">
-                  선택된 도시의 지금 시간대입니다. 서머타임이 자동으로 반영됩니다.
+                  {{ t.zoneDesc }}
                 </span>
               </div>
 
               <!-- 기기 시간대 자동 설정 -->
               <div class="setting-item">
                 <h3 class="ui-title setting-label">
-                  기기 시간대 자동 설정
+                  {{ t.auto }}
                 </h3>
                 <UiButton 
                   type="primary" 
@@ -62,47 +62,47 @@
                   :icon="EnvironmentOutlined"
                   @click="handleAutoLocation"
                 >
-                  이 기기 시간대 따르기
+                  {{ t.autoBtn }}
                 </UiButton>
                 <span class="ui-text ui-text--secondary setting-description">
-                  위치 권한 없이, 이 기기에 설정된 시간대의 시간을 보여줍니다.
+                  {{ t.autoDesc }}
                 </span>
               </div>
             </div>
           </UiCard>
 
-          <UiCard class="settings-card" title="화면 설정">
+          <UiCard class="settings-card" :title="t.cardDisplay">
             <div class="ui-stack settings-form">
               <!-- 테마 설정 -->
               <div class="setting-item">
                 <h3 class="ui-title setting-label">
-                  테마 모드
+                  {{ t.theme }}
                 </h3>
                 <UiSelect
                   v-model:value="selectedTheme"
-                  aria-label="테마 모드"
+                  :aria-label="t.theme"
                   class="setting-input"
                   :options="themeOptions"
                   @change="handleThemeChange"
                 />
                 <span class="ui-text ui-text--secondary setting-description">
-                  앱의 색상 테마를 선택합니다.
+                  {{ t.themeDesc }}
                 </span>
               </div>
 
               <!-- 시간 표시 방식 -->
               <div class="setting-item">
                 <h3 class="ui-title setting-label">
-                  시간 표시
+                  {{ t.timeFormat }}
                 </h3>
                 <UiSelect
                   v-model:value="timeFormat"
-                  aria-label="시간 표시 방식"
+                  :aria-label="t.timeFormatLabel"
                   class="setting-input"
                   :options="timeFormatOptions"
                 />
                 <span class="ui-text ui-text--secondary setting-description">
-                  12시간이면 날짜 옆에 오전·오후가 함께 나옵니다.
+                  {{ t.timeFormatDesc }}
                 </span>
               </div>
 
@@ -111,15 +111,15 @@
                 <div class="setting-row">
                   <div class="setting-label-group">
                     <h3 class="ui-title setting-label">
-                      화면 켜두기
+                      {{ t.wake }}
                     </h3>
                     <span class="ui-text ui-text--secondary setting-description">
-                      시계 화면에서 화면이 꺼지지 않게 합니다. 탁상시계로 쓸 때 켜 두세요.
+                      {{ t.wakeDesc }}
                     </span>
                   </div>
                   <UiSwitch
                     v-model:checked="keepScreenOn"
-                    aria-label="화면 켜두기"
+                    :aria-label="t.wake"
                   />
                 </div>
               </div>
@@ -127,7 +127,7 @@
               <!-- 테마 미리보기 -->
               <div class="setting-item">
                 <h3 class="ui-title setting-label">
-                  미리보기
+                  {{ t.preview }}
                 </h3>
                 <div class="theme-preview">
                   <div class="preview-container">
@@ -140,11 +140,11 @@
                     <div class="preview-content">
                       <div class="preview-city">
                         <SplitFlapDisplay :text="previewText" />
-                        <span class="preview-label">도시</span>
+                        <span class="preview-label">{{ t.previewCity }}</span>
                       </div>
                       <div class="preview-time">
                         <SplitFlapDisplay :text="previewTime" />
-                        <span class="preview-label">시간</span>
+                        <span class="preview-label">{{ t.previewTime }}</span>
                       </div>
                     </div>
                   </div>
@@ -153,22 +153,22 @@
             </div>
           </UiCard>
 
-          <UiCard class="settings-card" title="애니메이션 설정">
+          <UiCard class="settings-card" :title="t.cardAnim">
             <div class="ui-stack settings-form">
               <!-- 배경 효과 -->
               <div class="setting-item">
                 <div class="setting-row">
                   <div class="setting-label-group">
                     <h3 class="ui-title setting-label">
-                      배경 효과
+                      {{ t.effects }}
                     </h3>
                     <span class="ui-text ui-text--secondary setting-description">
-                      시간대별 동적 배경 효과를 활성화합니다.
+                      {{ t.effectsDesc }}
                     </span>
                   </div>
                   <UiSwitch
                     v-model:checked="backgroundEffectsEnabled"
-                    aria-label="배경 효과 켜기"
+                    :aria-label="t.effectsOn"
                   />
                 </div>
               </div>
@@ -176,34 +176,34 @@
               <!-- 배경 효과 종류 -->
               <div class="setting-item">
                 <h3 class="ui-title setting-label">
-                  효과 종류
+                  {{ t.effectKind }}
                 </h3>
                 <UiSelect
                   v-model:value="backgroundEffect"
-                  aria-label="배경 효과 종류"
+                  :aria-label="t.effectKindLabel"
                   class="setting-input"
-                  :options="BACKGROUND_EFFECT_OPTIONS"
+                  :options="effectOptions"
                   :disabled="!backgroundEffectsEnabled"
                 />
                 <span class="ui-text ui-text--secondary setting-description">
-                  배경에 보일 움직임을 고릅니다. 위 미리보기에서 바로 확인할 수 있어요.
+                  {{ t.effectKindDesc }}
                 </span>
               </div>
 
               <!-- 애니메이션 강도 -->
               <div class="setting-item">
                 <h3 class="ui-title setting-label">
-                  애니메이션 강도
+                  {{ t.intensity }}
                 </h3>
                 <UiSelect
                   v-model:value="animationIntensity"
-                  aria-label="애니메이션 강도"
+                  :aria-label="t.intensity"
                   class="setting-input"
                   :options="intensityOptions"
                   :disabled="!backgroundEffectsEnabled"
                 />
                 <span class="ui-text ui-text--secondary setting-description">
-                  애니메이션의 강도를 조절합니다. 높을수록 더 화려합니다.
+                  {{ t.intensityDesc }}
                 </span>
               </div>
 
@@ -212,17 +212,17 @@
                 <div class="setting-row">
                   <div class="setting-label-group">
                     <h3 class="ui-title setting-label">
-                      성능 모드
+                      {{ t.perf }}
                     </h3>
                     <span class="ui-text ui-text--secondary setting-description">
-                      저성능 기기를 위해 모든 효과를 비활성화합니다.
+                      {{ t.perfDesc }}
                     </span>
                   </div>
                   <UiButton 
                     size="small"
                     @click="handlePerformanceModeClick"
                   >
-                    성능 모드 활성화
+                    {{ t.perfBtn }}
                   </UiButton>
                 </div>
               </div>
@@ -238,7 +238,7 @@
               block
               @click="saveSettings"
             >
-              설정 저장
+              {{ t.save }}
             </UiButton>
           </div>
         </div>
@@ -269,8 +269,63 @@ import { useTheme } from '@/composables/useTheme'
 import { useSettings, BACKGROUND_EFFECT_OPTIONS } from '@/composables/useSettings'
 import dayjs from '@/utils/dayjs'
 import { useGoBack } from '@/composables/useGoBack'
+import { useLocale } from '@/composables/useLocale'
 
 const goBack = useGoBack()
+const { isEn, lp, pick } = useLocale()
+
+const EFFECT_LABELS_EN: Record<string, string> = {
+  particles: '✨ Sparkles', stars: '🌌 Stars & shooting stars', snow: '❄️ Snow', rain: '🌧️ Rain',
+  bokeh: '🔆 Bokeh (soft lights)', aurora: '🌈 Aurora', none: 'Gradient only'
+}
+
+const t = pick({
+  ko: {
+    back: '뒤로', backLabel: '이전 페이지로 돌아가기', title: '설정',
+    cardCity: '시간 및 도시 설정', city: '도시 선택', cityPlaceholder: '도시를 선택하세요', cityDesc: '시간을 표시할 도시를 선택합니다.',
+    zone: '현재 시간대', zoneDesc: '선택된 도시의 지금 시간대입니다. 서머타임이 자동으로 반영됩니다.',
+    auto: '기기 시간대 자동 설정', autoBtn: '이 기기 시간대 따르기', autoDesc: '위치 권한 없이, 이 기기에 설정된 시간대의 시간을 보여줍니다.',
+    cardDisplay: '화면 설정', theme: '테마 모드', themeDesc: '앱의 색상 테마를 선택합니다.',
+    timeFormat: '시간 표시', timeFormatLabel: '시간 표시 방식', timeFormatDesc: '12시간이면 날짜 옆에 오전·오후가 함께 나옵니다.',
+    wake: '화면 켜두기', wakeDesc: '시계 화면에서 화면이 꺼지지 않게 합니다. 탁상시계로 쓸 때 켜 두세요.',
+    preview: '미리보기', previewCity: '도시', previewTime: '시간',
+    cardAnim: '애니메이션 설정', effects: '배경 효과', effectsDesc: '시간대별 동적 배경 효과를 활성화합니다.', effectsOn: '배경 효과 켜기',
+    effectKind: '효과 종류', effectKindLabel: '배경 효과 종류', effectKindDesc: '배경에 보일 움직임을 고릅니다. 위 미리보기에서 바로 확인할 수 있어요.',
+    intensity: '애니메이션 강도', intensityDesc: '애니메이션의 강도를 조절합니다. 높을수록 더 화려합니다.',
+    perf: '성능 모드', perfDesc: '저성능 기기를 위해 모든 효과를 비활성화합니다.', perfBtn: '성능 모드 활성화', save: '설정 저장',
+    autoOption: (city?: string) => city ? `자동 · 이 기기 시간대 (${city})` : '자동 · 이 기기 시간대',
+    h24: '24시간 (13:05)', h12: '12시간 (오후 01:05)',
+    themeSystem: '시스템 설정 따름', themeLight: '라이트 모드', themeDark: '다크 모드',
+    low: '낮음 (배터리 절약)', medium: '보통 (권장)', high: '높음 (화려함)',
+    autoOk: (city: string) => `이 기기 시간대(${city})를 따릅니다. 저장을 눌러 적용하세요.`,
+    autoFail: '이 기기의 시간대를 확인할 수 없습니다. 도시를 직접 골라 주세요.',
+    perfOk: '성능 모드가 활성화되었습니다.', saved: '설정이 저장되었습니다.', saveFail: '설정 저장에 실패했습니다.'
+  },
+  en: {
+    back: 'Back', backLabel: 'Go back', title: 'Settings',
+    cardCity: 'Time & city', city: 'City', cityPlaceholder: 'Choose a city', cityDesc: 'The city whose time the clock shows.',
+    zone: 'Current time zone', zoneDesc: 'The current time zone of the selected city. Daylight saving time is applied automatically.',
+    auto: 'Use device time zone', autoBtn: 'Follow this device', autoDesc: 'Shows the time of the time zone set on this device. No location permission needed.',
+    cardDisplay: 'Display', theme: 'Theme', themeDesc: 'Choose the color theme.',
+    timeFormat: 'Time format', timeFormatLabel: 'Time format', timeFormatDesc: 'With 12-hour time, AM/PM appears next to the date.',
+    wake: 'Keep screen on', wakeDesc: 'Stops the screen from turning off on the clock. Turn it on when you use it as a desk clock.',
+    preview: 'Preview', previewCity: 'City', previewTime: 'Time',
+    cardAnim: 'Animation', effects: 'Background effects', effectsDesc: 'Turns on moving background effects.', effectsOn: 'Turn on background effects',
+    effectKind: 'Effect', effectKindLabel: 'Background effect', effectKindDesc: 'Choose what moves in the background. You can see it in the preview above.',
+    intensity: 'Animation intensity', intensityDesc: 'Higher is more vivid.',
+    perf: 'Performance mode', perfDesc: 'Turns off all effects for slower devices.', perfBtn: 'Turn on performance mode', save: 'Save settings',
+    autoOption: (city?: string) => city ? `Auto · this device's time zone (${city})` : "Auto · this device's time zone",
+    h24: '24-hour (13:05)', h12: '12-hour (01:05 PM)',
+    themeSystem: 'Follow system', themeLight: 'Light', themeDark: 'Dark',
+    low: 'Low (saves battery)', medium: 'Medium (recommended)', high: 'High (vivid)',
+    autoOk: (city: string) => `Following this device's time zone (${city}). Tap Save to apply.`,
+    autoFail: "Couldn't read this device's time zone. Please choose a city.",
+    perfOk: 'Performance mode is on.', saved: 'Settings saved.', saveFail: "Couldn't save settings."
+  }
+})
+
+// 도시 이름: 한국어판은 '서울', 영어판은 'Seoul'
+const cityLabelOf = (city: string) => isEn.value ? city : getCityKoreanName(city)
 
 /**
  * ## 설정 화면 뷰
@@ -315,10 +370,10 @@ const timeFormat = computed({
   get: () => settings.value.timeFormat,
   set: (value) => { settings.value.timeFormat = value as '12h' | '24h' }
 })
-const timeFormatOptions = [
-  { value: '24h', label: '24시간 (13:05)' },
-  { value: '12h', label: '12시간 (오후 01:05)' }
-]
+const timeFormatOptions = computed(() => [
+  { value: '24h', label: t.value.h24 },
+  { value: '12h', label: t.value.h12 }
+])
 const keepScreenOn = computed({
   get: () => settings.value.keepScreenOn,
   set: (value) => { settings.value.keepScreenOn = value }
@@ -339,29 +394,30 @@ const previewTime = computed(() => dayjs().tz(currentTimezone.value).format('HH:
 
 const cityOptions = computed(() => {
   const deviceCity = currentLocation.value?.city
-  const autoLabel = deviceCity
-    ? `자동 · 이 기기 시간대 (${getCityKoreanName(deviceCity)})`
-    : '자동 · 이 기기 시간대'
   return [
-    { value: AUTO_CITY, label: autoLabel },
+    { value: AUTO_CITY, label: t.value.autoOption(deviceCity ? cityLabelOf(deviceCity) : undefined) },
     ...getSupportedCities().map(city => ({
       value: city.name,
-      label: `${getCityDisplayName(city.name)} UTC${getUtcOffset(city.timezone)}`
+      label: `${isEn.value ? city.name : getCityDisplayName(city.name)} UTC${getUtcOffset(city.timezone)}`
     }))
   ]
 })
 
-const themeOptions = [
-  { value: 'system', label: '시스템 설정 따름' },
-  { value: 'light', label: '라이트 모드' },
-  { value: 'dark', label: '다크 모드' }
-]
+const themeOptions = computed(() => [
+  { value: 'system', label: t.value.themeSystem },
+  { value: 'light', label: t.value.themeLight },
+  { value: 'dark', label: t.value.themeDark }
+])
 
-const intensityOptions = [
-  { value: 'low', label: '낮음 (배터리 절약)' },
-  { value: 'medium', label: '보통 (권장)' },
-  { value: 'high', label: '높음 (화려함)' }
-]
+const intensityOptions = computed(() => [
+  { value: 'low', label: t.value.low },
+  { value: 'medium', label: t.value.medium },
+  { value: 'high', label: t.value.high }
+])
+
+const effectOptions = computed(() => isEn.value
+  ? BACKGROUND_EFFECT_OPTIONS.map(option => ({ ...option, label: EFFECT_LABELS_EN[option.value] }))
+  : BACKGROUND_EFFECT_OPTIONS)
 
 const isAutoCity = computed(() => !selectedCity.value || selectedCity.value === AUTO_CITY)
 const currentCity = computed(() => isAutoCity.value
@@ -371,7 +427,7 @@ const currentTimezone = computed(() => isAutoCity.value
   ? (currentLocation.value?.timezone || getTimezoneByCity('Seoul'))
   : getTimezoneByCity(currentCity.value))
 const currentOffset = computed(() => getUtcOffset(currentTimezone.value))
-const currentCityDisplay = computed(() => getCityKoreanName(currentCity.value))
+const currentCityDisplay = computed(() => isEn.value ? currentCity.value.toUpperCase() : getCityKoreanName(currentCity.value))
 
 /**
  * ## 기기 시간대 따르기
@@ -391,9 +447,9 @@ const handleAutoLocation = async (): Promise<void> => {
     
     if (location) {
       selectedCity.value = AUTO_CITY
-      message.success(`이 기기 시간대(${getCityKoreanName(location.city)})를 따릅니다. 저장을 눌러 적용하세요.`)
+      message.success(t.value.autoOk(cityLabelOf(location.city)))
     } else {
-      message.error('이 기기의 시간대를 확인할 수 없습니다. 도시를 직접 골라 주세요.')
+      message.error(t.value.autoFail)
     }
   } finally {
     isLocationLoading.value = false
@@ -426,7 +482,7 @@ const handleThemeChange = (theme: any): void => {
  */
 const handlePerformanceModeClick = (): void => {
   activatePerformanceMode()
-  message.success('성능 모드가 활성화되었습니다.')
+  message.success(t.value.perfOk)
 }
 
 /**
@@ -459,16 +515,16 @@ const saveSettings = async (): Promise<void> => {
     localStorage.setItem('backgroundEffectsEnabled', String(backgroundEffectsEnabled.value))
     localStorage.setItem('animationIntensity', animationIntensity.value)
     
-    message.success('설정이 저장되었습니다.')
+    message.success(t.value.saved)
     
     // 잠시 후 홈 화면으로 이동 (history.back은 직접 들어온 경우 앱 밖으로 나갈 수 있음)
     setTimeout(() => {
-      router.push('/')
+      router.push(lp('/'))
     }, 1000)
     
   } catch (error) {
     console.error('설정 저장 실패:', error)
-    message.error('설정 저장에 실패했습니다.')
+    message.error(t.value.saveFail)
   } finally {
     isSaving.value = false
   }

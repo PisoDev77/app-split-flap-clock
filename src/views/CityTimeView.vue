@@ -7,12 +7,12 @@
             type="text"
             :icon="ArrowLeftOutlined"
             class="back-btn"
-            aria-label="이전 페이지로 돌아가기"
+            :aria-label="t.backLabel"
             @click="goBack"
           >
-            뒤로
+            {{ t.back }}
           </UiButton>
-          <h1 class="page-title">{{ city.ko }} 현재 시간</h1>
+          <h1 class="page-title">{{ t.heading(name) }}</h1>
           <div class="header-spacer" />
         </div>
       </header>
@@ -20,60 +20,57 @@
       <div class="content">
         <div class="city-container" role="main">
           <UiCard class="clock-card">
-            <p class="clock-place">{{ city.ko }} · {{ city.country }}</p>
-            <div class="time-units" role="timer" :aria-label="`${city.ko} 현재 시간`">
-              <SplitFlapDisplay :text="hours" label="시" />
+            <p class="clock-place">{{ name }} · {{ isEn ? city.countryEn : city.country }}</p>
+            <div class="time-units" role="timer" :aria-label="t.heading(name)">
+              <SplitFlapDisplay :text="hours" :label="t.h" />
               <div class="time-separator" aria-hidden="true">:</div>
-              <SplitFlapDisplay :text="minutes" label="분" />
+              <SplitFlapDisplay :text="minutes" :label="t.m" />
               <div class="time-separator" aria-hidden="true">:</div>
-              <SplitFlapDisplay :text="seconds" label="초" />
+              <SplitFlapDisplay :text="seconds" :label="t.s" />
             </div>
             <p class="clock-date">{{ dateText }}</p>
             <div class="clock-tags">
               <UiTag>{{ offset }}</UiTag>
-              <UiTag v-if="dstNow" color="orange">서머타임 중</UiTag>
-              <UiTag v-if="city.slug !== 'seoul'" color="blue">{{ gap }}</UiTag>
+              <UiTag v-if="dstNow" color="orange">{{ t.dstNow }}</UiTag>
+              <UiTag v-if="showCompare" color="blue">{{ gap }}</UiTag>
             </div>
             <UiButton type="primary" size="large" :icon="FieldTimeOutlined" class="home-btn" @click="openOnHome">
-              {{ city.slug === 'seoul' ? '플립시계로 크게 보기' : `홈 시계를 ${city.ko} 시간으로` }}
+              {{ !isEn && city.slug === 'seoul' ? '플립시계로 크게 보기' : t.openHome(name) }}
             </UiButton>
           </UiCard>
 
-          <UiCard v-if="city.slug !== 'seoul'" class="info-card" :title="`서울 시간을 ${city.ko} 시간으로`">
+          <UiCard v-if="showCompare" class="info-card" :title="t.convertTitle(name)">
             <table class="convert-table">
-              <caption class="sr-only">서울 시각을 {{ city.ko }} 시각으로 바꾼 표 (오늘 기준)</caption>
+              <caption class="sr-only">{{ t.convertCaption(name) }}</caption>
               <thead>
-                <tr><th scope="col">서울</th><th scope="col">{{ city.ko }}</th></tr>
+                <tr><th scope="col">{{ t.base }}</th><th scope="col">{{ name }}</th></tr>
               </thead>
               <tbody>
-                <tr v-for="row in rows" :key="row.seoul">
-                  <td>{{ row.seoul }}</td>
+                <tr v-for="row in rows" :key="row.base">
+                  <td>{{ row.base }}</td>
                   <td>{{ row.local }} <span v-if="row.day" class="day-note">({{ row.day }})</span></td>
                 </tr>
               </tbody>
             </table>
-            <p class="note">오늘 날짜 기준이에요. 서머타임이 바뀌는 날 전후로는 시차가 1시간 달라질 수 있어요.</p>
+            <p class="note">{{ t.convertNote }}</p>
           </UiCard>
 
-          <UiCard class="info-card" :title="`${city.ko} 시간 알아두기`">
+          <UiCard class="info-card" :title="t.factsTitle(name)">
             <ul>
-              <li>시간대: <strong>{{ city.timezone }}</strong> (지금 {{ offset }})</li>
-              <li v-if="dst">
-                서머타임이 있어요. 평소 {{ dst.standard }}, 서머타임 때 {{ dst.summer }}이고
-                지금은 서머타임 {{ dstNow ? '기간이에요' : '기간이 아니에요' }}.
-              </li>
-              <li v-else>서머타임이 없어 1년 내내 {{ offset }}예요.</li>
-              <li>{{ city.tip }}</li>
+              <li>{{ t.zone }}: <strong>{{ city.timezone }}</strong> ({{ t.nowOffset(offset) }})</li>
+              <li v-if="dst">{{ t.hasDst(dst.standard, dst.summer, dstNow) }}</li>
+              <li v-else>{{ t.noDst(offset) }}</li>
+              <li>{{ isEn ? city.tipEn : city.tip }}</li>
             </ul>
           </UiCard>
 
-          <UiCard class="info-card" title="다른 도시 현재 시간">
+          <UiCard class="info-card" :title="t.othersTitle">
             <ul class="city-links">
               <li v-for="other in otherCities" :key="other.slug">
-                <router-link :to="`/time/${other.slug}`">{{ other.ko }}</router-link>
+                <router-link :to="lp(`/time/${other.slug}`)">{{ isEn ? other.en : other.ko }}</router-link>
               </li>
             </ul>
-            <p class="note"><router-link to="/timezone">세계 시간대 한눈에 보기 →</router-link></p>
+            <p class="note"><router-link :to="isEn ? '/en/world-clock' : '/timezone'">{{ t.allCities }}</router-link></p>
           </UiCard>
         </div>
       </div>
@@ -94,16 +91,18 @@ import SplitFlapDisplay from '@/components/SplitFlapDisplay.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import { useGoBack } from '@/composables/useGoBack'
 import { useTime } from '@/composables/useTime'
+import { useLocale } from '@/composables/useLocale'
 import dayjs from '@/utils/dayjs'
 import {
-  CITIES, findCity, currentOffset, gapFromSeoul, dstOffsets, conversionRows, type City
+  CITIES, SEOUL_TZ, findCity, currentOffset, gapText, dstOffsets, conversionRows, deviceTimezone, type City
 } from '@/utils/cityTime'
 
 /**
- * ## 도시별 현재 시간 (/time/:slug)
+ * ## 도시별 현재 시간 (/time/:slug, /en/time/:slug)
  *
- * "뉴욕 현재 시간", "런던 시차" 같은 검색으로 들어오는 페이지.
- * 플립시계 + 서울 시차 + 서머타임 + 서울 시간 변환표.
+ * "뉴욕 현재 시간", "new york time now" 같은 검색으로 들어오는 페이지.
+ * 플립시계 + 시차 + 서머타임 + 시간 변환표.
+ * - 한국어: 서울과 비교 / 영어: 보는 사람 기기 시간대와 비교
  * 없는 도시는 라우터가 404로 보내므로 여기서는 항상 도시가 있음
  */
 
@@ -111,32 +110,68 @@ const route = useRoute()
 const router = useRouter()
 const goBack = useGoBack()
 const { currentTime, startTimer, stopTimer } = useTime()
+const { isEn, lp, pick } = useLocale()
+
+const t = pick({
+  ko: {
+    back: '뒤로', backLabel: '이전 페이지로 돌아가기', h: '시', m: '분', s: '초',
+    heading: (n: string) => `${n} 현재 시간`, dstNow: '서머타임 중',
+    openHome: (n: string) => `홈 시계를 ${n} 시간으로`,
+    convertTitle: (n: string) => `서울 시간을 ${n} 시간으로`,
+    convertCaption: (n: string) => `서울 시각을 ${n} 시각으로 바꾼 표 (오늘 기준)`,
+    base: '서울', convertNote: '오늘 날짜 기준이에요. 서머타임이 바뀌는 날 전후로는 시차가 1시간 달라질 수 있어요.',
+    factsTitle: (n: string) => `${n} 시간 알아두기`, zone: '시간대', nowOffset: (o: string) => `지금 ${o}`,
+    hasDst: (std: string, sum: string, now: boolean) =>
+      `서머타임이 있어요. 평소 ${std}, 서머타임 때 ${sum}이고 지금은 서머타임 ${now ? '기간이에요' : '기간이 아니에요'}.`,
+    noDst: (o: string) => `서머타임이 없어 1년 내내 ${o}예요.`,
+    othersTitle: '다른 도시 현재 시간', allCities: '세계 시간대 한눈에 보기 →', dateFormat: 'YYYY년 M월 D일 dddd'
+  },
+  en: {
+    back: 'Back', backLabel: 'Go back', h: 'Hour', m: 'Minute', s: 'Second',
+    heading: (n: string) => `${n} time now`, dstNow: 'Daylight saving time',
+    openHome: (n: string) => `Show ${n} on the flip clock`,
+    convertTitle: (n: string) => `Your time to ${n} time`,
+    convertCaption: (n: string) => `Your local time converted to ${n} time (today)`,
+    base: 'Your time', convertNote: 'Based on today. Around daylight saving changes the difference can shift by an hour.',
+    factsTitle: (n: string) => `About ${n} time`, zone: 'Time zone', nowOffset: (o: string) => `now ${o}`,
+    hasDst: (std: string, sum: string, now: boolean) =>
+      `Uses daylight saving time: ${std} standard, ${sum} in summer. Daylight saving time is ${now ? 'in effect now' : 'not in effect now'}.`,
+    noDst: (o: string) => `No daylight saving time; ${o} all year.`,
+    othersTitle: 'Time in other cities', allCities: 'See the world clock →', dateFormat: 'dddd, MMMM D, YYYY'
+  }
+})
 
 const city = computed(() => findCity(String(route.params.slug)) as City)
+const name = computed(() => isEn.value ? city.value.en : city.value.ko)
+
+// 비교 기준: 한국어는 서울, 영어는 이 기기 시간대
+const baseTimezone = computed(() => isEn.value ? deviceTimezone() : SEOUL_TZ)
 
 const zoned = computed(() => dayjs(currentTime.value).tz(city.value.timezone))
 const hours = computed(() => zoned.value.format('HH'))
 const minutes = computed(() => zoned.value.format('mm'))
 const seconds = computed(() => zoned.value.format('ss'))
-const dateText = computed(() => zoned.value.format('YYYY년 M월 D일 dddd'))
+const dateText = computed(() => zoned.value.locale(isEn.value ? 'en' : 'ko').format(t.value.dateFormat))
 
 // 시계와 같은 시각으로 계산 → 서머타임이 바뀌는 순간에도 표시가 맞음
 const offset = computed(() => currentOffset(city.value.timezone, dayjs(currentTime.value)))
-const gap = computed(() => gapFromSeoul(city.value.timezone, dayjs(currentTime.value)))
+const baseOffset = computed(() => currentOffset(baseTimezone.value, dayjs(currentTime.value)))
+const showCompare = computed(() => offset.value !== baseOffset.value)
+const gap = computed(() => gapText(city.value.timezone, baseTimezone.value, isEn.value ? 'en' : 'ko', dayjs(currentTime.value)))
 const dst = computed(() => dstOffsets(city.value.timezone))
 const dstNow = computed(() => !!dst.value && offset.value === dst.value.summer)
-const rows = computed(() => conversionRows(city.value.timezone))
+const rows = computed(() => conversionRows(city.value.timezone, baseTimezone.value, isEn.value ? 'en' : 'ko'))
 
 const otherCities = computed(() => CITIES.filter(c => c.slug !== city.value.slug))
 
 // 홈 시계를 이 도시로 (설정의 도시 선택과 같은 저장값)
 const openOnHome = () => {
-  if (city.value.slug === 'seoul') {
+  if (!isEn.value && city.value.slug === 'seoul') {
     localStorage.removeItem('selectedCity')
   } else {
     localStorage.setItem('selectedCity', city.value.en)
   }
-  router.push('/')
+  router.push(lp('/'))
 }
 
 onMounted(startTimer)

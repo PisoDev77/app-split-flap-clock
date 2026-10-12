@@ -3,44 +3,42 @@
     <div class="footer-content">
       <div class="footer-section">
         <h2>Split Flap Clock</h2>
-        <p>클래식한 분할 플랩 디스플레이로 시간을 확인하세요</p>
+        <p>{{ t.tagline }}</p>
       </div>
-      
+
       <div class="footer-section">
-        <h2>페이지</h2>
+        <h2>{{ t.pages }}</h2>
         <ul class="footer-links">
-          <li><router-link to="/about">소개</router-link></li>
-          <li><router-link to="/guide">사용법 가이드</router-link></li>
-          <li><router-link to="/timezone">세계 시간대</router-link></li>
-          <li><router-link to="/study">공부 시계</router-link></li>
-          <li><router-link to="/faq">자주 묻는 질문</router-link></li>
+          <li v-for="link in t.pageLinks" :key="link.to"><router-link :to="link.to">{{ link.label }}</router-link></li>
         </ul>
       </div>
-      
+
       <div class="footer-section">
-        <h2>설정</h2>
+        <h2>{{ t.settings }}</h2>
         <ul class="footer-links">
-          <li><router-link to="/settings">설정</router-link></li>
-          <li><router-link to="/privacy">개인정보처리방침</router-link></li>
+          <li><router-link :to="lp('/settings')">{{ t.settings }}</router-link></li>
+          <li><router-link :to="lp('/privacy')">{{ t.privacy }}</router-link></li>
         </ul>
       </div>
-      
+
       <div class="footer-section">
-        <h2>연락처</h2>
+        <h2>{{ t.contact }}</h2>
         <ul class="footer-links">
-          <li><a href="https://github.com/PisoDev77/app-split-flap-clock/issues" target="_blank" rel="noopener">문의하기</a></li>
-          <li><a href="https://github.com/PisoDev77/app-split-flap-clock/issues/new" target="_blank" rel="noopener">버그 신고</a></li>
+          <li><a href="https://github.com/PisoDev77/app-split-flap-clock/issues" target="_blank" rel="noopener">{{ t.ask }}</a></li>
+          <li><a href="https://github.com/PisoDev77/app-split-flap-clock/issues/new" target="_blank" rel="noopener">{{ t.bug }}</a></li>
         </ul>
       </div>
     </div>
-    
+
     <div class="footer-bottom">
       <div class="footer-bottom-content">
         <div class="copyright">
           <p>&copy; {{ currentYear }} Split Flap Clock. Made with ❤️ by Piso Developer</p>
         </div>
         <div class="footer-links-bottom">
-          <a href="/sitemap.xml" target="_blank">사이트맵</a>
+          <router-link :to="languageLink" :lang="isEn ? 'ko' : 'en'">{{ isEn ? '한국어' : 'English' }}</router-link>
+          <span class="separator">•</span>
+          <a href="/sitemap.xml" target="_blank">{{ t.sitemap }}</a>
           <span class="separator">•</span>
           <a href="https://github.com/PisoDev77/app-split-flap-clock" target="_blank" rel="noopener">GitHub</a>
         </div>
@@ -51,8 +49,41 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useRoute } from 'vue-router'
+import { useLocale, alternatePath } from '@/composables/useLocale'
 
 const currentYear = computed(() => new Date().getFullYear())
+const route = useRoute()
+const { isEn, lp, pick } = useLocale()
+
+const t = pick({
+  ko: {
+    tagline: '클래식한 분할 플랩 디스플레이로 시간을 확인하세요',
+    pages: '페이지',
+    pageLinks: [
+      { to: '/about', label: '소개' },
+      { to: '/guide', label: '사용법 가이드' },
+      { to: '/timezone', label: '세계 시간대' },
+      { to: '/study', label: '공부 시계' },
+      { to: '/faq', label: '자주 묻는 질문' }
+    ],
+    settings: '설정', privacy: '개인정보처리방침', contact: '연락처', ask: '문의하기', bug: '버그 신고', sitemap: '사이트맵'
+  },
+  en: {
+    tagline: 'A classic split-flap clock for your desk',
+    pages: 'Pages',
+    pageLinks: [
+      { to: '/en', label: 'Flip clock' },
+      { to: '/en/study', label: 'Study clock' },
+      { to: '/en/world-clock', label: 'World clock' },
+      { to: '/en/time/seoul', label: 'Korea time now' }
+    ],
+    settings: 'Settings', privacy: 'Privacy policy', contact: 'Contact', ask: 'Ask a question', bug: 'Report a bug', sitemap: 'Sitemap'
+  }
+})
+
+// 지금 페이지의 다른 언어판 (없으면 그 언어 홈)
+const languageLink = computed(() => alternatePath(route.path) ?? (isEn.value ? '/' : '/en'))
 </script>
 
 <style scoped>
