@@ -13,16 +13,19 @@ export type Locale = 'ko' | 'en'
 
 export const isEnPath = (path: string): boolean => path === '/en' || path.startsWith('/en/')
 
+/** 같은 주소로 한국어·영어판이 모두 있는 페이지 (/timezone ↔ /en/world-clock은 따로) */
+const PAIRED = ['/', '/study', '/countdown/new-year', '/settings', '/privacy']
+
 /** 한국어 주소 ↔ 영어 주소 짝 (검색엔진 hreflang, 언어 바꾸기 링크용). 짝이 없으면 undefined */
 export const alternatePath = (path: string): string | undefined => {
   if (isEnPath(path)) {
     const ko = path === '/en' ? '/' : path.slice(3)
     if (ko === '/world-clock') return '/timezone'
-    return ['/', '/study', '/settings', '/privacy'].includes(ko) || ko.startsWith('/time/') ? ko : undefined
+    return PAIRED.includes(ko) || ko.startsWith('/time/') ? ko : undefined
   }
   if (path === '/timezone') return '/en/world-clock'
   if (path === '/') return '/en'
-  return ['/study', '/settings', '/privacy'].includes(path) || path.startsWith('/time/') ? `/en${path}` : undefined
+  return PAIRED.includes(path) || path.startsWith('/time/') ? `/en${path}` : undefined
 }
 
 export function useLocale() {

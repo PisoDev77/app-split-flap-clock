@@ -76,6 +76,11 @@
             </span>
           </div>
 
+          <!-- 12월~1월 1일: 새해 카운트다운 안내 -->
+          <router-link v-if="newYearSoon" :to="lp('/countdown/new-year')" class="lang-pill">
+            {{ t.countdown(newYearSoon) }}
+          </router-link>
+
           <!-- 브라우저 언어와 페이지 언어가 다르면 다른 언어판을 살짝 안내 -->
           <router-link v-if="otherLanguage" :to="otherLanguage.to" class="lang-pill" :lang="otherLanguage.lang">
             {{ otherLanguage.label }}
@@ -136,6 +141,7 @@ const t = pick({
     now: '현재 시간', h: '시', m: '분', s: '초', date: '현재 날짜',
     shared: '공유받은 도시', selected: '선택한 도시', here: '현재 위치',
     am: '오전', pm: '오후', dateFormat: 'YYYY년 M월 D일 dddd',
+    countdown: (y: number) => `🎆 ${y} 새해 카운트다운 →`,
     shareTitle: '플립시계', shareCity: (city: string) => `${city} 시간을 플립시계로 보세요`, shareDefault: '공항 안내판처럼 넘어가는 플립시계'
   },
   en: {
@@ -144,8 +150,17 @@ const t = pick({
     now: 'Current time', h: 'Hour', m: 'Minute', s: 'Second', date: 'Today',
     shared: 'Shared city', selected: 'Selected city', here: 'Your time zone',
     am: 'AM', pm: 'PM', dateFormat: 'dddd, MMMM D, YYYY',
+    countdown: (y: number) => `🎆 ${y} New Year countdown →`,
     shareTitle: 'Flip Clock', shareCity: (city: string) => `See ${city} time on a flip clock`, shareDefault: 'A free split-flap clock for your desk'
   }
+})
+
+// 12월이거나 1월 1일이면 다가오는(또는 오늘 맞은) 새해 연도, 아니면 null
+const newYearSoon = computed(() => {
+  const local = dayjs(time.value)
+  if (local.month() === 11) return local.year() + 1
+  if (local.month() === 0 && local.date() === 1) return local.year()
+  return null
 })
 
 const otherLanguage = computed(() => {

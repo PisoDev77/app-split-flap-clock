@@ -64,16 +64,17 @@ const cityFacts = (city) => {
 }
 
 // ----- 한국어·영어 짝 (src/composables/useLocale.ts의 alternatePath와 같은 규칙) -----
+const PAIRED = ['/', '/study', '/countdown/new-year', '/settings', '/privacy']
 const isEnPath = (path) => path === '/en' || path.startsWith('/en/')
 const alternatePath = (path) => {
   if (isEnPath(path)) {
     const ko = path === '/en' ? '/' : path.slice(3)
     if (ko === '/world-clock') return '/timezone'
-    return ['/', '/study', '/settings', '/privacy'].includes(ko) || ko.startsWith('/time/') ? ko : undefined
+    return PAIRED.includes(ko) || ko.startsWith('/time/') ? ko : undefined
   }
   if (path === '/timezone') return '/en/world-clock'
   if (path === '/') return '/en'
-  return ['/study', '/settings', '/privacy'].includes(path) || path.startsWith('/time/') ? `/en${path}` : undefined
+  return PAIRED.includes(path) || path.startsWith('/time/') ? `/en${path}` : undefined
 }
 const hreflangTags = (path) => {
   const other = alternatePath(path)
@@ -115,6 +116,16 @@ const render = (page) => {
   const file = join(dist, `${page.path}.html`)
   mkdirSync(dirname(file), { recursive: true })
   writeFileSync(file, html)
+}
+
+// 새해 카운트다운의 {year}: 빌드 시점 한국 기준 다가오는 새해 (1월 1일 당일이면 그 해)
+const seoulNow = new Date(Date.now() + 9 * 3600 * 1000)
+const countdownYear = String(seoulNow.getUTCMonth() === 0 && seoulNow.getUTCDate() === 1
+  ? seoulNow.getUTCFullYear()
+  : seoulNow.getUTCFullYear() + 1)
+for (const meta of Object.values(pages)) {
+  meta.title = meta.title.replace('{year}', countdownYear)
+  meta.description = meta.description.replace(/\{year\}/g, countdownYear)
 }
 
 const pageTitle = (meta) => meta.fullTitle ?? `${meta.title} | Split Flap Clock`

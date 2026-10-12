@@ -3,6 +3,8 @@ import type { RouteRecordRaw } from 'vue-router'
 import pages from '@/data/pages.json'
 import { findCity, cityTitle, cityDescription } from '@/utils/cityTime'
 import { alternatePath, isEnPath } from '@/composables/useLocale'
+import { targetYear } from '@/utils/newYear'
+import { deviceTimezone } from '@/utils/cityTime'
 
 /**
  * ## 라우터 설정
@@ -16,6 +18,7 @@ import { alternatePath, isEnPath } from '@/composables/useLocale'
  * - `/timezone` - 세계 시간대 정보
  * - `/time/:slug` - 도시별 현재 시간 (도시 목록: src/data/cities.json)
  * - `/study` - 공부 시계 (집중 타이머)
+ * - `/countdown/new-year` - 새해 카운트다운
  * - `/faq` - 자주 묻는 질문
  * - `/settings` - 설정 화면
  * - `/privacy` - 개인정보처리방침
@@ -54,6 +57,7 @@ const routes: RouteRecordRaw[] = [
     beforeEnter: cityGuard
   },
   page('/study', 'Study', () => import('@/views/StudyView.vue')),
+  page('/countdown/new-year', 'Countdown', () => import('@/views/CountdownView.vue')),
   page('/faq', 'FAQ', () => import('@/views/FaqView.vue')),
   page('/settings', 'Settings', () => import('@/views/SettingsView.vue')),
   page('/privacy', 'Privacy', () => import('@/views/PrivacyView.vue')),
@@ -61,6 +65,7 @@ const routes: RouteRecordRaw[] = [
   // 영어판: 같은 화면을 쓰고, 화면이 주소(/en)를 보고 문구를 바꿈
   page('/en', 'HomeEn', () => import('@/views/HomeView.vue')),
   page('/en/study', 'StudyEn', () => import('@/views/StudyView.vue')),
+  page('/en/countdown/new-year', 'CountdownEn', () => import('@/views/CountdownView.vue')),
   page('/en/world-clock', 'WorldClockEn', () => import('@/views/WorldClockView.vue')),
   page('/en/settings', 'SettingsEn', () => import('@/views/SettingsView.vue')),
   page('/en/privacy', 'PrivacyEn', () => import('@/views/PrivacyView.vue')),
@@ -126,6 +131,13 @@ router.beforeEach((to) => {
   if (to.name === 'NotFound' && locale === 'en') {
     title = 'Page not found'
     description = 'This page could not be found.'
+  }
+
+  // 새해 카운트다운: 제목·설명의 {year}를 다가오는 새해로
+  if (title?.includes('{year}') || description?.includes('{year}')) {
+    const year = String(targetYear(deviceTimezone()))
+    title = title?.replace('{year}', year)
+    description = description?.replace(/\{year\}/g, year)
   }
 
   // 홈은 fullTitle을 그대로 (앱 이름이 겹치지 않게)

@@ -65,6 +65,7 @@ const t = pick({
       { to: '/guide', label: '사용법 가이드' },
       { to: '/timezone', label: '세계 시간대' },
       { to: '/study', label: '공부 시계' },
+      { to: '/countdown/new-year', label: '새해 카운트다운' },
       { to: '/faq', label: '자주 묻는 질문' }
     ],
     settings: '설정', privacy: '개인정보처리방침', contact: '연락처', ask: '문의하기', bug: '버그 신고', sitemap: '사이트맵'
@@ -75,6 +76,7 @@ const t = pick({
     pageLinks: [
       { to: '/en', label: 'Flip clock' },
       { to: '/en/study', label: 'Study clock' },
+      { to: '/en/countdown/new-year', label: 'New Year countdown' },
       { to: '/en/world-clock', label: 'World clock' },
       { to: '/en/time/seoul', label: 'Korea time now' }
     ],
