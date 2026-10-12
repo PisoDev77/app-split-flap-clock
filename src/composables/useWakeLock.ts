@@ -12,20 +12,32 @@ import { ref, watch, onMounted, onUnmounted, type Ref } from 'vue'
 export function useWakeLock(enabled: Ref<boolean>) {
   const supported = typeof navigator !== 'undefined' && 'wakeLock' in navigator
   const active = ref(false)
+  let unmounted = false
   let sentinel: WakeLockSentinel | null = null
+  let requesting = false
 
   const acquire = async () => {
-    if (!supported || !enabled.value || document.hidden || sentinel) return
+    // requesting: 요청 중에 또 부르면 잠금이 2개 생겨 하나가 안 풀림 → 막음
+    if (!supported || !enabled.value || document.hidden || sentinel || requesting) return
+    requesting = true
     try {
-      sentinel = await navigator.wakeLock.request('screen')
+      const lock = await navigator.wakeLock.request('screen')
+      // 기다리는 동안 꺼졌거나 화면을 떠났으면 바로 풀기
+      if (!enabled.value || unmounted) {
+        await lock.release().catch(() => undefined)
+        return
+      }
+      sentinel = lock
       active.value = true
-      sentinel.addEventListener('release', () => {
-        sentinel = null
+      lock.addEventListener('release', () => {
+        if (sentinel === lock) sentinel = null
         active.value = false
-      })
+      }, { once: true })
     } catch {
       // 배터리 절약 모드 등으로 거절될 수 있음
       active.value = false
+    } finally {
+      requesting = false
     }
   }
 
@@ -47,6 +59,7 @@ export function useWakeLock(enabled: Ref<boolean>) {
   })
 
   onUnmounted(() => {
+    unmounted = true
     release()
     document.removeEventListener('visibilitychange', onVisibilityChange)
   })
