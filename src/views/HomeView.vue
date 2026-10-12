@@ -17,13 +17,15 @@
               :key="action.key"
               type="text"
               :icon="action.icon"
-              class="settings-btn desktop-only"
+              class="settings-btn labeled-btn desktop-only"
               :class="{ 'is-on': action.on }"
               :aria-label="action.label"
               :aria-pressed="action.pressed"
-              :title="action.title"
+              :title="action.hint"
               @click="action.run"
-            />
+            >
+              {{ action.title }}
+            </UiButton>
             <UiButton 
               type="text" 
               :icon="SettingOutlined"
@@ -72,10 +74,16 @@
               :class="{ 'is-on': action.on }"
               :aria-label="action.label"
               :aria-pressed="action.pressed"
-              :title="action.title"
+              :title="action.hint"
               @click="action.run"
-            />
+            >
+              <span class="clock-action-label">{{ action.short }}</span>
+            </UiButton>
           </div>
+
+          <router-link :to="lp('/time-converter')" class="lang-pill converter-pill">
+            {{ t.converter }}
+          </router-link>
 
           <!-- 12월~1월 1일: 새해 카운트다운 안내 -->
           <router-link v-if="newYearSoon" :to="lp('/countdown/new-year')" class="lang-pill">
@@ -110,6 +118,7 @@ import { useSettings } from '@/composables/useSettings'
 import dayjs from '@/utils/dayjs'
 import { parseShareQuery, buildShareUrl, shareLink } from '@/utils/shareLink'
 import { useLocale } from '@/composables/useLocale'
+import { message } from '@/composables/useToast'
 
 /**
  * ## 홈 화면 뷰
@@ -138,6 +147,9 @@ const { isEn, lp, pick } = useLocale()
 const t = pick({
   ko: {
     wake: '화면 켜두기', wakeOff: '화면 켜두기 끄기', fullscreen: '전체 화면', fullscreenOff: '전체 화면 끝내기',
+    wakeShort: '켜두기', fullShort: '전체 화면', shareShort: '공유',
+    wakeHint: '시계를 켜 둔 동안 화면이 꺼지지 않게 합니다', wakeOn: '화면 켜두기 켜짐 · 이 화면에서는 화면이 꺼지지 않아요', wakeOffToast: '화면 켜두기 꺼짐',
+    converter: '🌏 다른 나라는 지금 몇 시? 시차 계산기 →',
     share: '이 시계 링크 공유', settings: '설정 페이지 열기', settingsTitle: '설정', clockArea: '시계 표시 영역', city: '도시',
     now: '현재 시간', h: '시', m: '분', s: '초', date: '현재 날짜',
     shared: '공유받은 도시', selected: '선택한 도시', here: '현재 위치',
@@ -147,6 +159,9 @@ const t = pick({
   },
   en: {
     wake: 'Keep screen on', wakeOff: 'Stop keeping screen on', fullscreen: 'Fullscreen', fullscreenOff: 'Exit fullscreen',
+    wakeShort: 'Stay on', fullShort: 'Fullscreen', shareShort: 'Share',
+    wakeHint: 'Stops the screen from sleeping while the clock is open', wakeOn: 'Screen will stay on while the clock is open', wakeOffToast: 'Screen can sleep again',
+    converter: '🌏 What time is it elsewhere? Time zone converter →',
     share: 'Share this clock', settings: 'Open settings', settingsTitle: 'Settings', clockArea: 'Clock', city: 'City',
     now: 'Current time', h: 'Hour', m: 'Minute', s: 'Second', date: 'Today',
     shared: 'Shared city', selected: 'Selected city', here: 'Your time zone',
@@ -243,6 +258,8 @@ interface ClockAction {
   icon: Component
   label: string
   title: string
+  short: string
+  hint: string
   on?: boolean
   pressed?: boolean
   run: () => void
@@ -255,9 +272,14 @@ const clockActions = computed<ClockAction[]>(() => {
       icon: keepScreenOn.value ? BulbFilled : BulbOutlined,
       label: keepScreenOn.value ? t.value.wakeOff : t.value.wake,
       title: t.value.wake,
+      short: t.value.wakeShort,
+      hint: t.value.wakeHint,
       on: keepScreenOn.value,
       pressed: keepScreenOn.value,
-      run: () => { keepScreenOn.value = !keepScreenOn.value }
+      run: () => {
+        keepScreenOn.value = !keepScreenOn.value
+        message.info(keepScreenOn.value ? t.value.wakeOn : t.value.wakeOffToast)
+      }
     })
   }
   if (fullscreenSupported) {
@@ -266,10 +288,12 @@ const clockActions = computed<ClockAction[]>(() => {
       icon: isFullscreen.value ? FullscreenExitOutlined : FullscreenOutlined,
       label: isFullscreen.value ? t.value.fullscreenOff : t.value.fullscreen,
       title: t.value.fullscreen,
+      short: t.value.fullShort,
+      hint: t.value.fullscreen,
       run: toggleFullscreen
     })
   }
-  actions.push({ key: 'share', icon: ShareAltOutlined, label: t.value.share, title: t.value.share, run: shareClock })
+  actions.push({ key: 'share', icon: ShareAltOutlined, label: t.value.share, title: t.value.shareShort, short: t.value.shareShort, hint: t.value.share, run: shareClock })
   return actions
 })
 
@@ -366,6 +390,22 @@ onUnmounted(() => {
   transform: rotate(90deg);
 }
 
+/* PC 머리말: 아이콘만으로는 뜻을 몰라서 글자를 함께 */
+.labeled-btn {
+  width: auto;
+  gap: 6px;
+  padding: 0 12px;
+  font-size: 0.9rem;
+}
+
+.labeled-btn :deep(.ui-btn__icon) {
+  font-size: 18px;
+}
+
+.converter-pill {
+  margin-top: -0.5rem;
+}
+
 .mobile-only {
   display: none;
 }
@@ -377,11 +417,20 @@ onUnmounted(() => {
 }
 
 .clock-action-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 999px;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 64px;
+  height: auto;
+  min-height: 52px;
+  padding: 4px 8px;
+  border-radius: 12px;
   font-size: 18px;
   color: var(--color-fg-muted);
+}
+
+.clock-action-label {
+  font-size: 0.72rem;
+  line-height: 1.2;
 }
 
 .clock-action-btn.is-on {
