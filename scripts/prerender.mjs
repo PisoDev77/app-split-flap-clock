@@ -4,7 +4,7 @@
  * SPA라서 모든 주소가 index.html 하나를 받는데, 네이버처럼 자바스크립트를
  * 잘 실행하지 않는 검색 로봇은 모든 페이지를 "홈"으로 봄.
  * 그래서 페이지마다 제목·설명·대표 주소와 본문 요약을 넣은 HTML을
- * dist/<주소>/index.html로 만들어 둠. 앱이 뜨면 Vue가 #app 내용을 바꿔 그림.
+ * dist/<주소>.html로 만들어 둠. 앱이 뜨면 Vue가 #app 내용을 바꿔 그림.
  *
  * - 페이지 정보: src/data/pages.json, 도시: src/data/cities.json
  * - sitemap.xml도 여기서 만듦 (도시가 늘면 자동 반영)
@@ -78,7 +78,8 @@ const render = ({ path, title, description, body }) => {
     .replace(/(<link rel="canonical" href=")[^"]*/, `$1${url}`)
     .replace('<div id="app"></div>', `<div id="app">${body}</div>`)
   if (html === template) throw new Error(`prerender: ${path} 바꿀 곳을 못 찾음`)
-  const file = join(dist, path, 'index.html')
+  // faq/index.html로 두면 Netlify가 /faq → /faq/로 301 이동시켜 canonical과 어긋남 → faq.html로 저장
+  const file = join(dist, `${path}.html`)
   mkdirSync(dirname(file), { recursive: true })
   writeFileSync(file, html)
 }
