@@ -10,8 +10,7 @@
     <div class="layout">
       <header class="header">
         <div class="header-content">
-          <h1 class="app-title">Split Flap Clock</h1>
-          <div class="header-controls">
+          <div class="header-start">
             <UiButton
               ref="menuButton"
               type="text"
@@ -23,6 +22,9 @@
               :aria-expanded="toolsOpen"
               @click="toolsOpen = true"
             />
+            <h1 class="app-title">Split Flap Clock</h1>
+          </div>
+          <div class="header-controls">
             <UiButton 
               type="text" 
               :icon="SettingOutlined"
@@ -368,29 +370,44 @@ onUnmounted(() => {
   background: transparent;
 }
 
+/* 머리말 막대 없음(폰·PC): 메뉴는 왼쪽 위, 설정은 오른쪽 위에 떠 있음 */
 .header {
-  background: rgba(var(--color-canvas-default-rgb), 0.85);
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid var(--color-border-default);
-  height: 64px;
-  padding: 0 24px;
-  box-shadow: var(--shadow-small);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  padding: calc(env(safe-area-inset-top) + 12px) calc(env(safe-area-inset-right) + 12px) 0 calc(env(safe-area-inset-left) + 12px);
+  pointer-events: none; /* 빈 곳은 아래 시계로 통과 */
 }
 
 .header-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
 }
 
+/* 제목은 화면 낭독기용으로만 남김 */
 .app-title {
-  color: var(--color-fg-default);
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin: 0;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.header-start {
+  display: flex;
+  align-items: center;
+}
+
+.header .round-btn {
+  pointer-events: auto;
+  color: var(--color-fg-muted);
+  background: rgba(var(--color-canvas-default-rgb), 0.35);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
 
 .header-controls {
@@ -438,18 +455,18 @@ onUnmounted(() => {
 .drawer {
   position: fixed;
   top: 0;
-  right: 0;
+  left: 0;
   bottom: 0;
   z-index: 21;
   width: min(300px, 85vw);
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding: calc(env(safe-area-inset-top) + 12px) calc(env(safe-area-inset-right) + 12px) calc(env(safe-area-inset-bottom) + 12px) 12px;
+  padding: calc(env(safe-area-inset-top) + 12px) 12px calc(env(safe-area-inset-bottom) + 12px) calc(env(safe-area-inset-left) + 12px);
   background: rgba(var(--color-canvas-default-rgb), 0.92);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border-left: 1px solid rgba(var(--color-border-default-rgb), 0.4);
+  border-right: 1px solid rgba(var(--color-border-default-rgb), 0.4);
   box-shadow: var(--shadow-large);
 }
 
@@ -522,7 +539,7 @@ onUnmounted(() => {
 
 .drawer-slide-enter-from,
 .drawer-slide-leave-to {
-  transform: translateX(100%);
+  transform: translateX(-100%);
 }
 
 .drawer-fade-enter-from,
@@ -539,45 +556,13 @@ onUnmounted(() => {
   }
 }
 
-/* 폰(세로 768px 이하, 가로로 눕힌 폰): 머리말 막대를 없애고 메뉴·설정만 오른쪽 위에 띄움 */
-@media (max-width: 768px), (orientation: landscape) and (max-height: 500px) {
-  .header {
-    position: absolute;
-    top: 0;
-    right: 0;
-    height: auto;
-    padding: calc(env(safe-area-inset-top) + 12px) calc(env(safe-area-inset-right) + 12px) 0 0;
-    background: none;
-    border: none;
-    box-shadow: none;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    z-index: 2;
-  }
-
-  .app-title {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
-    white-space: nowrap;
-  }
-
-  .header .round-btn {
-    color: var(--color-fg-muted);
-    background: rgba(var(--color-canvas-default-rgb), 0.35);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-  }
-}
 
 
 .content {
   flex: 1;
   /* 시계가 첫 화면을 채우고 푸터는 스크롤해야 보임 */
-  min-height: calc(100vh - 64px);
-  min-height: calc(100dvh - 64px);
+  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -812,11 +797,4 @@ onUnmounted(() => {
   background: var(--color-canvas-subtle);
 }
 
-/* 폰(머리말이 떠 있음): 시계 영역이 화면 전체 높이 — 위의 .content 기본값보다 뒤에 둠 */
-@media (max-width: 768px), (orientation: landscape) and (max-height: 500px) {
-  .content {
-    min-height: 100vh;
-    min-height: 100dvh;
-  }
-}
 </style>
