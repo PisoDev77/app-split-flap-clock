@@ -30,7 +30,7 @@ export default defineConfig({
         clientsClaim: true,
         navigateFallback: 'index.html',
         // 아이콘 만들 때 쓰던 개발용 페이지는 앱에 저장하지 않음
-        globIgnores: ['**/generate-icons.html'],
+        globIgnores: ['**/generate-icons.html', '**/google*.html'],
         // SUIT 글꼴(외부 CDN)도 받아 두어 오프라인·Play 앱에서 글꼴이 바뀌지 않게 함
         runtimeCaching: [
           {
