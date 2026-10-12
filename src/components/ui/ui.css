@@ -274,3 +274,23 @@ input:focus-visible {
 .ui-title { margin: 0 0 8px; color: var(--color-fg-default); font-size: 15px; font-weight: 600; line-height: 1.4; }
 .ui-text { color: var(--color-fg-default); }
 .ui-text--secondary { color: var(--color-fg-muted); }
+
+/* 도시 목록: 도시 이름 글자만이 아니라 줄 전체를 눌러도 그 도시 페이지로 이동 */
+.city-item,
+.city-row,
+.result-row,
+.order-list > li {
+  position: relative;
+}
+.city-item > .city-name::after,
+.city-row > .city-name::after,
+.result-row > .result-city::after,
+.order-list > li > .order-city::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+.result-row > .remove-btn {
+  position: relative;
+  z-index: 1;
+}

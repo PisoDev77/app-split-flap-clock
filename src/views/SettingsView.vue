@@ -57,7 +57,6 @@
                   {{ t.auto }}
                 </h3>
                 <UiButton 
-                  type="primary" 
                   :loading="isLocationLoading"
                   :icon="EnvironmentOutlined"
                   @click="handleAutoLocation"
@@ -612,7 +611,6 @@ onMounted(() => {
   flex: 1;
   padding: 24px;
   background: var(--color-canvas-subtle);
-  min-height: calc(100vh - 64px);
 }
 
 .settings-container {
@@ -721,6 +719,18 @@ onMounted(() => {
 
 .save-section {
   margin-top: 8px;
+}
+
+/* 폰: 저장 버튼을 화면 아래에 붙여 스크롤 없이 바로 누름 */
+@media (max-width: 768px) {
+  .save-section {
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+    margin: 8px -12px 0;
+    padding: 12px 12px calc(env(safe-area-inset-bottom) + 12px);
+    background: linear-gradient(to top, var(--color-canvas-subtle) 70%, transparent);
+  }
 }
 
 /* 모바일 반응형 */

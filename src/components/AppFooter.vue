@@ -1,7 +1,7 @@
 <template>
   <footer class="app-footer">
     <div class="footer-content">
-      <div class="footer-section">
+      <div class="footer-section footer-brand">
         <h2>Split Flap Clock</h2>
         <p>{{ t.tagline }}</p>
       </div>
@@ -211,19 +211,53 @@ const languageLink = computed(() => alternatePath(route.path) ?? (isEn.value ? '
   }
 }
 
+/* 폰: 가운데 정렬 긴 목록 대신 2열 링크 묶음, 누르기 쉬운 44px 줄 */
 @media (max-width: 480px) {
   .footer-content {
-    padding: 1.5rem 0.75rem 1rem;
+    padding: 1.25rem 16px 0.5rem;
     grid-template-columns: 1fr;
-    gap: 1.5rem;
+    gap: 1rem;
   }
-  
-  .footer-section {
-    text-align: center;
+
+  .footer-brand {
+    display: none;
   }
-  
+
+  .footer-section h2 {
+    margin: 0 0 0.25rem;
+    padding: 0;
+    border: none;
+    color: var(--color-fg-muted);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+
+  .footer-links {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 12px;
+  }
+
+  .footer-links li {
+    margin: 0;
+  }
+
+  .footer-links a {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--color-fg-default);
+    font-size: 0.95rem;
+  }
+
   .footer-bottom-content {
-    padding: 1rem 0.75rem;
+    padding: 0.5rem 16px calc(env(safe-area-inset-bottom) + 0.75rem);
+    gap: 0;
+  }
+
+  .copyright p {
+    font-size: 0.8rem;
   }
 }
 

@@ -154,7 +154,7 @@ const t = pick({
     pickCity: '기준 도시 고르기', mine: '내 시간대 (이 기기)',
     orderTitle: (y: number) => `세계에서 ${y}년을 맞는 순서`,
     orderNote: '새해를 먼저 맞는 도시부터 차례대로예요. 도시 옆 날짜·시각은 그 도시가 자정이 될 때의 내 시간이에요.',
-    already: '새해 🎉', left: (h: number, m: number) => h ? `${h}시간 ${m}분 남음` : `${m}분 남음`,
+    already: '새해 🎉', left: (d: number, h: number, m: number) => d ? `${d}일 ${h}시간 남음` : h ? `${h}시간 ${m}분 남음` : `${m}분 남음`,
     timeFormat: 'M월 D일 HH:mm', shareTitle: (y: number) => `${y} 새해 카운트다운 · 플립시계`,
     shareText: '플립시계로 새해까지 남은 시간을 함께 세요'
   },
@@ -170,7 +170,7 @@ const t = pick({
     pickCity: 'Count down for a city', mine: 'My time zone (this device)',
     orderTitle: (y: number) => `Who reaches ${y} first`,
     orderNote: 'Cities in the order they reach midnight. The date and time shown is that moment in your time.',
-    already: 'New Year 🎉', left: (h: number, m: number) => h ? `${h} h ${m} min left` : `${m} min left`,
+    already: 'New Year 🎉', left: (d: number, h: number, m: number) => d ? `${d} d ${h} h left` : h ? `${h} h ${m} min left` : `${m} min left`,
     timeFormat: 'MMM D, h:mm A', shareTitle: (y: number) => `${y} New Year Countdown · Flip Clock`,
     shareText: 'Count down to the New Year together on a flip clock'
   }
@@ -216,7 +216,7 @@ const order = computed(() => {
       city: c,
       passed: left <= 0,
       yourTime: moment.tz(myTimezone).locale(locale.value).format(t.value.timeFormat),
-      left: t.value.left(Math.floor(left / 60), left % 60)
+      left: t.value.left(Math.floor(left / 1440), Math.floor(left / 60) % 24, left % 60)
     }
   })
 })
