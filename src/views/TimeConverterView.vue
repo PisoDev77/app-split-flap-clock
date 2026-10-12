@@ -262,7 +262,7 @@ const share = () => {
   display: flex;
   align-items: center;
   height: 100%;
-  max-width: 1200px;
+  max-width: 800px; /* 본문 카드 폭과 맞춤 */
   margin: 0 auto;
 }
 

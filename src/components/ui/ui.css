@@ -294,3 +294,8 @@ input:focus-visible {
   position: relative;
   z-index: 1;
 }
+
+/* 머리말 '뒤로' 버튼: 버튼 안쪽 여백만큼 당겨서 화살표가 본문 카드 왼쪽 끝과 맞게 */
+.back-btn.ui-btn--text {
+  margin-left: -15px;
+}

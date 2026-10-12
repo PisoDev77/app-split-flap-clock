@@ -167,7 +167,7 @@ const lastUpdated = '2026년 10월 12일'
   display: flex;
   align-items: center;
   height: 100%;
-  max-width: 1200px;
+  max-width: 800px; /* 본문 카드 폭과 맞춤 */
   margin: 0 auto;
 }
 

@@ -235,6 +235,13 @@ const goBack = useGoBack()
   color: var(--color-accent-fg);
 }
 
+/* PC: 본문(.privacy-container)의 안쪽 여백만큼 머리말도 들여서 줄 맞춤 */
+@media (min-width: 769px) {
+  .header-content {
+    padding: 0 2rem;
+  }
+}
+
 .privacy-container {
   flex: 1;
   width: 100%;
