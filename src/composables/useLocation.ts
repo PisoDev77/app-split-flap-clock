@@ -39,6 +39,17 @@ const CITY_TIMEZONE_MAP: Record<string, string> = {
   'Beijing': 'Asia/Shanghai',
   'Singapore': 'Asia/Singapore',
   'Dubai': 'Asia/Dubai',
+  'Shanghai': 'Asia/Shanghai',
+  'Hong Kong': 'Asia/Hong_Kong',
+  'Berlin': 'Europe/Berlin',
+  'Rome': 'Europe/Rome',
+  'Madrid': 'Europe/Madrid',
+  'Moscow': 'Europe/Moscow',
+  'Chicago': 'America/Chicago',
+  'Toronto': 'America/Toronto',
+  'Vancouver': 'America/Vancouver',
+  'Melbourne': 'Australia/Melbourne',
+  'Auckland': 'Pacific/Auckland',
   'Busan': 'Asia/Seoul',
   'Incheon': 'Asia/Seoul',
   'Daegu': 'Asia/Seoul',
@@ -64,7 +75,18 @@ const CITY_KOREAN_MAP: Record<string, string> = {
   'Los Angeles': '로스앤젤레스',
   'Beijing': '베이징',
   'Singapore': '싱가포르',
-  'Dubai': '두바이'
+  'Dubai': '두바이',
+  'Shanghai': '상하이',
+  'Hong Kong': '홍콩',
+  'Berlin': '베를린',
+  'Rome': '로마',
+  'Madrid': '마드리드',
+  'Moscow': '모스크바',
+  'Chicago': '시카고',
+  'Toronto': '토론토',
+  'Vancouver': '밴쿠버',
+  'Melbourne': '멜버른',
+  'Auckland': '오클랜드'
 }
 
 /**

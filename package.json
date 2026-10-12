@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "build:check": "vue-tsc && vite build",
+    "build": "vite build && node scripts/prerender.mjs",
+    "build:check": "vue-tsc && vite build && node scripts/prerender.mjs",
     "preview": "vite preview",
     "lint": "eslint . --ext vue,js,ts,jsx,tsx --report-unused-disable-directives --max-warnings 0",
     "typecheck": "vue-tsc --noEmit",

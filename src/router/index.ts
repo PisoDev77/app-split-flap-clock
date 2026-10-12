@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
+import pages from '@/data/pages.json'
+import { findCity, cityTitle, cityDescription } from '@/utils/cityTime'
 
 /**
  * ## 라우터 설정
@@ -11,77 +13,43 @@ import type { RouteRecordRaw } from 'vue-router'
  * - `/about` - 앱 소개
  * - `/guide` - 사용법 가이드
  * - `/timezone` - 세계 시간대 정보
+ * - `/time/:slug` - 도시별 현재 시간 (도시 목록: src/data/cities.json)
  * - `/faq` - 자주 묻는 질문
  * - `/settings` - 설정 화면
  * - `/privacy` - 개인정보처리방침
  * 
+ * 페이지 제목·설명은 src/data/pages.json에 있음
+ * (빌드 후 scripts/prerender.mjs가 같은 파일로 검색용 HTML을 만듦)
+ * 
  * @since 1.0.0
  */
 
+type PagePath = keyof typeof pages
+
+const page = (path: PagePath, name: string, component: RouteRecordRaw['component']): RouteRecordRaw => ({
+  path,
+  name,
+  component: component!,
+  meta: { ...pages[path] }
+})
+
 const routes: RouteRecordRaw[] = [
+  page('/', 'Home', () => import('@/views/HomeView.vue')),
+  page('/about', 'About', () => import('@/views/AboutView.vue')),
+  page('/guide', 'Guide', () => import('@/views/GuideView.vue')),
+  page('/timezone', 'Timezone', () => import('@/views/TimezoneView.vue')),
   {
-    path: '/',
-    name: 'Home',
-    component: () => import('@/views/HomeView.vue'),
-    meta: {
-      title: 'Split Flap Clock',
-      description: '공항·기차역 플립시계를 그대로 옮긴 무료 온라인 탁상시계. 설치·광고·위치 권한 없이 바로 쓰고, 서울·뉴욕·런던 등 세계 시간과 배경 효과 6가지를 지원합니다.'
-    }
+    path: '/time/:slug',
+    name: 'CityTime',
+    component: () => import('@/views/CityTimeView.vue'),
+    // 목록에 없는 도시는 404 화면으로 (주소는 그대로)
+    beforeEnter: (to) => findCity(String(to.params.slug))
+      ? true
+      : { name: 'NotFound', params: { pathMatch: to.path.slice(1).split('/') }, replace: true }
   },
-  {
-    path: '/about',
-    name: 'About',
-    component: () => import('@/views/AboutView.vue'),
-    meta: {
-      title: '소개',
-      description: 'Split Flap Clock(플립시계)이 무엇이고 어떤 기능과 디자인 철학을 담았는지 소개합니다.'
-    }
-  },
-  {
-    path: '/guide',
-    name: 'Guide',
-    component: () => import('@/views/GuideView.vue'),
-    meta: {
-      title: '사용법 가이드',
-      description: '플립시계 사용법: 도시와 시간대 바꾸기, 다크 모드, 배경 효과, 화면 켜두기, 홈 화면에 설치하는 방법.'
-    }
-  },
-  {
-    path: '/timezone',
-    name: 'Timezone',
-    component: () => import('@/views/TimezoneView.vue'),
-    meta: {
-      title: '세계 시간대',
-      description: '서울·도쿄·뉴욕·런던·파리·시드니 등 세계 주요 20개 도시의 현재 시간과 시차를 서머타임까지 반영해 보여 줍니다.'
-    }
-  },
-  {
-    path: '/faq',
-    name: 'FAQ',
-    component: () => import('@/views/FaqView.vue'),
-    meta: {
-      title: '자주 묻는 질문',
-      description: '플립시계 자주 묻는 질문: 무료인지, 오프라인에서도 되는지, 시간이 맞지 않을 때와 설정이 저장되지 않을 때 해결 방법.'
-    }
-  },
-  {
-    path: '/settings',
-    name: 'Settings',
-    component: () => import('@/views/SettingsView.vue'),
-    meta: {
-      title: '설정',
-      description: '플립시계 설정: 도시, 테마, 배경 효과, 시간 표시 방식을 바꿉니다.'
-    }
-  },
-  {
-    path: '/privacy',
-    name: 'Privacy',
-    component: () => import('@/views/PrivacyView.vue'),
-    meta: {
-      title: '개인정보처리방침',
-      description: 'Split Flap Clock 개인정보처리방침. 위치와 개인 데이터를 수집하지 않으며 설정은 기기 안에만 저장됩니다.'
-    }
-  },
+  page('/faq', 'FAQ', () => import('@/views/FaqView.vue')),
+  page('/settings', 'Settings', () => import('@/views/SettingsView.vue')),
+  page('/privacy', 'Privacy', () => import('@/views/PrivacyView.vue')),
   {
     // 등록되지 않은 모든 주소
     path: '/:pathMatch(.*)*',
@@ -110,13 +78,20 @@ const setMeta = (selector: string, attr: string, value: string) => {
 }
 
 router.beforeEach((to) => {
+  let title = to.meta.title as string | undefined
+  let description = to.meta.description as string | undefined
+
+  const city = to.name === 'CityTime' ? findCity(String(to.params.slug)) : undefined
+  if (city) {
+    title = cityTitle(city)
+    description = cityDescription(city)
+  }
+
   // 홈은 제목이 앱 이름과 같아서 'Split Flap Clock | Split Flap Clock'처럼 겹치지 않게 함
-  const title = to.meta.title as string | undefined
   document.title = title && title !== 'Split Flap Clock'
     ? `${title} | Split Flap Clock`
     : '플립시계 Split Flap Clock - 무료 온라인 탁상시계·세계시계'
 
-  const description = to.meta.description as string | undefined
   if (description) {
     setMeta('meta[name="description"]', 'content', description)
     setMeta('meta[property="og:description"]', 'content', description)

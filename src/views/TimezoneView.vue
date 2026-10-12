@@ -55,32 +55,32 @@
                 <h3>아시아</h3>
                 <div class="city-list">
                   <div class="city-item">
-                    <span class="city-name">서울</span>
+                    <router-link class="city-name" :to="cityPath('Seoul')!">서울</router-link>
                     <span class="timezone-offset">{{ getCityOffset('Seoul') }}</span>
                     <span class="current-time">{{ getCityTime('Seoul') }}</span>
                   </div>
                   <div class="city-item">
-                    <span class="city-name">도쿄</span>
+                    <router-link class="city-name" :to="cityPath('Tokyo')!">도쿄</router-link>
                     <span class="timezone-offset">{{ getCityOffset('Tokyo') }}</span>
                     <span class="current-time">{{ getCityTime('Tokyo') }}</span>
                   </div>
                   <div class="city-item">
-                    <span class="city-name">베이징</span>
+                    <router-link class="city-name" :to="cityPath('Beijing')!">베이징</router-link>
                     <span class="timezone-offset">{{ getCityOffset('Beijing') }}</span>
                     <span class="current-time">{{ getCityTime('Beijing') }}</span>
                   </div>
                   <div class="city-item">
-                    <span class="city-name">상하이</span>
+                    <router-link class="city-name" :to="cityPath('Shanghai')!">상하이</router-link>
                     <span class="timezone-offset">{{ getCityOffset('Shanghai') }}</span>
                     <span class="current-time">{{ getCityTime('Shanghai') }}</span>
                   </div>
                   <div class="city-item">
-                    <span class="city-name">홍콩</span>
+                    <router-link class="city-name" :to="cityPath('Hong Kong')!">홍콩</router-link>
                     <span class="timezone-offset">{{ getCityOffset('Hong Kong') }}</span>
                     <span class="current-time">{{ getCityTime('Hong Kong') }}</span>
                   </div>
                   <div class="city-item">
-                    <span class="city-name">싱가포르</span>
+                    <router-link class="city-name" :to="cityPath('Singapore')!">싱가포르</router-link>
                     <span class="timezone-offset">{{ getCityOffset('Singapore') }}</span>
                     <span class="current-time">{{ getCityTime('Singapore') }}</span>
                   </div>
@@ -91,32 +91,32 @@
                 <h3>유럽</h3>
                 <div class="city-list">
                   <div class="city-item">
-                    <span class="city-name">런던</span>
+                    <router-link class="city-name" :to="cityPath('London')!">런던</router-link>
                     <span class="timezone-offset">{{ getCityOffset('London') }}</span>
                     <span class="current-time">{{ getCityTime('London') }}</span>
                   </div>
                   <div class="city-item">
-                    <span class="city-name">파리</span>
+                    <router-link class="city-name" :to="cityPath('Paris')!">파리</router-link>
                     <span class="timezone-offset">{{ getCityOffset('Paris') }}</span>
                     <span class="current-time">{{ getCityTime('Paris') }}</span>
                   </div>
                   <div class="city-item">
-                    <span class="city-name">베를린</span>
+                    <router-link class="city-name" :to="cityPath('Berlin')!">베를린</router-link>
                     <span class="timezone-offset">{{ getCityOffset('Berlin') }}</span>
                     <span class="current-time">{{ getCityTime('Berlin') }}</span>
                   </div>
                   <div class="city-item">
-                    <span class="city-name">로마</span>
+                    <router-link class="city-name" :to="cityPath('Rome')!">로마</router-link>
                     <span class="timezone-offset">{{ getCityOffset('Rome') }}</span>
                     <span class="current-time">{{ getCityTime('Rome') }}</span>
                   </div>
                   <div class="city-item">
-                    <span class="city-name">마드리드</span>
+                    <router-link class="city-name" :to="cityPath('Madrid')!">마드리드</router-link>
                     <span class="timezone-offset">{{ getCityOffset('Madrid') }}</span>
                     <span class="current-time">{{ getCityTime('Madrid') }}</span>
                   </div>
                   <div class="city-item">
-                    <span class="city-name">모스크바</span>
+                    <router-link class="city-name" :to="cityPath('Moscow')!">모스크바</router-link>
                     <span class="timezone-offset">{{ getCityOffset('Moscow') }}</span>
                     <span class="current-time">{{ getCityTime('Moscow') }}</span>
                   </div>
@@ -127,27 +127,27 @@
                 <h3>북미</h3>
                 <div class="city-list">
                   <div class="city-item">
-                    <span class="city-name">뉴욕</span>
+                    <router-link class="city-name" :to="cityPath('New York')!">뉴욕</router-link>
                     <span class="timezone-offset">{{ getCityOffset('New York') }}</span>
                     <span class="current-time">{{ getCityTime('New York') }}</span>
                   </div>
                   <div class="city-item">
-                    <span class="city-name">로스앤젤레스</span>
+                    <router-link class="city-name" :to="cityPath('Los Angeles')!">로스앤젤레스</router-link>
                     <span class="timezone-offset">{{ getCityOffset('Los Angeles') }}</span>
                     <span class="current-time">{{ getCityTime('Los Angeles') }}</span>
                   </div>
                   <div class="city-item">
-                    <span class="city-name">시카고</span>
+                    <router-link class="city-name" :to="cityPath('Chicago')!">시카고</router-link>
                     <span class="timezone-offset">{{ getCityOffset('Chicago') }}</span>
                     <span class="current-time">{{ getCityTime('Chicago') }}</span>
                   </div>
                   <div class="city-item">
-                    <span class="city-name">토론토</span>
+                    <router-link class="city-name" :to="cityPath('Toronto')!">토론토</router-link>
                     <span class="timezone-offset">{{ getCityOffset('Toronto') }}</span>
                     <span class="current-time">{{ getCityTime('Toronto') }}</span>
                   </div>
                   <div class="city-item">
-                    <span class="city-name">밴쿠버</span>
+                    <router-link class="city-name" :to="cityPath('Vancouver')!">밴쿠버</router-link>
                     <span class="timezone-offset">{{ getCityOffset('Vancouver') }}</span>
                     <span class="current-time">{{ getCityTime('Vancouver') }}</span>
                   </div>
@@ -158,17 +158,17 @@
                 <h3>오세아니아</h3>
                 <div class="city-list">
                   <div class="city-item">
-                    <span class="city-name">시드니</span>
+                    <router-link class="city-name" :to="cityPath('Sydney')!">시드니</router-link>
                     <span class="timezone-offset">{{ getCityOffset('Sydney') }}</span>
                     <span class="current-time">{{ getCityTime('Sydney') }}</span>
                   </div>
                   <div class="city-item">
-                    <span class="city-name">멜버른</span>
+                    <router-link class="city-name" :to="cityPath('Melbourne')!">멜버른</router-link>
                     <span class="timezone-offset">{{ getCityOffset('Melbourne') }}</span>
                     <span class="current-time">{{ getCityTime('Melbourne') }}</span>
                   </div>
                   <div class="city-item">
-                    <span class="city-name">오클랜드</span>
+                    <router-link class="city-name" :to="cityPath('Auckland')!">오클랜드</router-link>
                     <span class="timezone-offset">{{ getCityOffset('Auckland') }}</span>
                     <span class="current-time">{{ getCityTime('Auckland') }}</span>
                   </div>
@@ -278,6 +278,7 @@ import { ArrowLeftOutlined } from '@ant-design/icons-vue'
 import AppFooter from '@/components/AppFooter.vue'
 import dayjs from '@/utils/dayjs'
 import { useGoBack } from '@/composables/useGoBack'
+import { cityPath } from '@/utils/cityTime'
 
 const goBack = useGoBack()
 
@@ -514,8 +515,13 @@ onUnmounted(() => {
 }
 
 .city-name {
-  color: var(--color-fg-default);
+  color: var(--color-accent-fg);
   font-weight: 500;
+  text-decoration: none;
+}
+
+.city-name:hover {
+  text-decoration: underline;
 }
 
 .timezone-offset {
