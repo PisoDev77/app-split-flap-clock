@@ -6,7 +6,7 @@
           <div class="app-icon">📱</div>
           <div class="install-title">
             <h3>앱 설치</h3>
-            <p>홈 화면에 Split Flap Clock을 추가하세요</p>
+            <p>홈 화면에 플립시계를 추가하세요</p>
           </div>
         </div>
       </template>
@@ -16,7 +16,7 @@
           <li>홈 화면에서 바로 접근</li>
           <li>오프라인에서도 사용 가능</li>
           <li>빠른 로딩 속도</li>
-          <li>네이티브 앱과 동일한 경험</li>
+          <li>화면 켜두고 탁상시계로</li>
         </ul>
         
         <div class="install-actions">
@@ -325,4 +325,20 @@ onUnmounted(() => {
   .install-actions .ui-btn {
     width: 100%;
   }
-}</style>
+}
+/* 가로로 눕힌 폰: 시계를 가리지 않게 혜택 목록을 숨기고 오른쪽 아래에 작게 */
+@media (orientation: landscape) and (max-height: 500px) {
+  .pwa-install-prompt {
+    left: auto;
+    right: 12px;
+    bottom: 12px;
+    width: 320px;
+    transform: none;
+    animation: none;
+  }
+
+  .install-benefits {
+    display: none;
+  }
+}
+</style>

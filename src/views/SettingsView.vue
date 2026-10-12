@@ -90,6 +90,40 @@
                 </span>
               </div>
 
+              <!-- 시간 표시 방식 -->
+              <div class="setting-item">
+                <h3 class="ui-title setting-label">
+                  시간 표시
+                </h3>
+                <UiSelect
+                  v-model:value="timeFormat"
+                  aria-label="시간 표시 방식"
+                  class="setting-input"
+                  :options="timeFormatOptions"
+                />
+                <span class="ui-text ui-text--secondary setting-description">
+                  12시간이면 날짜 옆에 오전·오후가 함께 나옵니다.
+                </span>
+              </div>
+
+              <!-- 화면 켜두기 -->
+              <div class="setting-item">
+                <div class="setting-row">
+                  <div class="setting-label-group">
+                    <h3 class="ui-title setting-label">
+                      화면 켜두기
+                    </h3>
+                    <span class="ui-text ui-text--secondary setting-description">
+                      시계 화면에서 화면이 꺼지지 않게 합니다. 탁상시계로 쓸 때 켜 두세요.
+                    </span>
+                  </div>
+                  <UiSwitch
+                    v-model:checked="keepScreenOn"
+                    aria-label="화면 켜두기"
+                  />
+                </div>
+              </div>
+
               <!-- 테마 미리보기 -->
               <div class="setting-item">
                 <h3 class="ui-title setting-label">
@@ -277,6 +311,19 @@ const backgroundEffectsEnabled = computed({
   get: () => settings.value.backgroundEffectsEnabled,
   set: (value) => settings.value.backgroundEffectsEnabled = value
 })
+const timeFormat = computed({
+  get: () => settings.value.timeFormat,
+  set: (value) => { settings.value.timeFormat = value as '12h' | '24h' }
+})
+const timeFormatOptions = [
+  { value: '24h', label: '24시간 (13:05)' },
+  { value: '12h', label: '12시간 (오후 01:05)' }
+]
+const keepScreenOn = computed({
+  get: () => settings.value.keepScreenOn,
+  set: (value) => { settings.value.keepScreenOn = value }
+})
+
 const backgroundEffect = computed({
   get: () => settings.value.backgroundEffect,
   set: (value) => settings.value.backgroundEffect = value

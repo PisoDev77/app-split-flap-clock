@@ -55,6 +55,14 @@
                   <li><strong>위치:</strong> 화면 우상단의 톱니바퀴 아이콘</li>
                   <li><strong>기능:</strong> 클릭하면 설정 페이지로 이동합니다</li>
                 </ul>
+
+                <h3>탁상시계로 켜 두기</h3>
+                <ul>
+                  <li><strong>💡 화면 켜두기:</strong> 화면 위 전구 버튼을 누르면 시계를 보는 동안 화면이 꺼지지 않습니다</li>
+                  <li><strong>⛶ 전체 화면:</strong> 화살표 버튼으로 시계만 크게 볼 수 있습니다 (아이폰 Safari는 미지원)</li>
+                  <li><strong>가로 화면:</strong> 폰을 눕히면 시계가 화면에 맞게 커집니다</li>
+                  <li><strong>12시간 표시:</strong> 설정 → 시간 표시에서 오전·오후 방식으로 바꿀 수 있습니다</li>
+                </ul>
               </div>
             </UiCollapsePanel>
 

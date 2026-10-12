@@ -37,6 +37,8 @@ interface Settings {
   beforeLowPower?: { effect: BackgroundEffect, intensity: 'low' | 'medium' | 'high' }
   animationIntensity: 'low' | 'medium' | 'high'
   timeFormat: '12h' | '24h'
+  /** 시계 화면에서 화면 꺼짐 방지 */
+  keepScreenOn: boolean
   enableSounds: boolean
   reducedMotion: boolean
 }
@@ -47,6 +49,7 @@ const DEFAULT_SETTINGS: Settings = {
   backgroundEffect: 'particles',
   animationIntensity: 'medium',
   timeFormat: '24h',
+  keepScreenOn: false,
   enableSounds: false,
   reducedMotion: false
 }
@@ -80,7 +83,7 @@ const loadSettings = (): void => {
     Object.keys(DEFAULT_SETTINGS).forEach(key => {
       const individualSetting = localStorage.getItem(key)
       if (individualSetting !== null) {
-        if (key === 'backgroundEffectsEnabled' || key === 'showParticles' || key === 'enableSounds' || key === 'reducedMotion') {
+        if (typeof DEFAULT_SETTINGS[key as keyof Settings] === 'boolean') {
           (settings.value as any)[key] = individualSetting === 'true'
         } else {
           (settings.value as any)[key] = individualSetting

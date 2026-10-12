@@ -12,10 +12,30 @@
         <div class="header-content">
           <h1 class="app-title">Split Flap Clock</h1>
           <div class="header-controls">
+            <UiButton
+              v-if="wakeLockSupported"
+              type="text"
+              :icon="keepScreenOn ? BulbFilled : BulbOutlined"
+              class="settings-btn"
+              :class="{ 'is-on': keepScreenOn }"
+              :aria-label="keepScreenOn ? '화면 켜두기 끄기' : '화면 켜두기'"
+              :aria-pressed="keepScreenOn"
+              title="화면 켜두기"
+              @click="keepScreenOn = !keepScreenOn"
+            />
+            <UiButton
+              v-if="fullscreenSupported"
+              type="text"
+              :icon="isFullscreen ? FullscreenExitOutlined : FullscreenOutlined"
+              class="settings-btn"
+              :aria-label="isFullscreen ? '전체 화면 끝내기' : '전체 화면'"
+              title="전체 화면"
+              @click="toggleFullscreen"
+            />
             <UiButton 
               type="text" 
               :icon="SettingOutlined"
-              class="settings-btn"
+              class="settings-btn gear-btn"
               aria-label="설정 페이지 열기"
               @click="$router.push('/settings')"
             />
@@ -58,7 +78,9 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted } from 'vue'
 import UiButton from '@/components/ui/UiButton.vue'
-import { SettingOutlined } from '@ant-design/icons-vue'
+import { SettingOutlined, BulbOutlined, BulbFilled, FullscreenOutlined, FullscreenExitOutlined } from '@ant-design/icons-vue'
+import { useWakeLock } from '@/composables/useWakeLock'
+import { useFullscreen } from '@/composables/useFullscreen'
 import SplitFlapDisplay from '@/components/SplitFlapDisplay.vue'
 import AnimatedBackground from '@/components/AnimatedBackground.vue'
 import AppFooter from '@/components/AppFooter.vue'
@@ -91,6 +113,15 @@ const { settings, loadSettings } = useSettings()
 
 const backgroundEffectsEnabled = computed(() => settings.value.backgroundEffectsEnabled)
 const backgroundEffect = computed(() => settings.value.backgroundEffect)
+
+// 탁상시계로 켜 둘 때: 화면 꺼짐 방지 + 전체 화면
+const keepScreenOn = computed({
+  get: () => settings.value.keepScreenOn,
+  set: (value) => { settings.value.keepScreenOn = value }
+})
+const { supported: wakeLockSupported } = useWakeLock(keepScreenOn)
+const { supported: fullscreenSupported, isFullscreen, toggle: toggleFullscreen } = useFullscreen()
+const is12h = computed(() => settings.value.timeFormat === '12h')
 const animationIntensity = computed(() => settings.value.animationIntensity)
 
 // 설정에서 고른 도시 (없으면 이 기기 시간대를 따름)
@@ -113,7 +144,8 @@ const timezone = computed(() => {
 const cityFlapStyle = computed(() => {
   const length = Math.max(cityName.value.length, 1)
   return {
-    '--flap-w': `min(clamp(1.75rem, calc(11vw - 2px), 4.5rem), calc((100vw - 6rem) / ${length}))`
+    // 14vh: 가로로 눕힌 폰에서 시계가 화면 높이를 넘지 않게
+    '--flap-w': `min(clamp(1.75rem, calc(11vw - 2px), 4.5rem), calc((100vw - 6rem) / ${length}), 14vh)`
   }
 })
 
@@ -123,10 +155,15 @@ const zonedTime = computed(() => {
 })
 
 // 시간을 시, 분, 초로 분리
-const hours = computed(() => zonedTime.value?.format('HH') ?? '00')
+const hours = computed(() => zonedTime.value?.format(is12h.value ? 'hh' : 'HH') ?? '00')
 const minutes = computed(() => zonedTime.value?.format('mm') ?? '00')
 const seconds = computed(() => zonedTime.value?.format('ss') ?? '00')
-const currentDate = computed(() => zonedTime.value?.format('YYYY년 M월 D일 dddd') ?? '')
+const currentDate = computed(() => {
+  if (!zonedTime.value) return ''
+  const date = zonedTime.value.format('YYYY년 M월 D일 dddd')
+  // 12시간 표시일 때 오전/오후를 날짜 줄에 함께 보여 줌
+  return is12h.value ? `${zonedTime.value.hour() < 12 ? '오전' : '오후'} · ${date}` : date
+})
 
 onMounted(async () => {
   loadSettings() // 설정 로드
@@ -208,9 +245,16 @@ onUnmounted(() => {
   transition: all 0.2s ease;
 }
 
+.settings-btn.is-on {
+  background: var(--color-canvas-subtle);
+}
+
 .settings-btn:hover {
   background: var(--color-canvas-subtle);
   color: var(--color-accent-fg);
+}
+
+.gear-btn:hover {
   transform: rotate(90deg);
 }
 
@@ -293,6 +337,8 @@ onUnmounted(() => {
 }
 
 .time-units {
+  /* 가로 화면에서 높이에 맞춤 (세로에선 22vh가 커서 영향 없음) */
+  --flap-w: min(clamp(1.75rem, calc(11vw - 2px), 4.5rem), 22vh);
   display: flex;
   align-items: center;
   gap: clamp(0.15rem, 1vw, 0.5rem);
@@ -438,6 +484,26 @@ onUnmounted(() => {
   
   .date-text {
     font-size: 0.9rem;
+  }
+}
+
+/* 가로로 눕힌 폰 (탁상시계 거치): 머리말을 줄이고 시계를 화면 높이에 맞춤 */
+@media (orientation: landscape) and (max-height: 500px) {
+  .header {
+    height: 48px;
+  }
+
+  .content {
+    padding: 8px;
+  }
+
+  .clock-container {
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .city-label {
+    display: none;
   }
 }
 </style>

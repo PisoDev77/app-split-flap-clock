@@ -10,40 +10,58 @@
     <!-- Apple Touch Icon -->
     <link rel="apple-touch-icon" href="/icons/icon-152x152.png" />
     
-    <!-- Viewport and PWA -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <meta name="description" content="클래식한 분할 플랩 디스플레이로 전 세계 시간을 확인하세요. PWA 지원, 무료 온라인 시계 앱. 서울, 도쿄, 뉴욕, 런던 등 주요 도시 시간대 지원." />
-    <meta name="keywords" content="시계 앱, 분할 플랩, 시간대, 세계시계, PWA, 온라인 시계, 무료 시계, 모바일 시계, 디지털 시계, GMT, UTC" />
-    <meta name="author" content="Piso Developer" />
+    <!-- Viewport and PWA (확대 허용: user-scalable=no는 저시력 사용자에게 문제) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="공항·기차역 플립시계를 그대로 옮긴 무료 온라인 탁상시계. 설치·광고·위치 권한 없이 바로 쓰고, 서울·뉴욕·런던 등 세계 시간과 배경 효과 6가지를 지원합니다." />
     <meta name="robots" content="index, follow" />
-    <meta name="language" content="ko" />
     <meta name="theme-color" content="#34495e" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <meta name="apple-mobile-web-app-title" content="Split Flap Clock" />
-    
+    <meta name="apple-mobile-web-app-title" content="플립시계" />
+    <link rel="canonical" href="https://piso-split-flap.netlify.app/" />
+
     <!-- PWA Manifest -->
     <link rel="manifest" href="/manifest.json" />
-    
-    <!-- Open Graph -->
-    <meta property="og:title" content="Split Flap Clock - 클래식 분할 플랩 시계" />
-    <meta property="og:description" content="공항, 기차역에서 볼 수 있는 클래식한 분할 플랩 디스플레이를 재현한 무료 시계 앱. 전 세계 시간대 지원, PWA 설치 가능." />
-    <meta property="og:image" content="https://piso-split-flap.netlify.app/icons/icon-512x512.png" />
-    <meta property="og:url" content="https://piso-split-flap.netlify.app" />
+
+    <!-- Open Graph (카카오톡·SNS 공유 미리보기) -->
+    <meta property="og:title" content="플립시계 · Split Flap Clock" />
+    <meta property="og:description" content="설치 없이 바로 쓰는 무료 플립시계. 세계 시간, 배경 효과, 다크 모드." />
+    <meta property="og:image" content="https://piso-split-flap.netlify.app/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="플립 숫자로 시간을 보여 주는 Split Flap Clock 화면" />
+    <meta property="og:url" content="https://piso-split-flap.netlify.app/" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Split Flap Clock" />
     <meta property="og:locale" content="ko_KR" />
-    
-    <!-- Twitter Card -->
+
+    <!-- Twitter / X -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Split Flap Clock - 클래식 분할 플랩 시계" />
-    <meta name="twitter:description" content="공항, 기차역에서 볼 수 있는 클래식한 분할 플랩 디스플레이를 재현한 무료 시계 앱. 전 세계 시간대 지원, PWA 설치 가능." />
-    <meta name="twitter:image" content="https://piso-split-flap.netlify.app/icons/icon-512x512.png" />
-    <meta name="twitter:creator" content="@PisoDeveloper" />
-    
-    <title>Split Flap Clock - 클래식 분할 플랩 시계 | 무료 온라인 세계시계</title>
-    
+    <meta name="twitter:title" content="플립시계 · Split Flap Clock" />
+    <meta name="twitter:description" content="설치 없이 바로 쓰는 무료 플립시계. 세계 시간, 배경 효과, 다크 모드." />
+    <meta name="twitter:image" content="https://piso-split-flap.netlify.app/og-image.png" />
+
+    <title>플립시계 Split Flap Clock - 무료 온라인 탁상시계·세계시계</title>
+
+    <!-- 검색 결과에 '무료 웹 앱' 정보로 표시되도록 하는 구조화 데이터 -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Split Flap Clock",
+      "alternateName": ["플립시계", "스플릿 플랩 시계"],
+      "url": "https://piso-split-flap.netlify.app/",
+      "description": "공항·기차역 플립시계를 그대로 옮긴 무료 온라인 탁상시계. 세계 시간과 배경 효과를 지원합니다.",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web, Android",
+      "inLanguage": "ko",
+      "isAccessibleForFree": true,
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+      "image": "https://piso-split-flap.netlify.app/og-image.png"
+    }
+    </script>
+
     <!-- SUIT 폰트 -->
     <link rel="preconnect" href="https://cdn.jsdelivr.net" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/static/woff2/SUIT.css" />

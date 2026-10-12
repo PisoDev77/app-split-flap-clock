@@ -1,15 +1,19 @@
 {
-  "name": "Split Flap Clock",
-  "short_name": "SplitFlap",
-  "description": "분할 플랩 디스플레이로 시간과 도시를 표시하는 시계 앱",
+  "name": "플립시계 Split Flap Clock",
+  "short_name": "플립시계",
+  "description": "공항·기차역 플립시계를 그대로 옮긴 무료 탁상시계. 세계 시간, 배경 효과, 다크 모드, 화면 켜두기.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#2c3e50",
   "theme_color": "#34495e",
-  "orientation": "portrait-primary",
+  "orientation": "any",
   "scope": "/",
   "lang": "ko",
-  "categories": ["utilities", "lifestyle"],
+  "categories": [
+    "utilities",
+    "lifestyle",
+    "productivity"
+  ],
   "icons": [
     {
       "src": "/icons/icon-72x72.png",
@@ -87,5 +91,6 @@
         }
       ]
     }
-  ]
+  ],
+  "id": "/"
 }
