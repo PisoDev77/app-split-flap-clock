@@ -32,6 +32,14 @@
               title="전체 화면"
               @click="toggleFullscreen"
             />
+            <UiButton
+              type="text"
+              :icon="ShareAltOutlined"
+              class="settings-btn"
+              aria-label="이 시계 링크 공유"
+              title="링크 공유"
+              @click="shareClock"
+            />
             <UiButton 
               type="text" 
               :icon="SettingOutlined"
@@ -78,7 +86,8 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted } from 'vue'
 import UiButton from '@/components/ui/UiButton.vue'
-import { SettingOutlined, BulbOutlined, BulbFilled, FullscreenOutlined, FullscreenExitOutlined } from '@ant-design/icons-vue'
+import { useRoute } from 'vue-router'
+import { SettingOutlined, BulbOutlined, BulbFilled, FullscreenOutlined, FullscreenExitOutlined, ShareAltOutlined } from '@ant-design/icons-vue'
 import { useWakeLock } from '@/composables/useWakeLock'
 import { useFullscreen } from '@/composables/useFullscreen'
 import SplitFlapDisplay from '@/components/SplitFlapDisplay.vue'
@@ -88,6 +97,7 @@ import { useLocation } from '@/composables/useLocation'
 import { useTime } from '@/composables/useTime'
 import { useSettings } from '@/composables/useSettings'
 import dayjs from '@/utils/dayjs'
+import { parseShareQuery, buildShareUrl, shareLink } from '@/utils/shareLink'
 
 /**
  * ## 홈 화면 뷰
@@ -112,7 +122,10 @@ const { currentTime: time, startTimer, stopTimer } = useTime()
 const { settings, loadSettings } = useSettings()
 
 const backgroundEffectsEnabled = computed(() => settings.value.backgroundEffectsEnabled)
-const backgroundEffect = computed(() => settings.value.backgroundEffect)
+// 공유 링크로 들어오면 그 모양으로 보여 줌 (내 설정은 바꾸지 않음)
+const shared = parseShareQuery(useRoute().query)
+
+const backgroundEffect = computed(() => shared.effect ?? settings.value.backgroundEffect)
 
 // 탁상시계로 켜 둘 때: 화면 꺼짐 방지 + 전체 화면
 const keepScreenOn = computed({
@@ -121,18 +134,18 @@ const keepScreenOn = computed({
 })
 const { supported: wakeLockSupported } = useWakeLock(keepScreenOn)
 const { supported: fullscreenSupported, isFullscreen, toggle: toggleFullscreen } = useFullscreen()
-const is12h = computed(() => settings.value.timeFormat === '12h')
+const is12h = computed(() => shared.is12h ?? settings.value.timeFormat === '12h')
 const animationIntensity = computed(() => settings.value.animationIntensity)
 
 // 설정에서 고른 도시 (없으면 이 기기 시간대를 따름)
-const savedCity = localStorage.getItem('selectedCity')
+const savedCity = shared.city ?? localStorage.getItem('selectedCity')
 
 const cityName = computed(() => {
   const city = savedCity || currentLocation.value?.city
   return city ? getCityKoreanName(city) : 'LOADING...'
 })
 
-const cityLabel = computed(() => savedCity ? '선택한 도시' : '현재 위치')
+const cityLabel = computed(() => shared.city ? '공유받은 도시' : savedCity ? '선택한 도시' : '현재 위치')
 
 // IANA 시간대 → 서머타임 자동 반영
 const timezone = computed(() => {
@@ -164,6 +177,13 @@ const currentDate = computed(() => {
   // 12시간 표시일 때 오전/오후를 날짜 줄에 함께 보여 줌
   return is12h.value ? `${zonedTime.value.hour() < 12 ? '오전' : '오후'} · ${date}` : date
 })
+
+// 자동(기기 시간대)이면 도시를 넣지 않음 → 받은 사람도 자기 시간대로 봄
+const shareClock = () => shareLink(
+  buildShareUrl('/', { city: savedCity ?? undefined, effect: backgroundEffect.value, is12h: is12h.value }),
+  '플립시계',
+  savedCity ? `${cityName.value} 시간을 플립시계로 보세요` : '공항 안내판처럼 넘어가는 플립시계'
+)
 
 onMounted(async () => {
   loadSettings() // 설정 로드

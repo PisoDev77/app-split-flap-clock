@@ -14,6 +14,7 @@ import { findCity, cityTitle, cityDescription } from '@/utils/cityTime'
  * - `/guide` - 사용법 가이드
  * - `/timezone` - 세계 시간대 정보
  * - `/time/:slug` - 도시별 현재 시간 (도시 목록: src/data/cities.json)
+ * - `/study` - 공부 시계 (집중 타이머)
  * - `/faq` - 자주 묻는 질문
  * - `/settings` - 설정 화면
  * - `/privacy` - 개인정보처리방침
@@ -47,6 +48,7 @@ const routes: RouteRecordRaw[] = [
       ? true
       : { name: 'NotFound', params: { pathMatch: to.path.slice(1).split('/') }, replace: true }
   },
+  page('/study', 'Study', () => import('@/views/StudyView.vue')),
   page('/faq', 'FAQ', () => import('@/views/FaqView.vue')),
   page('/settings', 'Settings', () => import('@/views/SettingsView.vue')),
   page('/privacy', 'Privacy', () => import('@/views/PrivacyView.vue')),

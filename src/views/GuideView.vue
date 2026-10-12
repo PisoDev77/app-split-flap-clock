@@ -62,6 +62,8 @@
                   <li><strong>⛶ 전체 화면:</strong> 화살표 버튼으로 시계만 크게 볼 수 있습니다 (아이폰 Safari는 미지원)</li>
                   <li><strong>가로 화면:</strong> 폰을 눕히면 시계가 화면에 맞게 커집니다</li>
                   <li><strong>12시간 표시:</strong> 설정 → 시간 표시에서 오전·오후 방식으로 바꿀 수 있습니다</li>
+                  <li><strong>🔗 링크 공유:</strong> 공유 버튼을 누르면 지금 도시·배경 효과 그대로 볼 수 있는 링크를 보낼 수 있습니다 (받는 사람 설정은 바뀌지 않음)</li>
+                  <li><strong>📚 공부 시계:</strong> <router-link to="/study">공부 시계</router-link>에서 25·50·90분 집중 타이머를 쓸 수 있습니다</li>
                 </ul>
               </div>
             </UiCollapsePanel>

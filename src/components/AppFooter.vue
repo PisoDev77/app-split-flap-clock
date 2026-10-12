@@ -12,6 +12,7 @@
           <li><router-link to="/about">소개</router-link></li>
           <li><router-link to="/guide">사용법 가이드</router-link></li>
           <li><router-link to="/timezone">세계 시간대</router-link></li>
+          <li><router-link to="/study">공부 시계</router-link></li>
           <li><router-link to="/faq">자주 묻는 질문</router-link></li>
         </ul>
       </div>
