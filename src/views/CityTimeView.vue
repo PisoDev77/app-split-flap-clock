@@ -53,6 +53,11 @@
               </tbody>
             </table>
             <p class="note">{{ t.convertNote }}</p>
+            <p class="note">
+              <router-link :to="{ path: lp('/time-converter'), query: { ...(isEn ? {} : { from: 'seoul' }), to: city.slug } }">
+                {{ t.converterLink }}
+              </router-link>
+            </p>
           </UiCard>
 
           <UiCard class="info-card" :title="t.factsTitle(name)">
@@ -124,6 +129,7 @@ const t = pick({
     hasDst: (std: string, sum: string, now: boolean) =>
       `서머타임이 있어요. 평소 ${std}, 서머타임 때 ${sum}이고 지금은 서머타임 ${now ? '기간이에요' : '기간이 아니에요'}.`,
     noDst: (o: string) => `서머타임이 없어 1년 내내 ${o}예요.`,
+    converterLink: '다른 날짜·시각으로 계산하기 →',
     othersTitle: '다른 도시 현재 시간', allCities: '세계 시간대 한눈에 보기 →', dateFormat: 'YYYY년 M월 D일 dddd'
   },
   en: {
@@ -137,6 +143,7 @@ const t = pick({
     hasDst: (std: string, sum: string, now: boolean) =>
       `Uses daylight saving time: ${std} standard, ${sum} in summer. Daylight saving time is ${now ? 'in effect now' : 'not in effect now'}.`,
     noDst: (o: string) => `No daylight saving time; ${o} all year.`,
+    converterLink: 'Convert another date and time →',
     othersTitle: 'Time in other cities', allCities: 'See the world clock →', dateFormat: 'dddd, MMMM D, YYYY'
   }
 })

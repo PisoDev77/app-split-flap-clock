@@ -178,6 +178,9 @@
           </UiCard>
 
           <UiCard class="info-card" title="🧮 시차 계산하기">
+            <p class="converter-link">
+              날짜와 시각을 넣어 바로 계산하려면 <router-link to="/time-converter">시차 계산기 →</router-link>
+            </p>
             <h3>기본 계산법</h3>
             <p>
               두 도시 간의 시차를 계산하는 방법은 각 도시의 GMT 오프셋 차이를 구하는 것입니다.
@@ -625,5 +628,9 @@ onUnmounted(() => {
   .calculation-example {
     padding: 1rem;
   }
+}
+.converter-link a {
+  color: var(--color-accent-fg);
+  font-weight: 600;
 }
 </style>

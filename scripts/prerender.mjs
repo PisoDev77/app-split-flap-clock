@@ -64,7 +64,7 @@ const cityFacts = (city) => {
 }
 
 // ----- 한국어·영어 짝 (src/composables/useLocale.ts의 alternatePath와 같은 규칙) -----
-const PAIRED = ['/', '/study', '/countdown/new-year', '/settings', '/privacy']
+const PAIRED = ['/', '/study', '/countdown/new-year', '/time-converter', '/settings', '/privacy']
 const isEnPath = (path) => path === '/en' || path.startsWith('/en/')
 const alternatePath = (path) => {
   if (isEnPath(path)) {

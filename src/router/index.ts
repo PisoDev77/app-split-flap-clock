@@ -19,6 +19,7 @@ import { deviceTimezone } from '@/utils/cityTime'
  * - `/time/:slug` - 도시별 현재 시간 (도시 목록: src/data/cities.json)
  * - `/study` - 공부 시계 (집중 타이머)
  * - `/countdown/new-year` - 새해 카운트다운
+ * - `/time-converter` - 시차 계산기
  * - `/faq` - 자주 묻는 질문
  * - `/settings` - 설정 화면
  * - `/privacy` - 개인정보처리방침
@@ -58,6 +59,7 @@ const routes: RouteRecordRaw[] = [
   },
   page('/study', 'Study', () => import('@/views/StudyView.vue')),
   page('/countdown/new-year', 'Countdown', () => import('@/views/CountdownView.vue')),
+  page('/time-converter', 'TimeConverter', () => import('@/views/TimeConverterView.vue')),
   page('/faq', 'FAQ', () => import('@/views/FaqView.vue')),
   page('/settings', 'Settings', () => import('@/views/SettingsView.vue')),
   page('/privacy', 'Privacy', () => import('@/views/PrivacyView.vue')),
@@ -66,6 +68,7 @@ const routes: RouteRecordRaw[] = [
   page('/en', 'HomeEn', () => import('@/views/HomeView.vue')),
   page('/en/study', 'StudyEn', () => import('@/views/StudyView.vue')),
   page('/en/countdown/new-year', 'CountdownEn', () => import('@/views/CountdownView.vue')),
+  page('/en/time-converter', 'TimeConverterEn', () => import('@/views/TimeConverterView.vue')),
   page('/en/world-clock', 'WorldClockEn', () => import('@/views/WorldClockView.vue')),
   page('/en/settings', 'SettingsEn', () => import('@/views/SettingsView.vue')),
   page('/en/privacy', 'PrivacyEn', () => import('@/views/PrivacyView.vue')),

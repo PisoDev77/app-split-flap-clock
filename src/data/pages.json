@@ -24,6 +24,10 @@
     "title": "{year} 새해 카운트다운",
     "description": "{year}년 새해까지 남은 시간을 플립시계로 셉니다. 화면 꺼짐 방지, 전체화면, TV·방송용 화면, 도시별 새해 시각과 세계에서 새해를 맞는 순서까지."
   },
+  "/time-converter": {
+    "title": "시차 계산기 · 세계 시간 변환",
+    "description": "서울·뉴욕·런던·도쿄·시드니 등 20개 도시의 시차를 날짜와 시각을 넣어 바로 계산합니다. 서머타임 자동 반영, 해외 회의·통화 시간 잡기에 좋아요."
+  },
   "/faq": {
     "title": "자주 묻는 질문",
     "description": "플립시계 자주 묻는 질문: 무료인지, 오프라인에서도 되는지, 시간이 맞지 않을 때와 설정이 저장되지 않을 때 해결 방법."
@@ -51,6 +55,11 @@
     "lang": "en",
     "title": "{year} New Year Countdown",
     "description": "Count down to {year} on a split-flap clock. Keeps your screen on, goes fullscreen for TV and streams, and shows when each city reaches midnight."
+  },
+  "/en/time-converter": {
+    "lang": "en",
+    "title": "Time Zone Converter · World Time Calculator",
+    "description": "Convert a date and time between New York, London, Paris, Tokyo, Seoul, Sydney and more. Daylight saving time is applied for the chosen date. Great for scheduling calls and meetings."
   },
   "/en/world-clock": {
     "lang": "en",
