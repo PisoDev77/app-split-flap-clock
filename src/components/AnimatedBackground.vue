@@ -343,27 +343,33 @@ onUnmounted(() => {
   height: 100%;
 }
 
-/* 시간대별 그라디언트 */
+/* 시간대별 배경: 깊은 바탕색 + 은은한 빛 두 군데 (탁한 단색 대각선 그라디언트 대신) */
 .gradient-layer {
-  background-size: 300% 300%;
-  animation: gradient-shift 30s ease-in-out infinite;
+  inset: -15%;
+  width: 130%;
+  height: 130%;
+  background-color: var(--bg-base);
+  background-image:
+    radial-gradient(65% 50% at 25% 20%, var(--bg-glow-1), transparent 70%),
+    radial-gradient(70% 55% at 80% 85%, var(--bg-glow-2), transparent 70%);
+  animation: gradient-drift 40s ease-in-out infinite alternate;
 }
-.intensity-low.gradient-layer { opacity: 0.35; }
-.intensity-medium.gradient-layer { opacity: 0.55; }
-.intensity-high.gradient-layer { opacity: 0.75; }
+.intensity-low.gradient-layer { opacity: 0.7; }
+.intensity-medium.gradient-layer { opacity: 0.9; }
+.intensity-high.gradient-layer { opacity: 1; }
 
-.period-morning.theme-light .gradient-layer { background-image: linear-gradient(45deg, #f0f9ff, #e0f2fe, #bae6fd); }
-.period-afternoon.theme-light .gradient-layer { background-image: linear-gradient(45deg, #fefce8, #fef3c7, #fed7aa); }
-.period-evening.theme-light .gradient-layer { background-image: linear-gradient(45deg, #fff7ed, #fed7aa, #fdba74); }
-.period-night.theme-light .gradient-layer { background-image: linear-gradient(45deg, #f8fafc, #e0e7ff, #e2e8f0); }
-.period-morning.theme-dark .gradient-layer { background-image: linear-gradient(45deg, #0f172a, #1e293b, #334155); }
-.period-afternoon.theme-dark .gradient-layer { background-image: linear-gradient(45deg, #1e293b, #334155, #475569); }
-.period-evening.theme-dark .gradient-layer { background-image: linear-gradient(45deg, #1c0f0a, #451a03, #7c2d12); }
-.period-night.theme-dark .gradient-layer { background-image: linear-gradient(45deg, #020617, #0f172a, #1e1b4b); }
+.period-morning.theme-light { --bg-base: #eef4fb; --bg-glow-1: rgba(125, 211, 252, 0.45); --bg-glow-2: rgba(196, 181, 253, 0.35); }
+.period-afternoon.theme-light { --bg-base: #f6f4ef; --bg-glow-1: rgba(253, 230, 138, 0.45); --bg-glow-2: rgba(147, 197, 253, 0.35); }
+.period-evening.theme-light { --bg-base: #f7f1f0; --bg-glow-1: rgba(251, 182, 156, 0.45); --bg-glow-2: rgba(196, 181, 253, 0.4); }
+.period-night.theme-light { --bg-base: #f1f2f7; --bg-glow-1: rgba(165, 180, 252, 0.4); --bg-glow-2: rgba(148, 163, 184, 0.3); }
+.period-morning.theme-dark { --bg-base: #0b1220; --bg-glow-1: rgba(56, 189, 248, 0.22); --bg-glow-2: rgba(99, 102, 241, 0.2); }
+.period-afternoon.theme-dark { --bg-base: #0e1116; --bg-glow-1: rgba(148, 163, 184, 0.2); --bg-glow-2: rgba(56, 189, 248, 0.14); }
+.period-evening.theme-dark { --bg-base: #110f1c; --bg-glow-1: rgba(139, 92, 246, 0.22); --bg-glow-2: rgba(251, 146, 60, 0.2); }
+.period-night.theme-dark { --bg-base: #070a14; --bg-glow-1: rgba(79, 70, 229, 0.22); --bg-glow-2: rgba(20, 184, 166, 0.11); }
 
-@keyframes gradient-shift {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
+@keyframes gradient-drift {
+  from { transform: translate3d(-3%, -2%, 0); }
+  to { transform: translate3d(3%, 2%, 0); }
 }
 
 /* 오로라 */
