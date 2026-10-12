@@ -70,10 +70,10 @@ const isActive = computed(() => props.enabled && props.effect !== 'none' && !pre
 const DENSITY = { low: 0.5, medium: 1, high: 1.7 } as const
 const FRAME_MS = 1000 / 30
 
-// 효과별 색 (다크: 밝은 빛, 라이트: 진한 색이 은은하게 보이도록)
+// 효과별 색 (다크: 밝은 빛, 라이트: 연한 색 빛 — 진한 남색 점은 먼지처럼 보였음)
 const palette = computed(() => isDarkMode.value
   ? { dot: '255, 255, 255', warm: '255, 214, 165', cool: '147, 197, 253', rain: '186, 230, 253' }
-  : { dot: '30, 64, 175', warm: '234, 88, 12', cool: '37, 99, 235', rain: '71, 85, 105' })
+  : { dot: '129, 140, 248', warm: '251, 146, 60', cool: '96, 165, 250', rain: '100, 116, 139' })
 
 // ---- 캔버스 렌더러 ----
 

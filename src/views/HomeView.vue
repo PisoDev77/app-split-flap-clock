@@ -209,7 +209,7 @@ const cityFlapStyle = computed(() => {
   const length = Math.max(cityName.value.length, 1)
   return {
     // 14vh: 가로로 눕힌 폰에서 시계가 화면 높이를 넘지 않게
-    '--flap-w': `min(clamp(1.75rem, calc(11vw - 2px), 4.5rem), calc((100vw - 6rem) / ${length}), 14vh)`
+    '--flap-w': `min(clamp(1.75rem, calc(11vw - 2px), 5.5rem), calc((100vw - 6rem) / ${length}), 14vh)`
   }
 })
 
@@ -444,6 +444,9 @@ onUnmounted(() => {
 
 .content {
   flex: 1;
+  /* 시계가 첫 화면을 채우고 푸터는 스크롤해야 보임 */
+  min-height: calc(100vh - 64px);
+  min-height: calc(100dvh - 64px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -459,7 +462,7 @@ onUnmounted(() => {
   align-items: center;
   gap: 2rem;
   width: 100%;
-  max-width: 800px;
+  max-width: 1040px;
   padding: 2rem;
   /* 반투명 유리: 뒤의 배경 효과가 은은하게 비침 */
   background: rgba(var(--color-canvas-default-rgb), 0.45);
@@ -513,7 +516,8 @@ onUnmounted(() => {
 
 .time-units {
   /* 가로 화면에서 높이에 맞춤 (세로에선 22vh가 커서 영향 없음) */
-  --flap-w: min(clamp(1.75rem, calc(11vw - 2px), 4.5rem), 22vh);
+  /* PC에서는 화면에 맞춰 더 크게 (최대 7rem), 시계 6칸이 가로에 들어가게 */
+  --flap-w: min(clamp(1.75rem, calc(11vw - 2px), 7rem), 22vh, calc((100vw - 8rem) / 7.5));
   display: flex;
   align-items: center;
   gap: clamp(0.15rem, 1vw, 0.5rem);
@@ -675,5 +679,13 @@ onUnmounted(() => {
 
 .lang-pill:hover {
   background: var(--color-canvas-subtle);
+}
+
+/* 폰(머리말이 떠 있음): 시계 영역이 화면 전체 높이 — 위의 .content 기본값보다 뒤에 둠 */
+@media (max-width: 768px), (orientation: landscape) and (max-height: 500px) {
+  .content {
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
 }
 </style>

@@ -1,6 +1,7 @@
 <template>
   <div 
     class="split-flap-display"
+    :style="{ '--flip-ms': `${props.flipDuration}ms` }"
     role="img" 
     :aria-label="props.label ? `${props.label} ${props.text}` : props.text"
   >
@@ -9,15 +10,24 @@
         v-for="(char, index) in displayChars" 
         :key="index"
         class="flap-unit"
-        :class="{ 'flipping': isFlipping[index] }"
         :aria-hidden="true"
       >
+        <!-- 고정 판: 위는 새 글자, 아래는 넘어가는 동안 옛 글자 -->
         <div class="flap-top">
           <span class="flap-text flap-text-top">{{ char }}</span>
         </div>
         <div class="flap-bottom">
-          <span class="flap-text flap-text-bottom">{{ char }}</span>
+          <span class="flap-text flap-text-bottom">{{ isFlipping[index] ? previousChars[index] : char }}</span>
         </div>
+        <!-- 넘어가는 판: 옛 글자 윗판이 아래로 떨어지고, 새 글자 아랫판이 내려와 닿음 -->
+        <template v-if="isFlipping[index]">
+          <div class="flap-top flap-leaf flap-leaf-top">
+            <span class="flap-text flap-text-top">{{ previousChars[index] }}</span>
+          </div>
+          <div class="flap-bottom flap-leaf flap-leaf-bottom">
+            <span class="flap-text flap-text-bottom">{{ char }}</span>
+          </div>
+        </template>
       </div>
     </div>
     
@@ -52,7 +62,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  flipDuration: 600,
+  flipDuration: 450,
   label: undefined,
   respectReducedMotion: true,
   characterSet: () => [
@@ -66,79 +76,55 @@ const currentText = ref('')
 const isFlipping = ref<boolean[]>([])
 const displayChars = computed(() => currentText.value.split(''))
 
-// 이전 텍스트를 저장해서 플립 애니메이션에 사용
-const previousText = ref('')
+// 넘어가는 동안 아랫판·떨어지는 윗판에 보일 옛 글자 (칸마다)
+const previousChars = ref<string[]>([])
 
-let flipTimeout: NodeJS.Timeout | null = null
+let flipTimeout: ReturnType<typeof setTimeout> | null = null
+const pendingTimers = new Set<ReturnType<typeof setTimeout>>()
+const later = (fn: () => void, ms: number) => {
+  const id = setTimeout(() => { pendingTimers.delete(id); fn() }, ms)
+  pendingTimers.add(id)
+}
 
 
 /**
  * ## 텍스트 업데이트 및 플립 애니메이션
  * 
- * **새로운 텍스트**로 변경될 때 각 문자에 대해 플립 애니메이션을 실행합니다.
+ * 바뀐 칸만 차례로(50ms 간격) 넘깁니다. 새 글자는 바로 고정 윗판에 들어가고,
+ * 옛 글자 윗판이 떨어진 뒤 새 글자 아랫판이 내려와 닿습니다 (실제 분할 플랩처럼).
  * 
  * @param {string} newText - **표시할 새 텍스트**
- * 
- * @example
- * ```typescript
- * updateText('SEOUL 15:30:45')
- * ```
  */
 const updateText = (newText: string) => {
   // 접근성: reduced motion 체크
   const prefersReducedMotion = props.respectReducedMotion && 
     window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-  if (prefersReducedMotion) {
-    // 애니메이션 없이 즉시 텍스트 변경
-    previousText.value = currentText.value
+  // 글자 수가 바뀌면(도시 이름 등) 넘기지 않고 바로 바꿈
+  if (prefersReducedMotion || newText.length !== currentText.value.length) {
     currentText.value = newText
     isFlipping.value = new Array(newText.length).fill(false)
+    previousChars.value = newText.split('')
     return
   }
 
-  // 이전 텍스트 저장
-  previousText.value = currentText.value
+  const oldChars = currentText.value.split('')
+  const changedIndices = newText.split('').flatMap((char, index) => char !== oldChars[index] ? [index] : [])
 
-  const paddedNewText = newText.padEnd(Math.max(currentText.value.length, newText.length))
-  const paddedCurrentText = currentText.value.padEnd(paddedNewText.length)
-  
-  // 변경이 필요한 인덱스들을 미리 계산
-  const changedIndices: number[] = []
-  paddedCurrentText.split('').forEach((char, index) => {
-    if (char !== paddedNewText[index]) {
-      changedIndices.push(index)
-    }
+  changedIndices.forEach((index, order) => {
+    later(() => {
+      previousChars.value[index] = currentText.value[index] ?? ' '
+      const chars = currentText.value.split('')
+      chars[index] = newText[index]
+      currentText.value = chars.join('')
+      // 같은 칸이 아직 넘어가는 중이면 한 번 내렸다 올려서 애니메이션을 처음부터
+      isFlipping.value[index] = false
+      requestAnimationFrame(() => {
+        isFlipping.value[index] = true
+        later(() => { isFlipping.value[index] = false }, props.flipDuration)
+      })
+    }, order * 50)
   })
-  
-  // 스태거 효과를 위한 지연 시간 계산
-  changedIndices.forEach((index, changeIndex) => {
-    const staggerDelay = changeIndex * 50 // 50ms씩 지연
-    
-    setTimeout(() => {
-      isFlipping.value[index] = true
-      
-      // 애니메이션 완료 후 플립 상태 해제 및 텍스트 변경
-      setTimeout(() => {
-        // 새로운 텍스트로 변경
-        const newChars = currentText.value.split('')
-        newChars[index] = paddedNewText[index] || ' '
-        currentText.value = newChars.join('').trimEnd()
-        
-        // 플립 상태 해제
-        isFlipping.value[index] = false
-      }, props.flipDuration)
-    }, staggerDelay)
-  })
-  
-  // 길이가 변경된 경우 처리
-  if (paddedNewText.length !== currentText.value.length) {
-    const totalStaggerTime = changedIndices.length * 50 + props.flipDuration
-    setTimeout(() => {
-      currentText.value = newText
-      isFlipping.value = new Array(newText.length).fill(false)
-    }, totalStaggerTime)
-  }
 }
 
 watch(
@@ -162,7 +148,7 @@ watch(
 
 onMounted(() => {
   currentText.value = props.text
-  previousText.value = props.text
+  previousChars.value = props.text.split('')
   isFlipping.value = new Array(props.text.length).fill(false)
 })
 
@@ -170,6 +156,7 @@ onUnmounted(() => {
   if (flipTimeout) {
     clearTimeout(flipTimeout)
   }
+  pendingTimers.forEach(clearTimeout)
 })
 </script>
 
@@ -186,7 +173,6 @@ onUnmounted(() => {
 .flap-container {
   display: flex;
   gap: 1px;
-  perspective: 1000px;
 }
 
 .flap-unit {
@@ -199,6 +185,8 @@ onUnmounted(() => {
     0 4px 8px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
   overflow: hidden;
+  /* 칸마다 원근: 넘어가는 판이 입체적으로 보이게 */
+  perspective: calc(var(--flap-size) * 5);
   transform-style: preserve-3d;
   /* Firefox 호환성 */
   -moz-transform-style: preserve-3d;
@@ -283,102 +271,31 @@ onUnmounted(() => {
 }
 
 
-.flap-unit.flipping .flap-top {
-  animation: flipTop 0.6s ease-in-out;
-  /* 브라우저 호환성 */
-  -webkit-animation: flipTop 0.6s ease-in-out;
-  -moz-animation: flipTop 0.6s ease-in-out;
+/* 넘어가는 판 */
+.flap-leaf {
+  z-index: 3;
+  will-change: transform;
 }
 
-.flap-unit.flipping .flap-bottom {
-  animation: flipBottom 0.6s ease-in-out;
-  /* 브라우저 호환성 */
-  -webkit-animation: flipBottom 0.6s ease-in-out;
-  -moz-animation: flipBottom 0.6s ease-in-out;
+/* 옛 윗판: 중력처럼 점점 빨라지며 아래로 접힘 (앞 절반 시간) */
+.flap-leaf-top {
+  animation: leaf-fall calc(var(--flip-ms) / 2) cubic-bezier(0.55, 0, 0.9, 0.45) forwards;
 }
 
-@keyframes flipTop {
-  0% {
-    transform: rotateX(0deg);
-    -webkit-transform: rotateX(0deg);
-    z-index: 2;
-  }
-  50% {
-    transform: rotateX(-90deg);
-    -webkit-transform: rotateX(-90deg);
-    z-index: 1;
-  }
-  51% {
-    transform: rotateX(-90deg);
-    -webkit-transform: rotateX(-90deg);
-    z-index: 1;
-  }
-  100% {
-    transform: rotateX(0deg);
-    -webkit-transform: rotateX(0deg);
-    z-index: 2;
-  }
+/* 새 아랫판: 이어서 내려와 살짝 튕기며 멈춤 (뒤 절반 시간) */
+.flap-leaf-bottom {
+  transform: rotateX(90deg);
+  animation: leaf-land calc(var(--flip-ms) / 2) cubic-bezier(0.2, 0.9, 0.35, 1.15) calc(var(--flip-ms) / 2) forwards;
 }
 
-@-webkit-keyframes flipTop {
-  0% {
-    -webkit-transform: rotateX(0deg);
-    z-index: 2;
-  }
-  50% {
-    -webkit-transform: rotateX(-90deg);
-    z-index: 1;
-  }
-  51% {
-    -webkit-transform: rotateX(-90deg);
-    z-index: 1;
-  }
-  100% {
-    -webkit-transform: rotateX(0deg);
-    z-index: 2;
-  }
+@keyframes leaf-fall {
+  from { transform: rotateX(0deg); filter: brightness(1); }
+  to { transform: rotateX(-90deg); filter: brightness(0.6); }
 }
 
-@keyframes flipBottom {
-  0% {
-    transform: rotateX(90deg);
-    -webkit-transform: rotateX(90deg);
-    z-index: 1;
-  }
-  49% {
-    transform: rotateX(90deg);
-    -webkit-transform: rotateX(90deg);
-    z-index: 1;
-  }
-  50% {
-    transform: rotateX(0deg);
-    -webkit-transform: rotateX(0deg);
-    z-index: 2;
-  }
-  100% {
-    transform: rotateX(0deg);
-    -webkit-transform: rotateX(0deg);
-    z-index: 2;
-  }
-}
-
-@-webkit-keyframes flipBottom {
-  0% {
-    -webkit-transform: rotateX(90deg);
-    z-index: 1;
-  }
-  49% {
-    -webkit-transform: rotateX(90deg);
-    z-index: 1;
-  }
-  50% {
-    -webkit-transform: rotateX(0deg);
-    z-index: 2;
-  }
-  100% {
-    -webkit-transform: rotateX(0deg);
-    z-index: 2;
-  }
+@keyframes leaf-land {
+  from { transform: rotateX(90deg); filter: brightness(1.25); }
+  to { transform: rotateX(0deg); filter: brightness(1); }
 }
 
 /* 다크 테마 지원 */
@@ -420,5 +337,5 @@ onUnmounted(() => {
 }
 
 .flap-unit {
-  will-change: transform;
+  will-change: auto;
 }</style>
