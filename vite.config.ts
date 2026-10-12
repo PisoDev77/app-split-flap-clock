@@ -37,7 +37,9 @@ export default defineConfig({
             urlPattern: ({ url }) => url.origin === 'https://cdn.jsdelivr.net' && url.pathname.includes('/SUIT/'),
             handler: 'CacheFirst',
             options: {
-              cacheName: 'suit-font',
+              // 이름을 바꾸면 sw.js 내용이 바뀌어 브라우저가 서비스 워커를 새로 설치함
+              // (CSP 헤더만 바뀌면 이미 설치된 워커는 옛 정책을 계속 씀)
+              cacheName: 'suit-font-v2',
               expiration: { maxEntries: 20, maxAgeSeconds: 60 * 60 * 24 * 365 },
               cacheableResponse: { statuses: [0, 200] }
             }
