@@ -14,7 +14,7 @@ export type Locale = 'ko' | 'en'
 export const isEnPath = (path: string): boolean => path === '/en' || path.startsWith('/en/')
 
 /** 같은 주소로 한국어·영어판이 모두 있는 페이지 (/timezone ↔ /en/world-clock은 따로) */
-const PAIRED = ['/', '/study', '/countdown/new-year', '/time-converter', '/settings', '/privacy']
+const PAIRED = ['/', '/study', '/countdown/new-year', '/time-converter', '/widget', '/settings', '/privacy']
 
 /** 한국어 주소 ↔ 영어 주소 짝 (검색엔진 hreflang, 언어 바꾸기 링크용). 짝이 없으면 undefined */
 export const alternatePath = (path: string): string | undefined => {

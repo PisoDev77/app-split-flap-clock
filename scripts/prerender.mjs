@@ -64,7 +64,7 @@ const cityFacts = (city) => {
 }
 
 // ----- 한국어·영어 짝 (src/composables/useLocale.ts의 alternatePath와 같은 규칙) -----
-const PAIRED = ['/', '/study', '/countdown/new-year', '/time-converter', '/settings', '/privacy']
+const PAIRED = ['/', '/study', '/countdown/new-year', '/time-converter', '/widget', '/settings', '/privacy']
 const isEnPath = (path) => path === '/en' || path.startsWith('/en/')
 const alternatePath = (path) => {
   if (isEnPath(path)) {
@@ -153,6 +153,15 @@ for (const [path, meta] of Object.entries(pages)) {
     body: `<main><h1>${escape(meta.title)}</h1><p>${escape(meta.description)}</p><p><a href="${en ? '/en' : '/'}">${en ? 'Open the flip clock' : '플립시계 열기'}</a></p></main>`
   })
 }
+
+// 블로그 위젯(/embed): 검색 제외. 다른 사이트 iframe 안에서만 쓰임 (netlify.toml에서 iframe 허용)
+render({
+  path: '/embed',
+  fullTitle: 'Flip Clock widget | Split Flap Clock',
+  description: 'Split Flap Clock widget for blogs and websites.'
+})
+writeFileSync(join(dist, 'embed.html'), readFileSync(join(dist, 'embed.html'), 'utf8')
+  .replace(/(<meta name="robots" content=")[^"]*/, '$1noindex, follow'))
 
 // 영어판 시차 문장 (서울 대신 UTC 기준으로만 설명)
 const enZone = (city) => {

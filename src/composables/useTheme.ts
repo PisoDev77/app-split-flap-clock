@@ -100,6 +100,12 @@ const updateTheme = (): void => {
  * toggleTheme() // 현재 모드와 반대로 전환
  * ```
  */
+/** 저장하지 않고 이 화면에서만 테마 적용 (블로그 위젯: 보는 사람의 테마 설정을 바꾸지 않음) */
+const applyThemeTemporarily = (mode: ThemeMode): void => {
+  themeMode.value = mode
+  updateTheme()
+}
+
 const toggleTheme = (): void => {
   const newMode = isDarkMode.value ? 'light' : 'dark'
   setThemeMode(newMode)
@@ -132,6 +138,7 @@ export function useTheme() {
     themeMode,
     isDarkMode,
     setThemeMode,
+    applyThemeTemporarily,
     toggleTheme,
     initializeTheme,
     detectSystemTheme

@@ -65,6 +65,7 @@ const t = pick({
       { to: '/guide', label: '사용법 가이드' },
       { to: '/timezone', label: '세계 시간대' },
       { to: '/time-converter', label: '시차 계산기' },
+      { to: '/widget', label: '블로그 시계 위젯' },
       { to: '/study', label: '공부 시계' },
       { to: '/countdown/new-year', label: '새해 카운트다운' },
       { to: '/faq', label: '자주 묻는 질문' }
@@ -80,6 +81,7 @@ const t = pick({
       { to: '/en/countdown/new-year', label: 'New Year countdown' },
       { to: '/en/world-clock', label: 'World clock' },
       { to: '/en/time-converter', label: 'Time zone converter' },
+      { to: '/en/widget', label: 'Clock widget' },
       { to: '/en/time/seoul', label: 'Korea time now' }
     ],
     settings: 'Settings', privacy: 'Privacy policy', contact: 'Contact', ask: 'Ask a question', bug: 'Report a bug', sitemap: 'Sitemap'

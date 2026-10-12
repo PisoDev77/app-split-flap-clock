@@ -1,18 +1,20 @@
 <template>
   <div id="app" :class="{ 'dark-theme': isDarkMode }">
     <div class="app-container">
-      <OfflineIndicator />
+      <OfflineIndicator v-if="!bare" />
       <router-view />
-      <PWAInstallPrompt />
-      <PWAUpdatePrompt />
+      <!-- 블로그 위젯(/embed)에서는 안내창을 띄우지 않음 -->
+      <PWAInstallPrompt v-if="!bare" />
+      <PWAUpdatePrompt v-if="!bare" />
       <UiToastHost />
-      <ResponsiveTestOverlay v-if="isDevelopment" />
+      <ResponsiveTestOverlay v-if="isDevelopment && !bare" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { onMounted, computed } from 'vue'
+import { useRoute } from 'vue-router'
 import { useTheme } from '@/composables/useTheme'
 import PWAInstallPrompt from '@/components/PWAInstallPrompt.vue'
 import PWAUpdatePrompt from '@/components/PWAUpdatePrompt.vue'
@@ -35,6 +37,8 @@ import { setupPWAListeners, setupNetworkListeners } from '@/utils/pwa'
  */
 
 const { isDarkMode } = useTheme()
+const route = useRoute()
+const bare = computed(() => !!route.meta.bare)
 
 // 개발 환경 체크
 const isDevelopment = computed(() => process.env.NODE_ENV === 'development')

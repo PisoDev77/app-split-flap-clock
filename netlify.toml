@@ -21,12 +21,11 @@
 [[headers]]
   for = "/*"
   [headers.values]
-    X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
     X-XSS-Protection = "1; mode=block"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()"
-    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://cdn.jsdelivr.net; worker-src 'self'; manifest-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'"
+    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://cdn.jsdelivr.net; worker-src 'self'; manifest-src 'self'; frame-src 'self'; object-src 'none'; base-uri 'self'"
 
 # Digital Asset Links JSON 파일 헤더 설정
 [[headers]]
@@ -72,3 +71,80 @@
   for = "*.woff2"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+# 다른 사이트가 우리 페이지를 iframe으로 감싸지 못하게 (클릭재킹 방지)
+# /embed(블로그 위젯)만 빼야 해서 "/*" 대신 페이지마다 지정함 — 새 페이지를 만들면 여기에도 추가
+[[headers]]
+  for = "/"
+  [headers.values]
+    X-Frame-Options = "DENY"
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    X-Frame-Options = "DENY"
+
+[[headers]]
+  for = "/about"
+  [headers.values]
+    X-Frame-Options = "DENY"
+
+[[headers]]
+  for = "/guide"
+  [headers.values]
+    X-Frame-Options = "DENY"
+
+[[headers]]
+  for = "/timezone"
+  [headers.values]
+    X-Frame-Options = "DENY"
+
+[[headers]]
+  for = "/study"
+  [headers.values]
+    X-Frame-Options = "DENY"
+
+[[headers]]
+  for = "/faq"
+  [headers.values]
+    X-Frame-Options = "DENY"
+
+[[headers]]
+  for = "/settings"
+  [headers.values]
+    X-Frame-Options = "DENY"
+
+[[headers]]
+  for = "/privacy"
+  [headers.values]
+    X-Frame-Options = "DENY"
+
+[[headers]]
+  for = "/time-converter"
+  [headers.values]
+    X-Frame-Options = "DENY"
+
+[[headers]]
+  for = "/widget"
+  [headers.values]
+    X-Frame-Options = "DENY"
+
+[[headers]]
+  for = "/time/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+
+[[headers]]
+  for = "/countdown/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+
+[[headers]]
+  for = "/en"
+  [headers.values]
+    X-Frame-Options = "DENY"
+
+[[headers]]
+  for = "/en/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
