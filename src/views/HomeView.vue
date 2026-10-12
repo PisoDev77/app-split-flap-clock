@@ -13,27 +13,20 @@
           <h1 class="app-title">Split Flap Clock</h1>
           <div class="header-controls">
             <UiButton
-              v-for="action in clockActions"
-              :key="action.key"
+              ref="menuButton"
               type="text"
-              :icon="action.icon"
-              class="settings-btn labeled-btn desktop-only"
-              :class="{ 'is-on': action.on }"
-              :aria-label="action.label"
-              :aria-pressed="action.pressed"
-              :title="action.hint"
-              @click="action.run"
-            >
-              {{ action.title }}
-            </UiButton>
-            <router-link :to="lp('/time-converter')" class="settings-btn labeled-btn header-link desktop-only" :title="t.converterHint">
-              <GlobalOutlined aria-hidden="true" />
-              {{ t.converter }}
-            </router-link>
+              :icon="MenuOutlined"
+              class="settings-btn round-btn"
+              :aria-label="t.tools"
+              :title="t.tools"
+              aria-controls="clock-tools"
+              :aria-expanded="toolsOpen"
+              @click="toolsOpen = true"
+            />
             <UiButton 
               type="text" 
               :icon="SettingOutlined"
-              class="settings-btn gear-btn"
+              class="settings-btn round-btn gear-btn"
               :aria-label="t.settings"
               :title="t.settingsTitle"
               @click="$router.push(lp('/settings'))"
@@ -79,27 +72,51 @@
         </div>
       </div>
       
-      <!-- 폰: 머리말 대신 화면 아래에 도구 막대 (시계를 가리지 않게) -->
-      <nav class="bottom-bar mobile-only" :aria-label="t.tools">
-        <UiButton
-          v-for="action in clockActions"
-          :key="action.key"
-          type="text"
-          :icon="action.icon"
-          class="bottom-bar-btn"
-          :class="{ 'is-on': action.on }"
-          :aria-label="action.label"
-          :aria-pressed="action.pressed"
-          :title="action.hint"
-          @click="action.run"
+      <!-- 도구 사이드바: 평소엔 숨기고 메뉴 버튼으로 엶 -->
+      <Transition name="drawer-fade">
+        <div v-if="toolsOpen" class="drawer-backdrop" @click="toolsOpen = false" />
+      </Transition>
+      <Transition name="drawer-slide">
+        <aside
+          v-if="toolsOpen"
+          id="clock-tools"
+          ref="drawer"
+          class="drawer"
+          role="dialog"
+          aria-modal="true"
+          :aria-label="t.tools"
+          @keydown.esc="toolsOpen = false"
         >
-          <span class="bottom-bar-label">{{ action.short }}</span>
-        </UiButton>
-        <router-link :to="lp('/time-converter')" class="bottom-bar-btn" :title="t.converterHint">
-          <GlobalOutlined class="bottom-bar-icon" aria-hidden="true" />
-          <span class="bottom-bar-label">{{ t.converterShort }}</span>
-        </router-link>
-      </nav>
+          <div class="drawer-head">
+            <span class="drawer-title">{{ t.tools }}</span>
+            <UiButton type="text" :icon="CloseOutlined" class="settings-btn round-btn" :aria-label="t.close" @click="toolsOpen = false" />
+          </div>
+          <nav class="drawer-list">
+            <button
+              v-for="action in clockActions"
+              :key="action.key"
+              type="button"
+              class="drawer-item"
+              :class="{ 'is-on': action.on }"
+              :aria-pressed="action.pressed"
+              @click="runTool(action.run)"
+            >
+              <component :is="action.icon" class="drawer-icon" aria-hidden="true" />
+              <span class="drawer-text">
+                <span>{{ action.label }}</span>
+                <small v-if="action.key === 'wake'">{{ t.wakeHint }}</small>
+              </span>
+            </button>
+            <router-link :to="lp('/time-converter')" class="drawer-item">
+              <GlobalOutlined class="drawer-icon" aria-hidden="true" />
+              <span class="drawer-text">
+                <span>{{ t.converter }}</span>
+                <small>{{ t.converterHint }}</small>
+              </span>
+            </router-link>
+          </nav>
+        </aside>
+      </Transition>
 
       <AppFooter class="desktop-only-footer" />
     </div>
@@ -107,10 +124,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, type Component } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref, watch, type Component } from 'vue'
 import UiButton from '@/components/ui/UiButton.vue'
 import { useRoute } from 'vue-router'
-import { SettingOutlined, BulbOutlined, BulbFilled, FullscreenOutlined, FullscreenExitOutlined, ShareAltOutlined, GlobalOutlined } from '@ant-design/icons-vue'
+import { SettingOutlined, BulbOutlined, BulbFilled, FullscreenOutlined, FullscreenExitOutlined, ShareAltOutlined, GlobalOutlined, MenuOutlined, CloseOutlined } from '@ant-design/icons-vue'
 import { useWakeLock } from '@/composables/useWakeLock'
 import { useFullscreen } from '@/composables/useFullscreen'
 import SplitFlapDisplay from '@/components/SplitFlapDisplay.vue'
@@ -153,7 +170,7 @@ const t = pick({
     wake: '화면 켜두기', wakeOff: '화면 켜두기 끄기', fullscreen: '전체 화면', fullscreenOff: '전체 화면 끝내기',
     wakeShort: '켜두기', fullShort: '전체 화면', shareShort: '공유',
     wakeHint: '시계를 켜 둔 동안 화면이 꺼지지 않게 합니다', wakeOn: '화면 켜두기 켜짐 · 이 화면에서는 화면이 꺼지지 않아요', wakeOffToast: '화면 켜두기 꺼짐',
-    converter: '시차 계산', converterShort: '시차', converterHint: '다른 나라는 지금 몇 시인지 계산', tools: '시계 도구',
+    converter: '시차 계산기', converterHint: '다른 나라는 지금 몇 시인지 계산', tools: '메뉴', close: '닫기',
     share: '이 시계 링크 공유', settings: '설정 페이지 열기', settingsTitle: '설정', clockArea: '시계 표시 영역', city: '도시',
     now: '현재 시간', h: '시', m: '분', s: '초', date: '현재 날짜',
     shared: '공유받은 도시', selected: '선택한 도시', here: '현재 위치',
@@ -165,7 +182,7 @@ const t = pick({
     wake: 'Keep screen on', wakeOff: 'Stop keeping screen on', fullscreen: 'Fullscreen', fullscreenOff: 'Exit fullscreen',
     wakeShort: 'Stay on', fullShort: 'Fullscreen', shareShort: 'Share',
     wakeHint: 'Stops the screen from sleeping while the clock is open', wakeOn: 'Screen will stay on while the clock is open', wakeOffToast: 'Screen can sleep again',
-    converter: 'Time zones', converterShort: 'Time zones', converterHint: 'What time is it elsewhere?', tools: 'Clock tools',
+    converter: 'Time zone converter', converterHint: 'What time is it elsewhere?', tools: 'Menu', close: 'Close',
     share: 'Share this clock', settings: 'Open settings', settingsTitle: 'Settings', clockArea: 'Clock', city: 'City',
     now: 'Current time', h: 'Hour', m: 'Minute', s: 'Second', date: 'Today',
     shared: 'Shared city', selected: 'Selected city', here: 'Your time zone',
@@ -256,7 +273,21 @@ const shareClock = () => shareLink(
 )
 
 
-// 화면 켜두기·전체 화면·공유: PC는 머리말, 폰은 화면 아래 막대에 같은 버튼을 그림
+// 메뉴 사이드바: 열면 첫 항목에 초점, 닫으면 메뉴 버튼으로 돌려줌
+const toolsOpen = ref(false)
+const drawer = ref<HTMLElement | null>(null)
+const menuButton = ref<{ $el: HTMLElement } | null>(null)
+watch(toolsOpen, async (open) => {
+  await nextTick()
+  if (open) drawer.value?.querySelector<HTMLElement>('.drawer-item')?.focus()
+  else menuButton.value?.$el?.focus()
+})
+const runTool = (run: () => void) => {
+  toolsOpen.value = false
+  run()
+}
+
+// 화면 켜두기·전체 화면·공유: 메뉴 사이드바 안에 그림
 interface ClockAction {
   key: string
   icon: Component
@@ -381,10 +412,6 @@ onUnmounted(() => {
   transition: all 0.2s ease;
 }
 
-.settings-btn.is-on {
-  background: var(--color-canvas-subtle);
-}
-
 .settings-btn:hover {
   background: var(--color-canvas-subtle);
   color: var(--color-accent-fg);
@@ -394,75 +421,125 @@ onUnmounted(() => {
   transform: rotate(90deg);
 }
 
-/* PC 머리말: 아이콘만으로는 뜻을 몰라서 글자를 함께 */
-.labeled-btn {
-  width: auto;
-  gap: 6px;
-  padding: 0 12px;
-  font-size: 0.9rem;
+/* 메뉴·설정: 같은 동그란 버튼 */
+.round-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
 }
 
-.labeled-btn :deep(.ui-btn__icon) {
-  font-size: 18px;
-}
-
-.header-link {
-  text-decoration: none;
-}
-
-.mobile-only {
-  display: none;
-}
-
-/* 폰 화면 아래 도구 막대: 푸터처럼 조용하게, 시계와 떨어뜨림 */
-.bottom-bar {
+.drawer-backdrop {
   position: fixed;
-  left: 0;
+  inset: 0;
+  z-index: 20;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.drawer {
+  position: fixed;
+  top: 0;
   right: 0;
   bottom: 0;
-  z-index: 2;
-  justify-content: center;
-  gap: 4px;
-  padding: 6px calc(env(safe-area-inset-right) + 8px) calc(env(safe-area-inset-bottom) + 6px) calc(env(safe-area-inset-left) + 8px);
-  background: rgba(var(--color-canvas-default-rgb), 0.55);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border-top: 1px solid rgba(var(--color-border-default-rgb), 0.3);
-}
-
-.bottom-bar-btn {
-  display: inline-flex;
-  flex: 1;
-  max-width: 88px;
+  z-index: 21;
+  width: min(300px, 85vw);
+  display: flex;
   flex-direction: column;
+  gap: 8px;
+  padding: calc(env(safe-area-inset-top) + 12px) calc(env(safe-area-inset-right) + 12px) calc(env(safe-area-inset-bottom) + 12px) 12px;
+  background: rgba(var(--color-canvas-default-rgb), 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-left: 1px solid rgba(var(--color-border-default-rgb), 0.4);
+  box-shadow: var(--shadow-large);
+}
+
+.drawer-head {
+  display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  padding-left: 8px;
+}
+
+.drawer-title {
+  font-weight: 600;
+  color: var(--color-fg-default);
+}
+
+.drawer-list {
+  display: flex;
+  flex-direction: column;
   gap: 2px;
-  height: auto;
-  min-height: 48px;
-  padding: 4px;
+}
+
+.drawer-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  min-height: 52px;
+  padding: 8px 12px;
+  border: none;
   border-radius: 12px;
-  font-size: 18px;
-  color: var(--color-fg-muted);
+  background: none;
+  color: var(--color-fg-default);
+  font: inherit;
+  text-align: left;
   text-decoration: none;
+  cursor: pointer;
 }
 
-.bottom-bar-icon {
-  font-size: 18px;
-}
-
-.bottom-bar-label {
-  font-size: 0.72rem;
-  line-height: 1.2;
-}
-
-.bottom-bar-btn:hover,
-.bottom-bar-btn.is-on {
-  color: var(--color-accent-fg);
+.drawer-item:hover,
+.drawer-item:focus-visible {
   background: var(--color-canvas-subtle);
 }
 
-/* 폰(세로 768px 이하, 가로로 눕힌 폰): 머리말 막대를 없애고 설정만 오른쪽 위에 띄움 */
+.drawer-item.is-on .drawer-icon {
+  color: var(--color-accent-fg);
+}
+
+.drawer-icon {
+  font-size: 20px;
+  color: var(--color-fg-muted);
+}
+
+.drawer-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.drawer-text small {
+  font-size: 0.78rem;
+  color: var(--color-fg-muted);
+}
+
+.drawer-slide-enter-active,
+.drawer-slide-leave-active,
+.drawer-fade-enter-active,
+.drawer-fade-leave-active {
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.drawer-slide-enter-from,
+.drawer-slide-leave-to {
+  transform: translateX(100%);
+}
+
+.drawer-fade-enter-from,
+.drawer-fade-leave-to {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drawer-slide-enter-active,
+  .drawer-slide-leave-active,
+  .drawer-fade-enter-active,
+  .drawer-fade-leave-active {
+    transition: none;
+  }
+}
+
+/* 폰(세로 768px 이하, 가로로 눕힌 폰): 머리말 막대를 없애고 메뉴·설정만 오른쪽 위에 띄움 */
 @media (max-width: 768px), (orientation: landscape) and (max-height: 500px) {
   .header {
     position: absolute;
@@ -487,18 +564,7 @@ onUnmounted(() => {
     white-space: nowrap;
   }
 
-  .desktop-only {
-    display: none;
-  }
-
-  .mobile-only {
-    display: flex;
-  }
-
-  .gear-btn {
-    width: 44px;
-    height: 44px;
-    border-radius: 999px;
+  .header .round-btn {
     color: var(--color-fg-muted);
     background: rgba(var(--color-canvas-default-rgb), 0.35);
     backdrop-filter: blur(6px);
@@ -506,14 +572,6 @@ onUnmounted(() => {
   }
 }
 
-/* Ensure settings button is visible and accessible on all screen sizes */
-@media (max-width: 480px) {
-  .settings-btn {
-    font-size: 16px;
-    width: 36px;
-    height: 36px;
-  }
-}
 
 .content {
   flex: 1;
@@ -759,8 +817,6 @@ onUnmounted(() => {
   .content {
     min-height: 100vh;
     min-height: 100dvh;
-    /* 아래 도구 막대 높이만큼 비움 */
-    padding-bottom: calc(env(safe-area-inset-bottom) + 72px);
   }
 }
 </style>
