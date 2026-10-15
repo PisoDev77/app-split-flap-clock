@@ -39,39 +39,47 @@
       
       <div class="content">
         <div class="clock-container" role="main" :aria-label="t.clockArea">
-          <div class="city-display" :style="cityFlapStyle">
-            <div class="city-container">
-              <SplitFlapDisplay :text="cityName" :label="t.city" />
-              <span class="city-label">{{ cityLabel }}</span>
+          <DdayBoard v-if="boardMode === 'dday'" :now="time" />
+          <TimerBoard v-else-if="boardMode === 'timer'" :now="time" />
+          <MessageBoard v-else-if="boardMode === 'message'" />
+          <template v-else>
+            <div class="city-display" :style="cityFlapStyle">
+              <div class="city-container">
+                <SplitFlapDisplay :text="cityName" :label="t.city" />
+                <span class="city-label">{{ cityLabel }}</span>
+              </div>
             </div>
-          </div>
           
-          <div class="time-display" role="timer" :aria-label="t.now">
-            <div class="time-units">
-              <SplitFlapDisplay :text="hours" :label="t.h" />
-              <div class="time-separator" aria-hidden="true">:</div>
-              <SplitFlapDisplay :text="minutes" :label="t.m" />
-              <div class="time-separator" aria-hidden="true">:</div>
-              <SplitFlapDisplay :text="seconds" :label="t.s" />
+            <div class="time-display" role="timer" :aria-label="t.now">
+              <div class="time-units">
+                <SplitFlapDisplay :text="hours" :label="t.h" />
+                <div class="time-separator" aria-hidden="true">:</div>
+                <SplitFlapDisplay :text="minutes" :label="t.m" />
+                <div class="time-separator" aria-hidden="true">:</div>
+                <SplitFlapDisplay :text="seconds" :label="t.s" />
+              </div>
             </div>
-          </div>
           
-          <div class="date-info">
-            <span class="ui-text date-text" role="text" :aria-label="t.date">
-              {{ currentDate }}
-            </span>
-          </div>
+            <div class="date-info">
+              <span class="ui-text date-text" role="text" :aria-label="t.date">
+                {{ currentDate }}
+              </span>
+            </div>
 
-          <!-- 12월~1월 1일: 새해 카운트다운 안내 -->
-          <router-link v-if="newYearSoon" :to="lp('/countdown/new-year')" class="lang-pill">
-            {{ t.countdown(newYearSoon) }}
-          </router-link>
+            <!-- 12월~1월 1일: 새해 카운트다운 안내 -->
+            <router-link v-if="newYearSoon" :to="lp('/countdown/new-year')" class="lang-pill">
+              {{ t.countdown(newYearSoon) }}
+            </router-link>
 
-          <!-- 브라우저 언어와 페이지 언어가 다르면 다른 언어판을 살짝 안내 -->
-          <router-link v-if="otherLanguage" :to="otherLanguage.to" class="lang-pill" :lang="otherLanguage.lang">
-            {{ otherLanguage.label }}
-          </router-link>
+            <!-- 브라우저 언어와 페이지 언어가 다르면 다른 언어판을 살짝 안내 -->
+            <router-link v-if="otherLanguage" :to="otherLanguage.to" class="lang-pill" :lang="otherLanguage.lang">
+              {{ otherLanguage.label }}
+            </router-link>
+          </template>
         </div>
+
+        <!-- 판에 띄울 것: 시계 · D-day · 타이머 · 문구 (전체 화면에선 숨김) -->
+        <ModeBar v-if="!isFullscreen" v-model="boardMode" class="mode-bar-slot" />
       </div>
       
       <!-- 도구 사이드바: 평소엔 숨기고 메뉴 버튼으로 엶 -->
@@ -135,6 +143,11 @@ import { useFullscreen } from '@/composables/useFullscreen'
 import SplitFlapDisplay from '@/components/SplitFlapDisplay.vue'
 import AnimatedBackground from '@/components/AnimatedBackground.vue'
 import AppFooter from '@/components/AppFooter.vue'
+import ModeBar from '@/components/board/ModeBar.vue'
+import DdayBoard from '@/components/board/DdayBoard.vue'
+import TimerBoard from '@/components/board/TimerBoard.vue'
+import MessageBoard from '@/components/board/MessageBoard.vue'
+import { useBoard } from '@/composables/useBoard'
 import { useLocation } from '@/composables/useLocation'
 import { useTime } from '@/composables/useTime'
 import { useSettings } from '@/composables/useSettings'
@@ -211,6 +224,10 @@ const otherLanguage = computed(() => {
 
 // 공유 링크로 들어오면 그 모양으로 보여 줌 (내 설정은 바꾸지 않음)
 const shared = parseShareQuery(useRoute().query)
+
+// 판에 띄울 것. 사이트 첫 방문은 시계, 바꾸면 다음에도 그 모드. 공유받은 시계 링크는 시계로
+const { mode: boardMode } = useBoard(isEn.value)
+if (shared.city || shared.effect || shared.is12h !== undefined) boardMode.value = 'clock'
 
 const backgroundEffect = computed(() => shared.effect ?? settings.value.backgroundEffect)
 
@@ -564,6 +581,7 @@ onUnmounted(() => {
   min-height: 100vh;
   min-height: 100dvh;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 24px;
@@ -572,7 +590,14 @@ onUnmounted(() => {
   z-index: 1; /* 배경보다 앞에 표시하되 드롭다운보다는 뒤에 */
 }
 
+.mode-bar-slot {
+  margin-top: 1.25rem;
+}
+
 .clock-container {
+  /* ▾ 목록이 아래 모드 버튼 줄 위로 뜨게 */
+  position: relative;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
