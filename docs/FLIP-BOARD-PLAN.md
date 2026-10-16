@@ -27,5 +27,11 @@
 - `src/components/board/`: `ModeBar`, `BoardPicker`(▾ 목록), `DdayBoard`, `TimerBoard`, `MessageBoard`
 - `src/views/HomeView.vue`: 시계 모드는 기존 화면, 다른 모드는 위 컴포넌트
 
+## 공유 링크 (2026-10-17)
+- 메뉴 ☰ → 공유: 지금 판에 띄운 것을 링크로 (시계 / D-day / 문구, 타이머는 시계 링크)
+- D-day `/?dd=여행&d=2026-12-24` (+`k=s` 며칠째, `y=1` 매년), 문구 `/?m1=…&m2=…`
+- 받은 사람: 판에 미리 보임 + "닫기" / "내 D-day(문구)에 추가". 추가를 눌러야 저장
+- 코드: `src/utils/shareLink.ts`, `useBoard`의 `incomingDday`·`incomingMessage`
+
 ## 나중
-- 공유 링크(D-day·문구), 앱 이름(승인 뒤 Piso), 공부 타이머 페이지와 합치기, 광고(`AD-REWARD-PLAN.md`, 승인 뒤)
+- 앱 이름(승인 뒤 Piso), 공부 타이머 페이지와 합치기, 광고(`AD-REWARD-PLAN.md`, 승인 뒤)

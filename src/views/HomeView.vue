@@ -191,7 +191,9 @@ const t = pick({
     shared: '공유받은 도시', selected: '선택한 도시', here: '현재 위치',
     am: '오전', pm: '오후', dateFormat: 'YYYY년 M월 D일 dddd',
     countdown: (y: number) => `🎆 ${y} 새해 카운트다운 →`,
-    shareTitle: '플립시계', shareCity: (city: string) => `${city} 시간을 플립시계로 보세요`, shareDefault: '공항 안내판처럼 넘어가는 플립시계'
+    shareTitle: '플립시계', shareCity: (city: string) => `${city} 시간을 플립시계로 보세요`, shareDefault: '공항 안내판처럼 넘어가는 플립시계',
+    shareDdayLabel: '이 D-day 링크 공유', shareMessageLabel: '이 문구 링크 공유',
+    shareDday: (name: string) => `${name} D-day를 플립시계로 보세요`, shareMessage: '플립시계 판에 띄운 문구'
   },
   en: {
     wake: 'Keep screen on', wakeOff: 'Stop keeping screen on', fullscreen: 'Fullscreen', fullscreenOff: 'Exit fullscreen',
@@ -203,7 +205,9 @@ const t = pick({
     shared: 'Shared city', selected: 'Selected city', here: 'Your time zone',
     am: 'AM', pm: 'PM', dateFormat: 'dddd, MMMM D, YYYY',
     countdown: (y: number) => `🎆 ${y} New Year countdown →`,
-    shareTitle: 'Flip Clock', shareCity: (city: string) => `See ${city} time on a flip clock`, shareDefault: 'A free split-flap clock for your desk'
+    shareTitle: 'Flip Clock', shareCity: (city: string) => `See ${city} time on a flip clock`, shareDefault: 'A free split-flap clock for your desk',
+    shareDdayLabel: 'Share this D-day', shareMessageLabel: 'Share this message',
+    shareDday: (name: string) => `Count down to ${name} on a flip board`, shareMessage: 'A message on a split-flap board'
   }
 })
 
@@ -226,8 +230,16 @@ const otherLanguage = computed(() => {
 const shared = parseShareQuery(useRoute().query)
 
 // 판에 띄울 것. 사이트 첫 방문은 시계, 바꾸면 다음에도 그 모드. 공유받은 시계 링크는 시계로
-const { mode: boardMode } = useBoard(isEn.value)
-if (shared.city || shared.effect || shared.is12h !== undefined) boardMode.value = 'clock'
+const { mode: boardMode, ddays, ddayId, messages, messageId, incomingDday, incomingMessage } = useBoard(isEn.value)
+if (shared.dday) {
+  boardMode.value = 'dday'
+  incomingDday.value = shared.dday
+} else if (shared.message) {
+  boardMode.value = 'message'
+  incomingMessage.value = shared.message
+} else if (shared.city || shared.effect || shared.is12h !== undefined) {
+  boardMode.value = 'clock'
+}
 
 const backgroundEffect = computed(() => shared.effect ?? settings.value.backgroundEffect)
 
@@ -291,6 +303,29 @@ const shareClock = () => shareLink(
   savedCity ? t.value.shareCity(isEn.value ? savedCity : cityName.value) : t.value.shareDefault
 )
 
+// 판에 지금 보이는 D-day·문구 (공유받은 것을 보고 있으면 그것)
+const boardDday = computed(() => incomingDday.value ?? ddays.value.find(d => d.id === ddayId.value) ?? ddays.value[0])
+const boardMessage = computed(() => incomingMessage.value ?? (messages.value.find(m => m.id === messageId.value) ?? messages.value[0])?.lines)
+
+// 공유: 지금 판에 띄운 것 (타이머는 시계 링크)
+const shareBoard = () => {
+  const dday = boardDday.value
+  if (boardMode.value === 'dday' && dday) {
+    const { name, date, kind, yearly } = dday
+    return shareLink(buildShareUrl(lp('/'), { dday: { name, date, kind, yearly } }), t.value.shareTitle, t.value.shareDday(name))
+  }
+  const lines = boardMessage.value
+  if (boardMode.value === 'message' && lines) {
+    return shareLink(buildShareUrl(lp('/'), { message: [...lines] }), t.value.shareTitle, t.value.shareMessage)
+  }
+  return shareClock()
+}
+const shareLabel = computed(() => {
+  if (boardMode.value === 'dday' && boardDday.value) return t.value.shareDdayLabel
+  if (boardMode.value === 'message' && boardMessage.value) return t.value.shareMessageLabel
+  return t.value.share
+})
+
 
 // 메뉴 사이드바: 열면 첫 항목에 초점, 닫으면 메뉴 버튼으로 돌려줌
 const toolsOpen = ref(false)
@@ -347,7 +382,7 @@ const clockActions = computed<ClockAction[]>(() => {
       run: toggleFullscreen
     })
   }
-  actions.push({ key: 'share', icon: ShareAltOutlined, label: t.value.share, title: t.value.shareShort, short: t.value.shareShort, hint: t.value.share, run: shareClock })
+  actions.push({ key: 'share', icon: ShareAltOutlined, label: shareLabel.value, title: t.value.shareShort, short: t.value.shareShort, hint: shareLabel.value, run: shareBoard })
   return actions
 })
 

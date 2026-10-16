@@ -119,8 +119,11 @@ const createState = (isEn: boolean) => {
   const timerRun = persisted<TimerRun | null>('board-timer-run', () => null)
   const messages = persisted<Message[]>('board-messages', () => defaultMessages(isEn))
   const messageId = persisted<string>('board-message-id', () => '')
+  // 공유 링크로 받은 것: 저장하지 않고 판에 미리 보여 줌 ("내 목록에 추가"를 눌러야 저장)
+  const incomingDday = ref<Omit<Dday, 'id'> | null>(null)
+  const incomingMessage = ref<[string, string] | null>(null)
 
-  return { mode, ddays, ddayId, timers, timerRun, messages, messageId }
+  return { mode, ddays, ddayId, timers, timerRun, messages, messageId, incomingDday, incomingMessage }
 }
 
 /** 처음 부른 화면의 언어로 기본 목록을 만듦 */

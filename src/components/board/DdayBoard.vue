@@ -6,7 +6,7 @@
       :label="t.pick"
       :add-label="t.add"
       :edit-label="t.edit"
-      @select="id => { ddayId = id; draft = null }"
+      @select="id => { ddayId = id; draft = null; incomingDday = null }"
       @add="openEditor(null)"
       @edit="openEditor(current)"
     >
@@ -20,7 +20,12 @@
       <template v-else-if="!draft">{{ t.empty }}</template>
     </p>
 
-    <div v-if="!draft && !current" class="board-actions">
+    <div v-if="incomingDday && !draft" class="board-actions">
+      <UiButton @click="incomingDday = null">{{ t.close }}</UiButton>
+      <UiButton type="primary" :icon="PlusOutlined" @click="addIncoming">{{ t.addShared }}</UiButton>
+    </div>
+
+    <div v-else-if="!draft && !current" class="board-actions">
       <UiButton type="primary" :icon="PlusOutlined" @click="openEditor(null)">{{ t.add }}</UiButton>
     </div>
 
@@ -81,6 +86,7 @@ import UiSwitch from '@/components/ui/UiSwitch.vue'
 import BoardPicker from '@/components/board/BoardPicker.vue'
 import { useBoard, ddayView, centerPad, newId, DDAY_NAME_MAX, type Dday } from '@/composables/useBoard'
 import { useLocale } from '@/composables/useLocale'
+import { message } from '@/composables/useToast'
 import '@/components/board/board.css'
 
 /**
@@ -91,7 +97,7 @@ import '@/components/board/board.css'
 const props = defineProps<{ now: Date }>()
 
 const { isEn, pick } = useLocale()
-const { ddays, ddayId } = useBoard(isEn.value)
+const { ddays, ddayId, incomingDday } = useBoard(isEn.value)
 
 const t = pick({
   ko: {
@@ -99,6 +105,7 @@ const t = pick({
     empty: 'D-day를 추가해 보세요', quick: '빨리 고르기', nameField: (n: number) => `이름 (${n}자까지)`, namePlaceholder: '여행',
     dateField: '날짜', kindField: '세는 방법', until: '남은 날 (D-29)', since: '며칠째 (412일째)',
     yearly: '매년 반복', yearlyHint: '생일·기념일처럼 해마다 다음 그날까지',
+    addShared: '내 D-day에 추가', close: '닫기', added: '내 D-day에 추가했어요',
     remove: '지우기', cancel: '취소', save: '저장', needName: '이름을 넣어 주세요', needDate: '날짜를 골라 주세요',
     weekdays: ['일', '월', '화', '수', '목', '금', '토'],
     presets: { newYear: '새해', xmas: '크리스마스', birthday: '생일', met: '만난 날' }
@@ -108,6 +115,7 @@ const t = pick({
     empty: 'Add your first D-day', quick: 'Quick pick', nameField: (n: number) => `Name (up to ${n})`, namePlaceholder: 'TRIP',
     dateField: 'Date', kindField: 'Count', until: 'Days left (D-29)', since: 'Day count (Day 412)',
     yearly: 'Every year', yearlyHint: 'Birthdays and anniversaries count to the next one',
+    addShared: 'Add to my D-days', close: 'Close', added: 'Added to your D-days',
     remove: 'Delete', cancel: 'Cancel', save: 'Save', needName: 'Enter a name', needDate: 'Choose a date',
     weekdays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
     presets: { newYear: 'NEWYR', xmas: 'XMAS', birthday: 'BDAY', met: 'US' }
@@ -121,8 +129,8 @@ const nameInput = ref<{ $el: HTMLElement } | null>(null)
 const dateInput = ref<{ $el: HTMLElement } | null>(null)
 
 const current = computed(() => ddays.value.find(d => d.id === ddayId.value) ?? ddays.value[0])
-// 고치는 중이면 판이 고치는 내용을 미리 보여 줌
-const shown = computed<Omit<Dday, 'id'> | undefined>(() => draft.value ?? current.value)
+// 고치는 중이면 고치는 내용, 공유받은 게 있으면 그것을 판에 미리 보여 줌
+const shown = computed<Omit<Dday, 'id'> | undefined>(() => draft.value ?? incomingDday.value ?? current.value)
 const view = computed(() => shown.value ? ddayView(shown.value, props.now, isEn.value) : null)
 
 const pickerItems = computed(() => ddays.value.map(d => ({
@@ -156,7 +164,17 @@ const applyPreset = async (preset: typeof presets.value[number]) => {
   if (!preset.date) focusEl(dateInput.value)
 }
 
+const addIncoming = () => {
+  if (!incomingDday.value) return
+  const item: Dday = { id: newId(), ...incomingDday.value }
+  ddays.value.push(item)
+  ddayId.value = item.id
+  incomingDday.value = null
+  message.success(t.value.added)
+}
+
 const openEditor = async (item: Dday | null | undefined) => {
+  incomingDday.value = null
   error.value = ''
   draft.value = item
     ? { ...item }
