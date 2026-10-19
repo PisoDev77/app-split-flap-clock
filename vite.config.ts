@@ -68,6 +68,10 @@ export default defineConfig({
     // 청크 크기 최적화
     rollupOptions: {
       output: {
+        // 파일 이름 규칙을 2026-10-19에 바꿈: 옛 배포 때 잘못 저장된(1년 캐시) 주소와 겹치지 않게
+        entryFileNames: 'assets/[name].[hash].js',
+        chunkFileNames: 'assets/[name].[hash].js',
+        assetFileNames: 'assets/[name].[hash].[ext]',
         manualChunks: {
           // Vue 관련 라이브러리
           'vue-vendor': ['vue', 'vue-router'],

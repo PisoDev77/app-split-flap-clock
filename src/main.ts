@@ -17,6 +17,15 @@ import './components/ui/ui.css'
  * 
  * @since 1.0.0
  */
+// 새로 배포된 뒤 옛 화면이 없는 파일을 부르면 한 번만 새로고침 (하얀 화면 방지)
+window.addEventListener('vite:preloadError', event => {
+  if (sessionStorage.getItem('preload-reload')) return
+  sessionStorage.setItem('preload-reload', '1')
+  event.preventDefault()
+  window.location.reload()
+})
+window.addEventListener('load', () => setTimeout(() => sessionStorage.removeItem('preload-reload'), 10000))
+
 const app = createApp(App)
 
 app.use(router)
