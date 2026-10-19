@@ -1,6 +1,6 @@
 <template>
   <div class="board-mode">
-    <div class="message-lines">
+    <div class="board-lines">
       <SplitFlapDisplay class="board-big" :text="centerPad(shownLines[0], MESSAGE_LINE_MAX)" :label="t.line1" />
       <SplitFlapDisplay class="board-big" :text="centerPad(shownLines[1], MESSAGE_LINE_MAX)" :label="t.line2" />
     </div>
@@ -19,9 +19,9 @@
         @select="id => { messageId = id; incomingMessage = null }"
         @add="openEditor(null)"
       >
-        <span class="message-trigger"><UnorderedListOutlined aria-hidden="true" /> {{ t.saved }}</span>
+        <span class="board-list-trigger"><UnorderedListOutlined aria-hidden="true" /> {{ t.saved }}</span>
       </BoardPicker>
-      <UiButton :icon="EditOutlined" class="message-edit" @click="openEditor(current)">{{ current ? t.edit : t.add }}</UiButton>
+      <UiButton :icon="EditOutlined" class="board-edit-btn" @click="openEditor(current)">{{ current ? t.edit : t.add }}</UiButton>
     </div>
 
     <form v-if="draft" ref="form" class="board-editor" @submit.prevent="save">
@@ -59,13 +59,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref } from 'vue'
+import { computed, nextTick, ref, watch } from 'vue'
 import { EditOutlined, DeleteOutlined, UnorderedListOutlined, PlusOutlined } from '@ant-design/icons-vue'
 import SplitFlapDisplay from '@/components/SplitFlapDisplay.vue'
 import UiButton from '@/components/ui/UiButton.vue'
 import UiInput from '@/components/ui/UiInput.vue'
 import BoardPicker from '@/components/board/BoardPicker.vue'
-import { useBoard, centerPad, newId, MESSAGE_LINE_MAX, type Message } from '@/composables/useBoard'
+import { useBoard, centerPad, newId, boardText, clipBoard, MESSAGE_LINE_MAX, type Message } from '@/composables/useBoard'
 import { useLocale } from '@/composables/useLocale'
 import { message } from '@/composables/useToast'
 import '@/components/board/board.css'
@@ -114,6 +114,11 @@ const addIncoming = () => {
   message.success(t.value.added)
 }
 
+// 판에 못 띄우는 글자(이모지)는 칠 때 바로 뺌
+watch(() => draft.value?.lines, lines => {
+  lines?.forEach((line, i) => { if (boardText(line) !== line) lines[i] = boardText(line) })
+}, { deep: true })
+
 const openEditor = async (item: Message | undefined | null) => {
   incomingMessage.value = null
   error.value = ''
@@ -125,7 +130,7 @@ const openEditor = async (item: Message | undefined | null) => {
 const save = () => {
   const d = draft.value
   if (!d) return
-  const lines = d.lines.map(line => line.trim()) as [string, string]
+  const lines = d.lines.map(line => clipBoard(line, MESSAGE_LINE_MAX)) as [string, string]
   if (!lines[0] && !lines[1]) { error.value = t.value.needText; return }
   const item: Message = { id: d.id ?? newId(), lines }
   const index = messages.value.findIndex(m => m.id === item.id)
@@ -142,33 +147,3 @@ const remove = () => {
   draft.value = null
 }
 </script>
-
-<style scoped>
-.message-lines {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.message-trigger {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 14px;
-  color: var(--color-fg-default);
-}
-
-.board-actions :deep(.picker-trigger) {
-  min-height: 40px;
-  padding: 0 14px;
-  border-radius: 999px;
-  border: 1px solid var(--color-border-default);
-  background: rgba(var(--color-canvas-default-rgb), 0.6);
-}
-
-.message-edit {
-  min-height: 40px;
-  border-radius: 999px;
-}
-</style>

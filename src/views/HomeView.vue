@@ -39,9 +39,9 @@
       
       <div class="content">
         <div class="clock-container" role="main" :aria-label="t.clockArea">
-          <DdayBoard v-if="boardMode === 'dday'" :now="time" />
-          <TimerBoard v-else-if="boardMode === 'timer'" :now="time" />
-          <MessageBoard v-else-if="boardMode === 'message'" />
+          <DdayBoard v-if="shownMode === 'dday'" :now="time" />
+          <TimerBoard v-else-if="shownMode === 'timer'" :now="time" />
+          <MessageBoard v-else-if="shownMode === 'message'" />
           <template v-else>
             <div class="city-display" :style="cityFlapStyle">
               <div class="city-container">
@@ -79,7 +79,7 @@
         </div>
 
         <!-- 판에 띄울 것: 시계 · D-day · 타이머 · 문구 (전체 화면에선 숨김) -->
-        <ModeBar v-if="!isFullscreen" v-model="boardMode" class="mode-bar-slot" />
+        <ModeBar v-if="!isFullscreen" :model-value="shownMode" class="mode-bar-slot" @update:model-value="pickMode" />
       </div>
       
       <!-- 도구 사이드바: 평소엔 숨기고 메뉴 버튼으로 엶 -->
@@ -136,7 +136,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, onUnmounted, ref, watch, type Component } from 'vue'
 import UiButton from '@/components/ui/UiButton.vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { SettingOutlined, BulbOutlined, BulbFilled, FullscreenOutlined, FullscreenExitOutlined, ShareAltOutlined, GlobalOutlined, MenuOutlined, CloseOutlined } from '@ant-design/icons-vue'
 import { useWakeLock } from '@/composables/useWakeLock'
 import { useFullscreen } from '@/composables/useFullscreen'
@@ -147,7 +147,7 @@ import ModeBar from '@/components/board/ModeBar.vue'
 import DdayBoard from '@/components/board/DdayBoard.vue'
 import TimerBoard from '@/components/board/TimerBoard.vue'
 import MessageBoard from '@/components/board/MessageBoard.vue'
-import { useBoard } from '@/composables/useBoard'
+import { useBoard, type BoardMode } from '@/composables/useBoard'
 import { useLocation } from '@/composables/useLocation'
 import { useTime } from '@/composables/useTime'
 import { useSettings } from '@/composables/useSettings'
@@ -227,19 +227,45 @@ const otherLanguage = computed(() => {
 })
 
 // 공유 링크로 들어오면 그 모양으로 보여 줌 (내 설정은 바꾸지 않음)
-const shared = parseShareQuery(useRoute().query)
+const route = useRoute()
+const router = useRouter()
+const shared = parseShareQuery(route.query)
 
-// 판에 띄울 것. 사이트 첫 방문은 시계, 바꾸면 다음에도 그 모드. 공유받은 시계 링크는 시계로
+// 판에 띄울 것. 사이트 첫 방문은 시계, 모드 버튼으로 바꾸면 다음에도 그 모드(저장).
+// 공유 링크로 연 모드는 이번에만 보여 주고 저장하지 않음
 const { mode: boardMode, ddays, ddayId, messages, messageId, incomingDday, incomingMessage } = useBoard(isEn.value)
+const previewMode = ref<BoardMode | null>(null)
+// 주소에 없는 미리보기는 지움 (링크로 연 뒤 다른 화면을 거쳐 홈으로 오면 다시 안 뜨게)
+if (!shared.dday) incomingDday.value = null
+if (!shared.message) incomingMessage.value = null
 if (shared.dday) {
-  boardMode.value = 'dday'
+  previewMode.value = 'dday'
   incomingDday.value = shared.dday
 } else if (shared.message) {
-  boardMode.value = 'message'
+  previewMode.value = 'message'
   incomingMessage.value = shared.message
 } else if (shared.city || shared.effect || shared.is12h !== undefined) {
-  boardMode.value = 'clock'
+  previewMode.value = 'clock'
 }
+const shownMode = computed(() => previewMode.value ?? boardMode.value)
+const pickMode = (mode: BoardMode) => {
+  // 미리보기와 다른 모드를 고르면 받은 것은 닫음 (주소의 공유 값도 아래 watch가 지움)
+  if (previewMode.value && mode !== previewMode.value) {
+    incomingDday.value = null
+    incomingMessage.value = null
+  }
+  previewMode.value = null
+  boardMode.value = mode
+}
+
+// 받은 D-day·문구를 추가하거나 닫으면 주소에서 지움 (새로고침해도 다시 안 뜨게, 두 번 추가 안 되게)
+const SHARED_BOARD_KEYS = ['dd', 'd', 'k', 'y', 't', 'm1', 'm2']
+watch([incomingDday, incomingMessage], ([dday, lines]) => {
+  if (dday || lines || !SHARED_BOARD_KEYS.some(key => key in route.query)) return
+  const query = { ...route.query }
+  SHARED_BOARD_KEYS.forEach(key => delete query[key])
+  void router.replace({ query })
+})
 
 const backgroundEffect = computed(() => shared.effect ?? settings.value.backgroundEffect)
 
@@ -310,19 +336,19 @@ const boardMessage = computed(() => incomingMessage.value ?? (messages.value.fin
 // 공유: 지금 판에 띄운 것 (타이머는 시계 링크)
 const shareBoard = () => {
   const dday = boardDday.value
-  if (boardMode.value === 'dday' && dday) {
-    const { name, date, kind, yearly } = dday
-    return shareLink(buildShareUrl(lp('/'), { dday: { name, date, kind, yearly } }), t.value.shareTitle, t.value.shareDday(name))
+  if (shownMode.value === 'dday' && dday) {
+    const { name, date, time, kind, yearly } = dday
+    return shareLink(buildShareUrl(lp('/'), { dday: { name, date, time, kind, yearly } }), t.value.shareTitle, t.value.shareDday(name))
   }
   const lines = boardMessage.value
-  if (boardMode.value === 'message' && lines) {
+  if (shownMode.value === 'message' && lines) {
     return shareLink(buildShareUrl(lp('/'), { message: [...lines] }), t.value.shareTitle, t.value.shareMessage)
   }
   return shareClock()
 }
 const shareLabel = computed(() => {
-  if (boardMode.value === 'dday' && boardDday.value) return t.value.shareDdayLabel
-  if (boardMode.value === 'message' && boardMessage.value) return t.value.shareMessageLabel
+  if (shownMode.value === 'dday' && boardDday.value) return t.value.shareDdayLabel
+  if (shownMode.value === 'message' && boardMessage.value) return t.value.shareMessageLabel
   return t.value.share
 })
 

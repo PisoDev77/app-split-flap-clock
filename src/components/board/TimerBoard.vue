@@ -71,14 +71,15 @@ import SplitFlapDisplay from '@/components/SplitFlapDisplay.vue'
 import UiButton from '@/components/ui/UiButton.vue'
 import UiInput from '@/components/ui/UiInput.vue'
 import BoardPicker from '@/components/board/BoardPicker.vue'
-import { useBoard, formatTimer, centerPad, newId, type TimerPreset } from '@/composables/useBoard'
+import { useBoard, formatTimer, centerPad, newId, boardText, clipBoard, prepareSound, type TimerPreset } from '@/composables/useBoard'
 import { useLocale } from '@/composables/useLocale'
 import '@/components/board/board.css'
 
 /**
  * ## 타이머 판
  *
- * 끝나는 시각을 저장해서 새로고침해도 이어짐. 끝나면 판 "끝", 소리 3번·진동.
+ * 끝나는 시각을 저장해서 새로고침해도 이어짐. 끝나면 판 "끝".
+ * 소리 3번·진동은 다른 모드·화면에 있어도 울리게 useBoard가 맡음.
  */
 const props = defineProps<{ now: Date }>()
 
@@ -133,41 +134,6 @@ const endTime = computed(() => {
 
 const pickerItems = computed(() => timers.value.map(x => ({ id: x.id, label: x.name, meta: t.value.minutes(x.minutes) })))
 
-// ── 소리·진동 ──
-let audio: AudioContext | null = null
-const prepareSound = () => {
-  try {
-    audio ??= new AudioContext()
-    if (audio.state === 'suspended') void audio.resume()
-  } catch {
-    audio = null
-  }
-}
-const ring = () => {
-  navigator.vibrate?.([300, 150, 300, 150, 300])
-  if (!audio) return
-  for (let i = 0; i < 3; i++) {
-    const start = audio.currentTime + i * 0.45
-    const osc = audio.createOscillator()
-    const gain = audio.createGain()
-    osc.frequency.value = 880
-    gain.gain.setValueAtTime(0.0001, start)
-    gain.gain.exponentialRampToValueAtTime(0.3, start + 0.02)
-    gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.3)
-    osc.connect(gain).connect(audio.destination)
-    osc.start(start)
-    osc.stop(start + 0.32)
-  }
-}
-
-// 돌던 타이머가 0이 되면 한 번 울리고 멈춤 상태로
-watch(remaining, left => {
-  const run = timerRun.value
-  if (left > 0 || !run?.endAt) return
-  timerRun.value = { presetId: run.presetId, endAt: null, left: 0 }
-  ring()
-})
-
 // ── 조작 ──
 const choose = (id: string) => {
   const p = timers.value.find(x => x.id === id)
@@ -206,6 +172,11 @@ const minutesText = computed({
   set: (value: string) => { if (draft.value) { draft.value.minutes = Number(value); error.value = '' } }
 })
 
+// 판에 못 띄우는 글자(이모지)는 칠 때 바로 뺌
+watch(() => draft.value?.name, name => {
+  if (draft.value && name !== undefined && boardText(name) !== name) draft.value.name = boardText(name)
+})
+
 const openEditor = async (item: TimerPreset | null | undefined) => {
   error.value = ''
   draft.value = item ? { ...item } : { id: null, name: '', minutes: 10 }
@@ -216,7 +187,7 @@ const openEditor = async (item: TimerPreset | null | undefined) => {
 const save = () => {
   const d = draft.value
   if (!d) return
-  const name = d.name.trim()
+  const name = clipBoard(d.name, NAME_MAX)
   if (!name) { error.value = t.value.needName; return }
   const minutes = Math.round(d.minutes)
   if (!(minutes >= 1 && minutes <= 600)) { error.value = t.value.needMinutes; return }

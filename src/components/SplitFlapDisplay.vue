@@ -74,7 +74,9 @@ const props = withDefaults(defineProps<Props>(), {
 
 const currentText = ref('')
 const isFlipping = ref<boolean[]>([])
-const displayChars = computed(() => currentText.value.split(''))
+// 글자 단위(코드포인트)로 나눔 — split('')은 이모지 같은 2칸짜리 글자를 반으로 자름
+const charsOf = (text: string) => Array.from(text)
+const displayChars = computed(() => charsOf(currentText.value))
 
 // 넘어가는 동안 아랫판·떨어지는 윗판에 보일 옛 글자 (칸마다)
 const previousChars = ref<string[]>([])
@@ -101,21 +103,22 @@ const updateText = (newText: string) => {
     window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
   // 글자 수가 바뀌면(도시 이름 등) 넘기지 않고 바로 바꿈
-  if (prefersReducedMotion || newText.length !== currentText.value.length) {
+  const newChars = charsOf(newText)
+  if (prefersReducedMotion || newChars.length !== displayChars.value.length) {
     currentText.value = newText
-    isFlipping.value = new Array(newText.length).fill(false)
-    previousChars.value = newText.split('')
+    isFlipping.value = new Array(newChars.length).fill(false)
+    previousChars.value = newChars
     return
   }
 
-  const oldChars = currentText.value.split('')
-  const changedIndices = newText.split('').flatMap((char, index) => char !== oldChars[index] ? [index] : [])
+  const oldChars = displayChars.value
+  const changedIndices = newChars.flatMap((char, index) => char !== oldChars[index] ? [index] : [])
 
   changedIndices.forEach((index, order) => {
     later(() => {
-      previousChars.value[index] = currentText.value[index] ?? ' '
-      const chars = currentText.value.split('')
-      chars[index] = newText[index]
+      const chars = charsOf(currentText.value)
+      previousChars.value[index] = chars[index] ?? ' '
+      chars[index] = newChars[index]
       currentText.value = chars.join('')
       // 같은 칸이 아직 넘어가는 중이면 한 번 내렸다 올려서 애니메이션을 처음부터
       isFlipping.value[index] = false
@@ -148,8 +151,8 @@ watch(
 
 onMounted(() => {
   currentText.value = props.text
-  previousChars.value = props.text.split('')
-  isFlipping.value = new Array(props.text.length).fill(false)
+  previousChars.value = charsOf(props.text)
+  isFlipping.value = new Array(previousChars.value.length).fill(false)
 })
 
 onUnmounted(() => {

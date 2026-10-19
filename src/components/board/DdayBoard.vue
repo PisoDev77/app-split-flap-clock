@@ -1,5 +1,5 @@
 <template>
-  <div class="board-mode">
+  <div ref="root" class="board-mode">
     <BoardPicker
       :items="pickerItems"
       :current-id="current?.id"
@@ -13,10 +13,14 @@
       <SplitFlapDisplay class="board-name" :text="centerPad(shown?.name ?? '', DDAY_NAME_MAX)" :label="t.name" />
     </BoardPicker>
 
-    <SplitFlapDisplay class="board-big" :text="view?.hms ?? '--:--:--'" :label="t.time" />
+    <!-- 윗줄 남은 날(65일) 또는 지난 배지(D-DAY), 아랫줄 나머지 시:분:초 -->
+    <div class="board-lines">
+      <SplitFlapDisplay class="board-big" :text="centerPad(view?.top ?? '', DDAY_BOARD_WIDTH)" :label="view?.past ? t.badgeLabel : t.daysLeft" />
+      <SplitFlapDisplay class="board-big" :text="view?.hms ?? '--:--:--'" :label="view?.past ? t.timePast : t.time" />
+    </div>
 
     <p class="board-info">
-      <template v-if="view"><b>{{ view.badge }}</b> · {{ dateLabel(view.target) }}</template>
+      <template v-if="view"><b>{{ view.badge }}</b> · {{ dateLabel(view.target) }}<template v-if="isDdayTime(toDdayTime(shown?.time))">{{ ' ' + timeLabel(view.target) }}</template></template>
       <template v-else-if="!draft">{{ t.empty }}</template>
     </p>
 
@@ -27,6 +31,20 @@
 
     <div v-else-if="!draft && !current" class="board-actions">
       <UiButton type="primary" :icon="PlusOutlined" @click="openEditor(null)">{{ t.add }}</UiButton>
+    </div>
+
+    <div v-else-if="!draft" class="board-actions">
+      <BoardPicker
+        :items="pickerItems"
+        :current-id="current?.id"
+        :label="t.pick"
+        :add-label="t.add"
+        @select="id => { ddayId = id; incomingDday = null }"
+        @add="openEditor(null)"
+      >
+        <span class="board-list-trigger"><UnorderedListOutlined aria-hidden="true" /> {{ t.mine }}</span>
+      </BoardPicker>
+      <UiButton :icon="EditOutlined" class="board-edit-btn" @click="openEditor(current)">{{ t.editShort }}</UiButton>
     </div>
 
     <form v-if="draft" class="board-editor" @submit.prevent="save">
@@ -47,9 +65,16 @@
         </span>
       </div>
 
-      <div class="board-field">
-        <span class="board-field-label">{{ t.dateField }}</span>
-        <UiInput ref="dateInput" v-model:value="draft.date" :aria-label="t.dateField" type="date" @input="error = ''" />
+      <div class="board-field-pair">
+        <div class="board-field">
+          <span class="board-field-label">{{ t.dateField }}</span>
+          <UiInput ref="dateInput" v-model:value="draft.date" :aria-label="t.dateField" type="date" @input="error = ''" />
+        </div>
+        <div class="board-field">
+          <span class="board-field-label">{{ t.timeField }}</span>
+          <UiInput v-model:value="draft.time" :aria-label="t.timeField" type="time" />
+          <button v-if="draft.time" type="button" class="board-time-clear" @click="draft.time = ''">{{ t.timeClear }}</button>
+        </div>
       </div>
 
       <div class="board-field">
@@ -77,14 +102,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref } from 'vue'
-import { PlusOutlined, DeleteOutlined } from '@ant-design/icons-vue'
+import { computed, nextTick, ref, watch } from 'vue'
+import { PlusOutlined, DeleteOutlined, EditOutlined, UnorderedListOutlined } from '@ant-design/icons-vue'
 import SplitFlapDisplay from '@/components/SplitFlapDisplay.vue'
 import UiButton from '@/components/ui/UiButton.vue'
 import UiInput from '@/components/ui/UiInput.vue'
 import UiSwitch from '@/components/ui/UiSwitch.vue'
 import BoardPicker from '@/components/board/BoardPicker.vue'
-import { useBoard, ddayView, centerPad, newId, DDAY_NAME_MAX, type Dday } from '@/composables/useBoard'
+import { useBoard, ddayView, centerPad, newId, boardText, clipBoard, isDdayTime, toDdayTime, DDAY_NAME_MAX, DDAY_BOARD_WIDTH, type Dday } from '@/composables/useBoard'
+import { useSettings } from '@/composables/useSettings'
 import { useLocale } from '@/composables/useLocale'
 import { message } from '@/composables/useToast'
 import '@/components/board/board.css'
@@ -92,16 +118,20 @@ import '@/components/board/board.css'
 /**
  * ## D-day 판
  *
- * 이름 / 남은(지난) 시:분:초를 판에, 날 수는 아래 한 줄에.
+ * 이름 / 큰 판 두 줄(남은 날 · 나머지 시:분:초)을 판에, D-29 배지는 아래 한 줄에.
+ * 시각(선택)이 없으면 그날 0시 기준.
  */
 const props = defineProps<{ now: Date }>()
 
 const { isEn, pick } = useLocale()
 const { ddays, ddayId, incomingDday } = useBoard(isEn.value)
+const { settings } = useSettings()
 
 const t = pick({
   ko: {
     pick: 'D-day 고르기', add: '새 D-day', edit: '지금 D-day 고치기', name: 'D-day', time: '남은 시간',
+    mine: '내 D-day', editShort: '고치기', daysLeft: '남은 날', badgeLabel: 'D-day', timePast: '지난 시간',
+    timeField: '시각 (선택)', timeClear: '시각 빼기', am: '오전', pm: '오후',
     empty: 'D-day를 추가해 보세요', quick: '빨리 고르기', nameField: (n: number) => `이름 (${n}자까지)`, namePlaceholder: '여행',
     dateField: '날짜', kindField: '세는 방법', until: '남은 날 (D-29)', since: '며칠째 (412일째)',
     yearly: '매년 반복', yearlyHint: '생일·기념일처럼 해마다 다음 그날까지',
@@ -112,6 +142,8 @@ const t = pick({
   },
   en: {
     pick: 'Choose a D-day', add: 'New D-day', edit: 'Edit this D-day', name: 'D-day', time: 'Time left',
+    mine: 'My D-days', editShort: 'Edit', daysLeft: 'Days left', badgeLabel: 'D-day', timePast: 'Time since',
+    timeField: 'Time (optional)', timeClear: 'Remove time', am: 'AM', pm: 'PM',
     empty: 'Add your first D-day', quick: 'Quick pick', nameField: (n: number) => `Name (up to ${n})`, namePlaceholder: 'TRIP',
     dateField: 'Date', kindField: 'Count', until: 'Days left (D-29)', since: 'Day count (Day 412)',
     yearly: 'Every year', yearlyHint: 'Birthdays and anniversaries count to the next one',
@@ -122,9 +154,11 @@ const t = pick({
   }
 })
 
-type Draft = Omit<Dday, 'id'> & { id: string | null }
+// 편집 중 시각은 빈 문자열 = 없음
+type Draft = Omit<Dday, 'id' | 'time'> & { id: string | null, time: string }
 const draft = ref<Draft | null>(null)
 const error = ref('')
+const root = ref<HTMLElement | null>(null)
 const nameInput = ref<{ $el: HTMLElement } | null>(null)
 const dateInput = ref<{ $el: HTMLElement } | null>(null)
 
@@ -142,6 +176,15 @@ const pickerItems = computed(() => ddays.value.map(d => ({
 const dateLabel = (d: Date) => isEn.value
   ? `${t.value.weekdays[d.getDay()]}, ${d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`
   : `${d.getFullYear()}. ${d.getMonth() + 1}. ${d.getDate()} (${t.value.weekdays[d.getDay()]})`
+
+// 시각은 설정(12/24시간)을 따름
+const timeLabel = (d: Date) => {
+  const h = d.getHours()
+  const mm = String(d.getMinutes()).padStart(2, '0')
+  if (settings.value.timeFormat !== '12h') return `${String(h).padStart(2, '0')}:${mm}`
+  const ampm = h < 12 ? t.value.am : t.value.pm
+  return isEn.value ? `${(h % 12) || 12}:${mm} ${ampm}` : `${ampm} ${(h % 12) || 12}:${mm}`
+}
 
 const year = new Date().getFullYear()
 const presets = computed(() => [
@@ -173,23 +216,34 @@ const addIncoming = () => {
   message.success(t.value.added)
 }
 
+// 판에 못 띄우는 글자(이모지)는 칠 때 바로 뺌
+watch(() => draft.value?.name, name => {
+  if (draft.value && name !== undefined && boardText(name) !== name) draft.value.name = boardText(name)
+})
+
 const openEditor = async (item: Dday | null | undefined) => {
   incomingDday.value = null
   error.value = ''
   draft.value = item
-    ? { ...item }
-    : { id: null, name: '', date: '', kind: 'until', yearly: false }
+    ? { ...item, time: item.time ?? '' }
+    : { id: null, name: '', date: '', time: '', kind: 'until', yearly: false }
   await nextTick()
-  focusEl(nameInput.value)
+  // 판(미리보기)이 화면 위에 남게
+  root.value?.scrollIntoView({ block: 'start', behavior: 'smooth' })
+  // 새로 만들 때만 이름에 커서 (고치기는 키보드가 판을 밀어 올리지 않게)
+  if (!item) focusEl(nameInput.value)
 }
 
 const save = () => {
   const d = draft.value
   if (!d) return
-  const name = d.name.trim()
+  const name = clipBoard(d.name, DDAY_NAME_MAX)
   if (!name) { error.value = t.value.needName; focusEl(nameInput.value); return }
   if (!d.date) { error.value = t.value.needDate; focusEl(dateInput.value); return }
   const item: Dday = { id: d.id ?? newId(), name, date: d.date, kind: d.kind, yearly: d.kind === 'until' && d.yearly }
+  // 시각이 없으면 칸을 아예 안 씀 (옛 데이터와 같은 모양)
+  const time = toDdayTime(d.time)
+  if (isDdayTime(time)) item.time = time
   const index = ddays.value.findIndex(x => x.id === item.id)
   if (index >= 0) ddays.value[index] = item
   else ddays.value.push(item)

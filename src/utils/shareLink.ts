@@ -2,14 +2,14 @@ import type { LocationQuery } from 'vue-router'
 import { BACKGROUND_EFFECT_OPTIONS, type BackgroundEffect } from '@/composables/useSettings'
 import { CITIES } from '@/utils/cityTime'
 import { message } from '@/composables/useToast'
-import { DDAY_NAME_MAX, MESSAGE_LINE_MAX, type Dday } from '@/composables/useBoard'
+import { DDAY_NAME_MAX, MESSAGE_LINE_MAX, clipBoard, isDdayTime, type Dday } from '@/composables/useBoard'
 
 /**
  * ## 공유 링크
  *
  * 지금 보는 판을 주소에 담아 보냄
  * - 시계: `/?city=tokyo&fx=snow&h=12`
- * - D-day: `/?dd=여행&d=2026-12-24` (+ `k=s` 며칠째, `y=1` 매년 반복)
+ * - D-day: `/?dd=여행&d=2026-12-24` (+ `t=0840` 시각, `k=s` 며칠째, `y=1` 매년 반복)
  * - 문구: `/?m1=공부 중&m2=말 걸지 마`
  * - 받은 사람은 그 모양으로 보지만 자기 설정은 바뀌지 않음 (저장하지 않음)
  * - 이상한 값은 무시하고 받은 사람 설정을 씀
@@ -26,7 +26,8 @@ export interface ShareView {
   message?: [string, string]
 }
 
-const clip = (text: string, max: number) => Array.from(text.trim()).slice(0, max).join('')
+// 판에 못 띄우는 글자(이모지)를 빼고 자름
+const clip = clipBoard
 
 const first = (value: LocationQuery[string]): string | undefined =>
   (Array.isArray(value) ? value[0] : value) ?? undefined
@@ -48,6 +49,9 @@ export const parseShareQuery = (query: LocationQuery): ShareView => {
   if (name && /^\d{4}-\d{2}-\d{2}$/.test(date) && !Number.isNaN(Date.parse(date))) {
     const kind = first(query.k) === 's' ? 'since' : 'until'
     view.dday = { name, date, kind, yearly: kind === 'until' && first(query.y) === '1' }
+    // 시각 t=0840 → 08:40, 이상하면 0시
+    const hm = (first(query.t) ?? '').replace(/^(\d{2})(\d{2})$/, '$1:$2')
+    if (isDdayTime(hm)) view.dday.time = hm
   }
 
   const lines: [string, string] = [clip(first(query.m1) ?? '', MESSAGE_LINE_MAX), clip(first(query.m2) ?? '', MESSAGE_LINE_MAX)]
@@ -64,6 +68,7 @@ export const buildShareUrl = (path: string, view: ShareView): string => {
   if (view.dday) {
     params.set('dd', view.dday.name)
     params.set('d', view.dday.date)
+    if (isDdayTime(view.dday.time)) params.set('t', view.dday.time.replace(':', ''))
     if (view.dday.kind === 'since') params.set('k', 's')
     else if (view.dday.yearly) params.set('y', '1')
   }

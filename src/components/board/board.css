@@ -13,6 +13,14 @@
   --flap-w: min(clamp(1.5rem, 7vw, 3.25rem), 9vh, calc((100vw - 7rem) / 7));
 }
 
+/* 큰 판 두 줄 (문구·D-day) */
+.board-lines {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 /* 큰 줄(8칸) */
 .board-big {
   --flap-w: min(clamp(1.75rem, calc(10vw - 2px), 6.25rem), 18vh, calc((100vw - 5rem) / 8.6));
@@ -37,6 +45,28 @@
   justify-content: center;
   align-items: center;
   gap: 12px;
+}
+
+/* 판 아래 "목록 ▾ / 고치기" 알약 버튼 (문구·D-day) */
+.board-list-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--color-fg-default);
+}
+
+.board-mode .board-actions .picker-trigger {
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border-default);
+  background: rgba(var(--color-canvas-default-rgb), 0.6);
+}
+
+.board-edit-btn {
+  min-height: 40px;
+  border-radius: 999px;
 }
 
 /* 고치기 창 */
@@ -72,6 +102,29 @@
 
 .board-field-row > .ui-input {
   flex: 1;
+}
+
+/* 날짜·시각 한 줄 (좁으면 두 줄) */
+.board-field-pair {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.board-field-pair > .board-field {
+  flex: 1 1 9rem;
+  min-width: 0;
+}
+
+.board-time-clear {
+  align-self: flex-start;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--color-accent-fg);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
 }
 
 .board-count {
