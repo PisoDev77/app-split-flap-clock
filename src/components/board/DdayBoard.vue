@@ -85,10 +85,11 @@
         </div>
       </div>
 
-      <div v-if="draft.kind === 'until'" class="board-switch-row">
+      <!-- 줄 전체가 스위치 (label 안 버튼이라 글자를 눌러도 켜짐) -->
+      <label v-if="draft.kind === 'until'" class="board-switch-row">
         <span>{{ t.yearly }}<small>{{ t.yearlyHint }}</small></span>
         <UiSwitch v-model:checked="draft.yearly" :aria-label="t.yearly" />
-      </div>
+      </label>
 
       <p v-if="error" class="board-error" role="alert">{{ error }}</p>
 
@@ -157,6 +158,10 @@ const t = pick({
 // 편집 중 시각은 빈 문자열 = 없음
 type Draft = Omit<Dday, 'id' | 'time'> & { id: string | null, time: string }
 const draft = ref<Draft | null>(null)
+// 고치기를 닫으면(저장·취소·지우기) 화면을 맨 위로: 편집 때 내려간 채라 ☰·⚙가 반쯤 가려졌음
+watch(() => !!draft.value, (open, wasOpen) => {
+  if (wasOpen && !open) window.scrollTo({ top: 0, behavior: 'smooth' })
+})
 const error = ref('')
 const root = ref<HTMLElement | null>(null)
 const nameInput = ref<{ $el: HTMLElement } | null>(null)

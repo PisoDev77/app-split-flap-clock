@@ -57,7 +57,7 @@
 }
 
 .board-mode .board-actions .picker-trigger {
-  min-height: 40px;
+  min-height: 44px;
   padding: 0 14px;
   border-radius: 999px;
   border: 1px solid var(--color-border-default);
@@ -65,7 +65,7 @@
 }
 
 .board-edit-btn {
-  min-height: 40px;
+  min-height: 44px;
   border-radius: 999px;
 }
 
@@ -118,7 +118,10 @@
 
 .board-time-clear {
   align-self: flex-start;
-  padding: 0;
+  /* 글자는 작아도 누르는 칸은 넉넉히 (바깥 여백은 그대로) */
+  margin: -8px 0 -8px -8px;
+  padding: 8px;
+  min-height: 36px;
   border: none;
   background: none;
   color: var(--color-accent-fg);
@@ -141,6 +144,7 @@
 }
 
 .board-chip {
+  position: relative;
   min-height: 32px;
   padding: 0 12px;
   border-radius: 999px;
@@ -150,6 +154,13 @@
   font: inherit;
   font-size: 13px;
   cursor: pointer;
+}
+
+/* 칩은 32px로 보이지만 누르는 칸은 위아래로 넓혀 44px */
+.board-chip::after {
+  content: '';
+  position: absolute;
+  inset: -6px -3px;
 }
 
 .board-chip:hover {
@@ -164,7 +175,7 @@
 
 .board-seg button {
   flex: 1;
-  min-height: 40px;
+  min-height: 44px;
   border-radius: 10px;
   border: 1px solid var(--color-border-default);
   background: transparent;
@@ -181,6 +192,8 @@
 }
 
 .board-switch-row {
+  min-height: 44px;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -208,6 +221,7 @@
 
 .board-editor-buttons .ui-btn {
   flex: 1;
+  min-height: 44px;
 }
 
 .board-editor-buttons .board-delete {

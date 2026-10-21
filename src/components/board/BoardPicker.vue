@@ -14,7 +14,7 @@
     </button>
 
     <Transition name="picker-pop">
-      <div v-if="open" class="picker-pop" role="listbox" :aria-label="label" @keydown.esc.stop="close(true)">
+      <div v-if="open" ref="pop" class="picker-pop" :style="{ marginLeft: `${shift}px` }" role="listbox" :aria-label="label" @keydown.esc.stop="close(true)">
         <button
           v-for="item in items"
           :key="item.id"
@@ -68,6 +68,18 @@ const emit = defineEmits<{
 const open = ref(false)
 const root = ref<HTMLElement | null>(null)
 const trigger = ref<HTMLButtonElement | null>(null)
+const pop = ref<HTMLElement | null>(null)
+
+// 버튼이 화면 가운데에 있지 않으면(예: '내 D-day'는 왼쪽) 목록이 화면 밖으로 나갔음 → 좌우 16px 안으로 밀기
+const GUTTER = 16
+const shift = ref(0)
+const keepInView = () => {
+  shift.value = 0
+  const rect = pop.value?.getBoundingClientRect()
+  if (!rect) return
+  if (rect.left < GUTTER) shift.value = GUTTER - rect.left
+  else if (rect.right > window.innerWidth - GUTTER) shift.value = window.innerWidth - GUTTER - rect.right
+}
 
 const onOutside = (event: PointerEvent) => {
   if (!root.value?.contains(event.target as Node)) close(false)
@@ -77,6 +89,7 @@ watch(open, async isOpen => {
   if (isOpen) {
     document.addEventListener('pointerdown', onOutside)
     await nextTick()
+    keepInView()
     root.value?.querySelector<HTMLElement>('.picker-row[aria-selected="true"], .picker-row')?.focus()
   } else {
     document.removeEventListener('pointerdown', onOutside)
@@ -147,7 +160,7 @@ const act = (kind: 'add' | 'edit') => {
   top: calc(100% + 8px);
   left: 50%;
   z-index: 30;
-  width: min(300px, 86vw);
+  width: min(300px, calc(100vw - 32px));
   max-height: 60vh;
   overflow-y: auto;
   transform: translateX(-50%);

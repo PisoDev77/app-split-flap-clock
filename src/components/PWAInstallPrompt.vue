@@ -326,18 +326,19 @@ onUnmounted(() => {
   }
 }
 
+/* 폰 세로: 혜택 목록을 빼고 작게 — 크게 띄우면 시계·모드 버튼 줄을 덮었음 (2026-10-21 QA)
+   버튼은 한 줄에 두기 (세로로 쌓으면 flex: 1 때문에 '설치하기' 높이가 납작해졌음) */
 @media (max-width: 480px) {
   .pwa-install-prompt {
-    bottom: 90px;
+    bottom: calc(env(safe-area-inset-bottom) + 16px);
   }
-  
-  .install-actions {
-    flex-direction: column;
-    gap: 8px;
+
+  .install-benefits {
+    display: none;
   }
-  
+
   .install-actions .ui-btn {
-    width: 100%;
+    min-height: 44px;
   }
 }
 /* 가로로 눕힌 폰: 시계를 가리지 않게 혜택 목록을 숨기고 오른쪽 아래에 작게 */

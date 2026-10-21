@@ -38,7 +38,8 @@
             <h3>2.1 수집하는 개인정보 항목</h3>
             <ul>
               <li><strong>위치 정보:</strong> 수집하지 않습니다. GPS나 위치 권한을 사용하지 않으며, 기기에 설정된 시간대만 기기 안에서 읽습니다.</li>
-              <li><strong>사용자 설정:</strong> 선택한 도시, 테마, 배경 효과 설정 (이 기기 안에만 저장)</li>
+              <li><strong>사용자 설정:</strong> 선택한 도시, 테마, 배경 효과, 시간 표시 방식 (이 기기 안에만 저장)</li>
+              <li><strong>판에 띄운 내용:</strong> 직접 만든 D-day(이름·날짜·시각), 문구, 타이머 진행 상태 (이 기기 안에만 저장, 어디에도 보내지 않음)</li>
               <li><strong>기기 정보:</strong> 수집하지 않습니다. 화면 크기는 화면을 맞게 그리는 데만 기기 안에서 쓰고 어디에도 보내지 않습니다.</li>
             </ul>
 
@@ -58,7 +59,7 @@
 
           <section class="privacy-section">
             <h2>4. 개인정보의 제3자 제공</h2>
-            <p>회사는 원칙적으로 이용자의 개인정보를 외부에 제공하지 않습니다. 다만, 아래의 경우에는 예외로 합니다:</p>
+            <p>회사는 원칙적으로 이용자의 개인정보를 외부에 제공하지 않습니다. 외부로 나가는 요청은 글꼴(SUIT)을 공개 CDN(cdn.jsdelivr.net)에서 받는 것 하나뿐이며, 이때는 모든 웹 요청에 붙는 기본 정보만 전달됩니다. 다만, 아래의 경우에는 예외로 합니다:</p>
             <ul>
               <li>이용자가 사전에 동의한 경우</li>
               <li>법령의 규정에 의거하거나, 수사 목적으로 법령에 정해진 절차와 방법에 따라 수사기관의 요구가 있는 경우</li>
@@ -99,10 +100,11 @@
             <h2>8. 쿠키 및 로컬 스토리지</h2>
             <p>Split Flap Clock은 쿠키를 쓰지 않으며, 다음 목적으로만 이 기기의 로컬 스토리지를 사용합니다. 이 데이터는 서버로 보내지 않습니다:</p>
             <ul>
-              <li>사용자 설정 저장 (테마, 선택된 도시, 배경 효과)</li>
+              <li>사용자 설정 저장 (테마, 선택된 도시, 배경 효과, 시간 표시 방식)</li>
+              <li>D-day·문구·타이머 저장</li>
               <li>오프라인 사용을 위한 앱 파일 캐시</li>
             </ul>
-            <p>사용자는 브라우저 설정을 통해 언제든지 이러한 데이터를 삭제할 수 있습니다.</p>
+            <p>분석·추적 도구와 광고는 쓰지 않습니다. 사용자는 브라우저 또는 앱 설정에서 이 사이트(앱) 데이터를 지워 언제든지 이러한 데이터를 삭제할 수 있습니다.</p>
           </section>
 
           <section class="privacy-section">
@@ -144,7 +146,7 @@
             <h2>2. What the app uses</h2>
             <ul>
               <li><strong>Location:</strong> not collected. The app never asks for location permission; it only reads the time zone set on your device, on your device.</li>
-              <li><strong>Your settings:</strong> city, theme, background effect and timer state are saved in your browser's local storage on this device only.</li>
+              <li><strong>Your settings and boards:</strong> city, theme, background effect, time format, and the D-days, messages and timer state you create are saved in your browser's local storage on this device only. They are never sent anywhere.</li>
               <li><strong>Device information:</strong> not collected. Screen size is used only on your device to lay out the clock.</li>
             </ul>
           </section>
@@ -198,8 +200,8 @@ import { useLocale } from '@/composables/useLocale'
  */
 
 // 정책을 바꾸면 이 날짜도 함께 바꿉니다 (예전에는 볼 때마다 오늘 날짜로 표시됨)
-const lastUpdated = '2026년 10월 11일'
-const lastUpdatedEn = 'October 12, 2026'
+const lastUpdated = '2026년 10월 21일'
+const lastUpdatedEn = 'October 21, 2026'
 
 const { isEn } = useLocale()
 
