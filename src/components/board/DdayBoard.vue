@@ -233,8 +233,12 @@ const openEditor = async (item: Dday | null | undefined) => {
     ? { ...item, time: item.time ?? '' }
     : { id: null, name: '', date: '', time: '', kind: 'until', yearly: false }
   await nextTick()
-  // 판(미리보기)이 화면 위에 남게
-  root.value?.scrollIntoView({ block: 'start', behavior: 'smooth' })
+  // 판(미리보기)이 화면 위에 남게. 판이 ☰·⚙ 바로 아래면 맨 위로 (중간에 멈추면 ☰·⚙가 반만 보였음)
+  const el = root.value
+  if (el) {
+    const top = el.getBoundingClientRect().top + window.scrollY
+    window.scrollTo({ top: top < 120 ? 0 : top, behavior: 'smooth' })
+  }
   // 새로 만들 때만 이름에 커서 (고치기는 키보드가 판을 밀어 올리지 않게)
   if (!item) focusEl(nameInput.value)
 }
