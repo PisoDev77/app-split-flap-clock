@@ -61,7 +61,7 @@ const options = computed(() => [
   align-items: center;
   justify-content: center;
   gap: 6px;
-  min-height: 40px;
+  min-height: 44px;
   padding: 0 6px;
   border: none;
   border-radius: 999px;

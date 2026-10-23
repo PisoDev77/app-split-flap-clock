@@ -96,6 +96,10 @@ const t = pick({
 })
 
 const draft = ref<{ id: string | null, lines: [string, string] } | null>(null)
+// 고치기를 닫으면(저장·취소·지우기) 화면을 맨 위로: 편집 때 내려간 채라 ☰·⚙가 반쯤 가려졌음
+watch(() => !!draft.value, (open, wasOpen) => {
+  if (wasOpen && !open) window.scrollTo({ top: 0, behavior: 'smooth' })
+})
 const error = ref('')
 const form = ref<HTMLFormElement | null>(null)
 

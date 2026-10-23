@@ -58,12 +58,44 @@
 
                 <h3>탁상시계로 켜 두기</h3>
                 <ul>
-                  <li><strong>💡 화면 켜두기:</strong> 화면 위 전구 버튼을 누르면 시계를 보는 동안 화면이 꺼지지 않습니다</li>
-                  <li><strong>⛶ 전체 화면:</strong> 화살표 버튼으로 시계만 크게 볼 수 있습니다 (아이폰 Safari는 미지원)</li>
+                  <li><strong>💡 화면 켜두기:</strong> 왼쪽 위 ☰ 메뉴 → "화면 켜두기"를 누르면 시계를 보는 동안 화면이 꺼지지 않습니다</li>
+                  <li><strong>⛶ 전체 화면:</strong> ☰ 메뉴 → "전체 화면"으로 시계만 크게 볼 수 있습니다 (아이폰 Safari는 미지원)</li>
                   <li><strong>가로 화면:</strong> 폰을 눕히면 시계가 화면에 맞게 커집니다</li>
                   <li><strong>12시간 표시:</strong> 설정 → 시간 표시에서 오전·오후 방식으로 바꿀 수 있습니다</li>
-                  <li><strong>🔗 링크 공유:</strong> 공유 버튼을 누르면 지금 도시·배경 효과 그대로 볼 수 있는 링크를 보낼 수 있습니다 (받는 사람 설정은 바뀌지 않음)</li>
+                  <li><strong>🔗 링크 공유:</strong> ☰ 메뉴 → 링크 공유를 누르면 지금 도시·배경 효과 그대로 볼 수 있는 링크를 보낼 수 있습니다 (받는 사람 설정은 바뀌지 않음)</li>
                   <li><strong>📚 공부 시계:</strong> <router-link to="/study">공부 시계</router-link>에서 25·50·90분 집중 타이머를 쓸 수 있습니다</li>
+                </ul>
+              </div>
+            </UiCollapsePanel>
+
+            <UiCollapsePanel panel-key="board" header="🗓️ 판에 띄우기: D-day·타이머·문구">
+              <div class="guide-section">
+                <h3>모드 고르기</h3>
+                <ul>
+                  <li><strong>판 아래 버튼 줄:</strong> 시계 · D-day · 타이머 · 문구 중 하나를 누르면 플립 판에 그것을 띄웁니다</li>
+                  <li><strong>기억:</strong> 마지막으로 고른 모드로 다음에도 열립니다</li>
+                </ul>
+
+                <h3>D-day</h3>
+                <ul>
+                  <li><strong>남은 날:</strong> 판 윗줄은 남은 날 수, 아랫줄은 남은 시간입니다. 판 아래 "D-72"는 달력 날짜로 센 숫자라 하루 차이가 날 수 있습니다</li>
+                  <li><strong>새로 만들기·고치기:</strong> "내 D-day ▾" → "새 D-day", 또는 "고치기"에서 이름(6자까지)·날짜·시각(선택)을 정합니다</li>
+                  <li><strong>매년 반복:</strong> 생일·기념일처럼 해마다 다음 그날까지 셉니다</li>
+                  <li><strong>며칠째:</strong> 만난 날처럼 지난 날부터 며칠째인지 셉니다</li>
+                </ul>
+
+                <h3>타이머</h3>
+                <ul>
+                  <li><strong>시작·멈춤:</strong> 가운데 버튼으로 시작하고, +1로 1분 더합니다</li>
+                  <li><strong>끝 알림:</strong> 다른 모드나 설정 화면에 가 있어도 끝나면 소리·진동으로 알려 줍니다 (미디어 소리를 줄여 두면 안 들려요)</li>
+                  <li><strong>화면이 꺼지면:</strong> 알림이 늦을 수 있으니 ☰ 메뉴 → 화면 켜두기를 켜 두세요</li>
+                </ul>
+
+                <h3>문구</h3>
+                <ul>
+                  <li><strong>두 줄 문구:</strong> "고치기"에서 줄마다 8자까지 적으면 판에 띄웁니다 (예: 공부 중 / 말 걸지 마)</li>
+                  <li><strong>저장한 문구:</strong> 자주 쓰는 문구를 저장해 두고 골라 씁니다</li>
+                  <li><strong>공유:</strong> ☰ 메뉴 → 링크 공유로 D-day·문구를 다른 사람에게 보낼 수 있습니다 (받는 사람이 "추가"를 눌러야 저장됨)</li>
                 </ul>
               </div>
             </UiCollapsePanel>
@@ -386,6 +418,12 @@ const activeKeys = ref(['1'])
 
 .guide-section h3:first-child {
   margin-top: 0;
+}
+
+/* 문장 속 링크 (다크에서 브라우저 기본 파랑은 거의 안 보였음) */
+.guide-section a {
+  color: var(--color-accent-fg);
+  text-decoration: underline;
 }
 
 .guide-section h4 {

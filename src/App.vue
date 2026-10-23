@@ -6,6 +6,7 @@
       <!-- 블로그 위젯(/embed)에서는 안내창을 띄우지 않음 -->
       <PWAInstallPrompt v-if="!bare" />
       <PWAUpdatePrompt v-if="!bare" />
+      <TimerDoneBanner v-if="!bare" />
       <UiToastHost />
       <ResponsiveTestOverlay v-if="isDevelopment && !bare" />
     </div>
@@ -21,6 +22,7 @@ import PWAUpdatePrompt from '@/components/PWAUpdatePrompt.vue'
 import OfflineIndicator from '@/components/OfflineIndicator.vue'
 import ResponsiveTestOverlay from '@/components/ResponsiveTestOverlay.vue'
 import UiToastHost from '@/components/ui/UiToastHost.vue'
+import TimerDoneBanner from '@/components/board/TimerDoneBanner.vue'
 import { setupPWAListeners, setupNetworkListeners } from '@/utils/pwa'
 
 /**

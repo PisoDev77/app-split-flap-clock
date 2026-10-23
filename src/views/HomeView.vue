@@ -125,6 +125,13 @@
               </span>
             </router-link>
           </nav>
+          <!-- 폰에선 아래 링크 모음이 안 보여서 다른 페이지 가는 길을 메뉴에 둠 -->
+          <nav class="drawer-more" :aria-label="t.more">
+            <span class="drawer-more-title">{{ t.more }}</span>
+            <router-link v-for="link in moreLinks" :key="link.to" :to="link.to" class="drawer-link">
+              {{ link.label }}
+            </router-link>
+          </nav>
         </aside>
       </Transition>
 
@@ -186,6 +193,7 @@ const t = pick({
     wakeShort: '켜두기', fullShort: '전체 화면', shareShort: '공유',
     wakeHint: '시계를 켜 둔 동안 화면이 꺼지지 않게 합니다', wakeOn: '화면 켜두기 켜짐 · 이 화면에서는 화면이 꺼지지 않아요', wakeOffToast: '화면 켜두기 꺼짐',
     converter: '시차 계산기', converterHint: '다른 나라는 지금 몇 시인지 계산', tools: '메뉴', close: '닫기',
+    more: '더 보기', study: '공부 시계', worldClock: '세계 시간', guide: '사용법 가이드', faq: '자주 묻는 질문', privacy: '개인정보처리방침',
     share: '이 시계 링크 공유', settings: '설정 페이지 열기', settingsTitle: '설정', clockArea: '시계 표시 영역', city: '도시',
     now: '현재 시간', h: '시', m: '분', s: '초', date: '현재 날짜',
     shared: '공유받은 도시', selected: '선택한 도시', here: '현재 위치',
@@ -200,6 +208,7 @@ const t = pick({
     wakeShort: 'Stay on', fullShort: 'Fullscreen', shareShort: 'Share',
     wakeHint: 'Stops the screen from sleeping while the clock is open', wakeOn: 'Screen will stay on while the clock is open', wakeOffToast: 'Screen can sleep again',
     converter: 'Time zone converter', converterHint: 'What time is it elsewhere?', tools: 'Menu', close: 'Close',
+    more: 'More', study: 'Study timer', worldClock: 'World clock', guide: '', faq: '', privacy: 'Privacy policy',
     share: 'Share this clock', settings: 'Open settings', settingsTitle: 'Settings', clockArea: 'Clock', city: 'City',
     now: 'Current time', h: 'Hour', m: 'Minute', s: 'Second', date: 'Today',
     shared: 'Shared city', selected: 'Selected city', here: 'Your time zone',
@@ -210,6 +219,21 @@ const t = pick({
     shareDday: (name: string) => `Count down to ${name} on a flip board`, shareMessage: 'A message on a split-flap board'
   }
 })
+
+// 메뉴 아래 링크 (가이드·FAQ는 한국어판만 있음)
+const moreLinks = computed(() => isEn.value
+  ? [
+      { to: '/en/study', label: t.value.study },
+      { to: '/en/world-clock', label: t.value.worldClock },
+      { to: '/en/privacy', label: t.value.privacy }
+    ]
+  : [
+      { to: '/study', label: t.value.study },
+      { to: '/timezone', label: t.value.worldClock },
+      { to: '/guide', label: t.value.guide },
+      { to: '/faq', label: t.value.faq },
+      { to: '/privacy', label: t.value.privacy }
+    ])
 
 // 12월이거나 1월 1일이면 다가오는(또는 오늘 맞은) 새해 연도, 아니면 null
 const newYearSoon = computed(() => {
@@ -527,7 +551,7 @@ onUnmounted(() => {
   position: fixed;
   inset: 0;
   z-index: 20;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.55);
 }
 
 .drawer {
@@ -606,6 +630,36 @@ onUnmounted(() => {
 .drawer-text small {
   font-size: 0.78rem;
   color: var(--color-fg-muted);
+}
+
+.drawer-more {
+  display: flex;
+  flex-direction: column;
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(var(--color-border-default-rgb), 0.5);
+  overflow-y: auto;
+}
+
+.drawer-more-title {
+  padding: 0 12px 4px;
+  font-size: 0.78rem;
+  color: var(--color-fg-muted);
+}
+
+.drawer-link {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: 12px;
+  color: var(--color-fg-default);
+  text-decoration: none;
+}
+
+.drawer-link:hover,
+.drawer-link:focus-visible {
+  background: var(--color-canvas-subtle);
 }
 
 .drawer-slide-enter-active,

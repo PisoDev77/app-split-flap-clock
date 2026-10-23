@@ -113,7 +113,7 @@
             <div class="developer-info">
               <p><strong>개발자:</strong> Piso Developer</p>
               <p><strong>문의:</strong> <a href="https://github.com/PisoDev77/app-split-flap-clock/issues" target="_blank" rel="noopener">GitHub Issues</a></p>
-              <p><strong>버전:</strong> 1.5</p>
+              <p><strong>버전:</strong> 1.8</p>
               <p><strong>최종 업데이트:</strong> {{ lastUpdated }}</p>
             </div>
           </UiCard>
@@ -136,7 +136,7 @@ import { useGoBack } from '@/composables/useGoBack'
 const goBack = useGoBack()
 
 // 실제로 앱을 고친 날짜 (예전에는 볼 때마다 오늘 날짜가 표시됨)
-const lastUpdated = '2026년 10월 12일'
+const lastUpdated = '2026년 10월 21일'
 </script>
 
 <style scoped>

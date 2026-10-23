@@ -19,10 +19,15 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* 한국어를 어절 단위로 줄바꿈 ("합니 / 다" 방지), 너무 긴 단어만 끊음 */
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 /* GitHub 테마 색상 */
 :root {
+  /* 날짜·시각 칸 아이콘, 고르기 창, 스크롤바도 테마 색으로 */
+  color-scheme: light;
   /* Light theme colors */
   --color-canvas-default: #ffffff;
   --color-canvas-default-rgb: 255, 255, 255;
@@ -49,6 +54,7 @@ body {
 }
 
 [data-theme='dark'] {
+  color-scheme: dark;
   /* Dark theme colors */
   --color-canvas-default: #0d1117;
   --color-canvas-default-rgb: 13, 17, 23;
