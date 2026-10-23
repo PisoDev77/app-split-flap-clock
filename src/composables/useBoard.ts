@@ -158,6 +158,10 @@ const ring = () => {
 
 /** 끝난 지 이만큼 안에 알게 되면 울림. 더 늦게(앱을 한참 뒤에 엶) 알면 조용히 "끝"만 */
 const LATE_RING_MS = 60000
+const LATE_BANNER_MS = 10 * 60000
+
+/** 방금 끝난 타이머 id. 소리를 못 들었어도(무음) 어느 화면에서든 띠로 알림 (TimerDoneBanner) */
+export const timerDone = ref<string | null>(null)
 
 const watchTimerEnd = (timerRun: Ref<TimerRun | null>) => {
   let endTimer: ReturnType<typeof setTimeout> | null = null
@@ -165,7 +169,10 @@ const watchTimerEnd = (timerRun: Ref<TimerRun | null>) => {
     if (endTimer) clearTimeout(endTimer)
     endTimer = null
     // 조금 늦게 걸어서 check에서 확실히 끝난 것으로 보이게
-    if (endAt) endTimer = setTimeout(check, Math.max(0, endAt - Date.now()) + 50)
+    if (endAt) {
+      endTimer = setTimeout(check, Math.max(0, endAt - Date.now()) + 50)
+      timerDone.value = null
+    }
   }
   const check = () => {
     const run = timerRun.value
@@ -175,6 +182,8 @@ const watchTimerEnd = (timerRun: Ref<TimerRun | null>) => {
     if (late < 0) { schedule(run.endAt); return }
     timerRun.value = { presetId: run.presetId, endAt: null, left: 0 }
     if (late <= LATE_RING_MS) ring()
+    // 화면이 꺼져 있다 늦게 알아도 잠깐 뒤면 띠는 보여 줌 (한참 뒤에 연 거면 판의 "끝"만)
+    if (late <= LATE_BANNER_MS) timerDone.value = run.presetId
   }
   watch(() => timerRun.value?.endAt, schedule, { immediate: true })
   // 화면이 꺼졌다 켜지거나 탭이 다시 보이면 바로 확인
