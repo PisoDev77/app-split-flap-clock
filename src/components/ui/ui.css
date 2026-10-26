@@ -143,6 +143,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  min-width: 0;
   height: 40px;
   padding: 0 12px;
   border: 1px solid var(--color-border-default);
@@ -153,8 +154,10 @@
 .ui-input--large { height: 44px; font-size: 16px; }
 .ui-input:focus-within { border-color: var(--color-accent-fg); }
 .ui-input__prefix { color: var(--color-fg-muted); display: inline-flex; }
+/* width 0: 입력칸 기본 너비(글자 20자, 폰 글꼴이 넓으면 300px 넘음)가 줄 너비를 밀어내지 않게 — flex: 1로 남은 칸을 채움 (10/26 갤럭시에서 카드 밖으로 삐져나옴) */
 .ui-input__native {
   flex: 1;
+  width: 0;
   min-width: 0;
   height: 100%;
   border: none;
